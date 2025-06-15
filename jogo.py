@@ -37,6 +37,10 @@ PURPLE = (128, 0, 128)
 MAGIC_BLUE = (65, 105, 225)
 CORNISH_BLUE = (0, 150, 255)
 
+# Variáveis globais para tela cheia
+fullscreen = False
+current_screen = None
+
 # Corrigindo o caminho para as imagens - usando o diretório correto
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 IMAGES_DIR = os.path.join(BASE_DIR, "images")  # Diretório de imagens local
@@ -44,6 +48,9 @@ IMAGES_DIR = os.path.join(BASE_DIR, "images")  # Diretório de imagens local
 # Criar o diretório de imagens se não existir
 if not os.path.exists(IMAGES_DIR):
     os.makedirs(IMAGES_DIR)
+
+# Dicionário para armazenar sprites carregados
+loaded_sprites = {}
 
 # Estados do jogo
 class GameState(Enum):
@@ -60,6 +67,73 @@ class PixieBehavior(Enum):
     RIGHT_TO_LEFT = 2
     ZIGZAG = 3
     CIRCULAR = 4
+
+# Funções para carregar sprites externos
+def load_sprite_sheet(filename):
+    """Carrega uma sprite sheet e retorna a superfície"""
+    try:
+        filepath = os.path.join(IMAGES_DIR, filename)
+        if os.path.exists(filepath):
+            return pygame.image.load(filepath).convert_alpha()
+    except Exception as e:
+        print(f"Aviso: Não foi possível carregar {filename}: {e}")
+    return None
+
+def extract_sprite(sheet, x, y, width, height, scale=1.0):
+    """Extrai um sprite de uma sprite sheet"""
+    sprite = pygame.Surface((width, height), pygame.SRCALPHA)
+    sprite.blit(sheet, (0, 0), (x, y, width, height))
+    if scale != 1.0:
+        new_width = int(width * scale)
+        new_height = int(height * scale)
+        sprite = pygame.transform.scale(sprite, (new_width, new_height))
+    return sprite
+
+def load_all_sprites():
+    """Carrega todos os sprites externos disponíveis"""
+    global loaded_sprites
+    
+    print("Tentando carregar sprites externos...")
+    print(f"Diretório de imagens: {IMAGES_DIR}")
+    
+    # Lista de arquivos de sprite para tentar carregar
+    sprite_files = [
+        "Designer_sprite_0.png",
+        "Designer (1)_sprite_0.png", 
+        "Designer (2)_sprite_0.png"
+    ]
+    
+    for filename in sprite_files:
+        sheet = load_sprite_sheet(filename)
+        if sheet:
+            loaded_sprites[filename] = sheet
+            print(f"Carregado com sucesso: {filename}")
+        else:
+            print(f"Não foi possível carregar: {filename}")
+    
+    # Extrair sprites específicos se as sheets foram carregadas
+    if "Designer_sprite_0.png" in loaded_sprites:
+        sheet = loaded_sprites["Designer_sprite_0.png"]
+        print("Extraindo sprites de Designer_sprite_0.png...")
+        # Assumindo que os sprites estão organizados em grid
+        # Wizards no topo (64x64 cada)
+        for i in range(8):
+            loaded_sprites[f"wizard_{i}"] = extract_sprite(sheet, i*64, 0, 64, 64, 0.8)
+        # Varinhas no meio (32x32 cada)
+        for i in range(8):
+            loaded_sprites[f"wand_{i}"] = extract_sprite(sheet, i*64, 128, 64, 64, 0.5)
+    
+    if "Designer (2)_sprite_0.png" in loaded_sprites:
+        sheet = loaded_sprites["Designer (2)_sprite_0.png"]
+        print("Extraindo sprites de Designer (2)_sprite_0.png...")
+        # Criaturas fofas como inimigos (64x64 cada)
+        for i in range(8):
+            loaded_sprites[f"pixie_{i}"] = extract_sprite(sheet, i*64, 128, 64, 64, 0.7)
+        # Orbs como projéteis (32x32 cada)
+        for i in range(4):
+            loaded_sprites[f"spell_{i}"] = extract_sprite(sheet, i*64, 256, 64, 64, 0.3)
+    
+    print(f"Total de sprites carregados: {len(loaded_sprites)}")
 
 # Funções para criar sprites e imagens
 def create_wand_image(width=30, height=160, style="classic"):
@@ -395,25 +469,64 @@ def create_pixie_spell_image(width=15, height=20):
 
 def create_game_images():
     """Cria todas as imagens para o jogo"""
-    return {
-        "wand": [
+    global loaded_sprites
+    
+    print(f"\nCriando imagens do jogo. Sprites carregados: {len(loaded_sprites)}")
+    
+    # Tenta usar sprites carregados primeiro
+    wand_images = []
+    pixie_images = []
+    spell_images = []
+    
+    # Varinhas - usa sprites carregados se disponíveis
+    if "wand_0" in loaded_sprites:
+        print("Usando sprites de varinha carregados...")
+        for i in range(4):
+            if f"wand_{i}" in loaded_sprites:
+                wand_images.append({"name": f"Varinha Mágica {i+1}", "image": loaded_sprites[f"wand_{i}"]})
+    
+    # Se não houver sprites carregados, usa os procedurais
+    if not wand_images:
+        print("Usando sprites de varinha procedurais...")
+        wand_images = [
             {"name": "Varinha Clássica", "image": create_wand_image(style="classic")},
             {"name": "Varinha de Sabugueiro", "image": create_wand_image(style="elder")},
             {"name": "Varinha de Azevinho", "image": create_wand_image(style="holly")},
             {"name": "Varinha de Cristal", "image": create_wand_image(style="crystal")}
-        ],
-        "pixie": [
+        ]
+    
+    # Inimigos - usa sprites carregados se disponíveis
+    if "pixie_0" in loaded_sprites:
+        print("Usando sprites de inimigos carregados...")
+        for i in range(4):
+            if f"pixie_{i}" in loaded_sprites:
+                pixie_images.append({"name": f"Criatura Mágica {i+1}", "image": loaded_sprites[f"pixie_{i}"]})
+    
+    # Se não houver sprites carregados, usa os procedurais
+    if not pixie_images:
+        print("Usando sprites de inimigos procedurais...")
+        pixie_images = [
             {"name": "Diabrete Azul", "image": create_pixie_image(style="blue")},
             {"name": "Duende Verde", "image": create_pixie_image(style="green")},
             {"name": "Fada da Floresta", "image": create_pixie_image(style="fairy")},
             {"name": "Diabrete Sombrio", "image": create_pixie_image(style="shadow")}
-        ],
-        "spell": [
-            {"name": "Feitiço Azul", "image": create_spell_image((150, 230, 255))}
-        ],
-        "pixie_spell": [
-            {"name": "Feitiço Vermelho", "image": create_spell_image((255, 100, 100))}
         ]
+    
+    # Feitiços - usa sprites carregados se disponíveis
+    if "spell_0" in loaded_sprites:
+        for i in range(2):
+            if f"spell_{i}" in loaded_sprites:
+                spell_images.append({"name": f"Feitiço Mágico {i+1}", "image": loaded_sprites[f"spell_{i}"]})
+    
+    # Se não houver sprites carregados, usa os procedurais
+    if not spell_images:
+        spell_images = [{"name": "Feitiço Azul", "image": create_spell_image((150, 230, 255))}]
+    
+    return {
+        "wand": wand_images,
+        "pixie": pixie_images,
+        "spell": spell_images,
+        "pixie_spell": spell_images  # Usa os mesmos feitiços para inimigos
     }
 
 class Selector:
@@ -1017,10 +1130,10 @@ class Star:
 class MagicalBackground:
     """Classe para o fundo mágico em movimento"""
     
-    def __init__(self, surface, star_count=150):
+    def __init__(self, surface, star_count=80):
         self.surface = surface
         self.width, self.height = surface.get_size()
-        self.stars = [Star(surface) for _ in range(star_count)]
+        self.stars = [Star(surface) for _ in range(star_count)]  # Menos estrelas
         
         # Cria uma nebulosa mágica para o fundo
         self.nebula = pygame.Surface((self.width, self.height), pygame.SRCALPHA)
@@ -1029,21 +1142,21 @@ class MagicalBackground:
         
         # Efeitos mágicos adicionais
         self.magic_particles = []
-        self.create_magic_particles(30)  # Cria 30 partículas mágicas
+        self.create_magic_particles(15)  # Menos partículas mágicas
         
     def create_magical_nebula(self):
         """Cria uma nebulosa mágica usando gradientes e transparência"""
         # Adiciona alguns pontos coloridos de nebulosa mágica
-        for _ in range(20):
+        for _ in range(8):  # Menos nebulosas
             x = random.randint(0, self.width)
             y = random.randint(0, self.height)
-            radius = random.randint(50, 150)
+            radius = random.randint(80, 200)
             
-            # Cores aleatórias mais vibrantes para as nebulosas mágicas
-            r = random.randint(50, 150)
-            g = random.randint(50, 150)
-            b = random.randint(150, 255)  # Predominantemente azul/púrpura
-            a = random.randint(10, 40)    # Bastante transparente
+            # Cores aleatórias mais suaves para as nebulosas mágicas
+            r = random.randint(30, 80)
+            g = random.randint(30, 100)
+            b = random.randint(100, 180)  # Predominantemente azul/púrpura
+            a = random.randint(5, 20)    # Mais transparente
             
             color = (r, g, b, a)
             
@@ -1108,8 +1221,12 @@ class MagicalBackground:
             
     def draw(self):
         """Desenha o fundo mágico"""
-        # Fundo escuro azul profundo
-        self.surface.fill((5, 5, 25))  # Azul escuro quase preto
+        # Fundo com gradiente escuro
+        # Cria um gradiente vertical do topo escuro para o fundo um pouco mais claro
+        for y in range(0, self.height, 4):
+            darkness = 1 - (y / self.height) * 0.3
+            color = (int(10 * darkness), int(10 * darkness), int(35 * darkness))
+            pygame.draw.rect(self.surface, color, (0, y, self.width, 4))
         
         # Desenha a nebulosa (duas vezes para efeito de rolagem)
         self.surface.blit(self.nebula, (0, int(self.offset_y)))
@@ -1141,9 +1258,19 @@ class Game:
         pygame.display.set_caption("Wizarding Duel: Varinha vs Diabretes")
         
         # Configurações de tela
+        global current_screen, fullscreen
         self.screen_size = (SCREEN_WIDTH, SCREEN_HEIGHT)
+        self.fullscreen = False
         self.screen = pygame.display.set_mode(self.screen_size, DOUBLEBUF)
+        current_screen = self.screen
         self.clock = pygame.time.Clock()
+        
+        # Carrega sprites externos agora que a tela foi inicializada
+        load_all_sprites()
+        
+        # Recria as imagens do jogo após carregar os sprites
+        global game_images
+        game_images = create_game_images()
         
         # Carrega fonte com suporte a caracteres especiais para idiomas
         try:
@@ -1162,7 +1289,7 @@ class Game:
         self.running = True
         
         # Fundo mágico
-        self.background = MagicalBackground(self.screen, 200)
+        self.background = MagicalBackground(self.screen, 80)  # Menos estrelas
         
         # Inicializa grupos de sprites
         global all_sprites, player_spells, pixie_spells, pixies
@@ -1191,6 +1318,24 @@ class Game:
         self.selected_pixie = None
         self.active_selector = "wand"  # Começa com o seletor de varinha ativo
         self.setup_character_selection()
+        
+    def toggle_fullscreen(self):
+        """Alterna entre tela cheia e modo janela"""
+        global current_screen, fullscreen
+        self.fullscreen = not self.fullscreen
+        fullscreen = self.fullscreen
+        
+        if self.fullscreen:
+            # Pega as dimensões da tela
+            info = pygame.display.Info()
+            self.screen = pygame.display.set_mode((info.current_w, info.current_h), 
+                                                pygame.FULLSCREEN | pygame.DOUBLEBUF)
+        else:
+            self.screen = pygame.display.set_mode(self.screen_size, pygame.DOUBLEBUF)
+        
+        current_screen = self.screen
+        # Recria o fundo com o novo tamanho de tela
+        self.background = MagicalBackground(self.screen, 80)
         
     def setup_character_selection(self):
         """Configura os seletores de personagem"""
@@ -1304,6 +1449,10 @@ class Game:
                 elif event.key == K_SPACE:
                     if self.state == GameState.PLAYING:
                         self.player.cast_spell(player_spells)
+                        
+                # Tecla F11 para alternar tela cheia
+                elif event.key == K_F11:
+                    self.toggle_fullscreen()
                 
                 # Controles de seleção de personagem
                 elif self.state == GameState.CHARACTER_SELECT:
@@ -1449,6 +1598,11 @@ class Game:
         image_text = self.menu_font.render("Escolha sua varinha e diabretes na próxima tela!", True, GREEN)
         image_rect = image_text.get_rect(center=(self.screen_size[0]//2, self.screen_size[1]//2 + 100))
         self.screen.blit(image_text, image_rect)
+        
+        # Instrução sobre tela cheia
+        fullscreen_text = self.hud_font.render("F11 para alternar tela cheia", True, WHITE)
+        fullscreen_rect = fullscreen_text.get_rect(center=(self.screen_size[0]//2, self.screen_size[1] - 50))
+        self.screen.blit(fullscreen_text, fullscreen_rect)
         
     def draw_character_select(self):
         """Desenha a tela de seleção de personagem"""
