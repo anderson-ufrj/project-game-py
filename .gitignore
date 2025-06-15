@@ -1,6 +1,8 @@
 # Ambiente virtual
 venv/
 env/
+.venv/
+.env
 
 # Cache do Python
 __pycache__/
@@ -8,9 +10,18 @@ __pycache__/
 *.pyo
 *.pyd
 .Python
+*.so
+.coverage
+.pytest_cache/
+.mypy_cache/
+.tox/
+build/
+dist/
+*.egg-info/
 
 # Logs
 *.log
+logs/
 
 # Arquivos de sistema
 .DS_Store
@@ -21,7 +32,30 @@ Thumbs.db
 .idea/
 *.swp
 *.swo
+*~
 
 # Arquivos temporários
 *.tmp
 *.temp
+.cache/
+
+# Arquivos de backup
+*.bak
+*.backup
+*~
+
+# Pygame específico
+screenshots/
+saved_games/
+*.save
+
+# Exemplos que não são parte do jogo principal
+examples/
+
+# Arquivos de configuração local
+config.local.py
+settings.local.py
+
+# Diretórios de saída/compilação
+output/
+compiled/
