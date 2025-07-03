@@ -81,6 +81,7 @@ class Level3:
             'black_enemy': import_csv_layout('../map new/dungeon_big boys .csv'),  # Inimigos black adicionais
             'health': import_csv_layout('../map new/dungeon_health.csv'),
             'speed': import_csv_layout('../map new/dungeon_spped.csv'),  # Corrigido o nome do arquivo
+            'extra_speed': import_csv_layout('../map new/dungeon_spped.csv'),  # Duplicar speed orbs
             'gem': import_csv_layout('../map new/dungeon_eldritchGem.csv'),
             'door': import_csv_layout('../map new/dungeon_door message.csv'),
             'keys': import_csv_layout('../map new/dungeon_key.csv')
@@ -114,6 +115,9 @@ class Level3:
                             AttackOrbs((x, y), [self.attack_orbs, self.visible_sprites])
                         if style =="speed":
                             SpeedOrbs((x, y), [self.speed_orbs, self.visible_sprites])
+                        if style =="extra_speed":
+                            # Adicionar speed orbs extras com pequeno offset
+                            SpeedOrbs((x + 16, y + 16), [self.speed_orbs, self.visible_sprites])
                         if style == "gem":
                             EldritchGem((x,y),[self.gem,self.visible_sprites])
                         if style == 'door':

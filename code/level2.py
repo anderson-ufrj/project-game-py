@@ -73,6 +73,7 @@ class Level2:
             'health': import_csv_layout('../map new/maze map_health(level2).csv'),
             'attack': import_csv_layout('../map new/maze map_attackLevel2.csv'),
             'speed': import_csv_layout('../map new/maze map_speed(level2).csv'),
+            'extra_speed': import_csv_layout('../map new/maze map_speed(level2).csv'),  # Duplicar speed orbs
 
         }
         graphics = {
@@ -108,6 +109,9 @@ class Level2:
                             AttackOrbs((x, y), [self.attack_orbs, self.visible_sprites])
                         if style =="speed":
                             SpeedOrbs((x, y), [self.speed_orbs, self.visible_sprites])
+                        if style =="extra_speed":
+                            # Adicionar speed orbs extras com pequeno offset
+                            SpeedOrbs((x + 16, y + 16), [self.speed_orbs, self.visible_sprites])
                         # if style =="particles":
                         #     Leaves((x,y), self.visible_sprites)
 

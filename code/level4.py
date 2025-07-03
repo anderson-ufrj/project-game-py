@@ -61,6 +61,7 @@ class Level4:
             'player': import_csv_layout('../map new/last level_player spwan.csv'),
             'health': import_csv_layout('../map new/last level_health.csv'),
             'speed': import_csv_layout('../map new/last level_speed.csv'),
+            'extra_speed': import_csv_layout('../map new/latest_final_speed.csv'),  # Mais speed orbs
             'attack':import_csv_layout('../map new/last level_attac.csv'),
             'enemy':import_csv_layout('../map new/last level_golu.csv'),
             'big_enemies': import_csv_layout('../map new/latest_final_big boys.csv'),  # Inimigos bigboi extras
@@ -98,6 +99,9 @@ class Level4:
                             AttackOrbs((x, y), [self.attack_orbs, self.visible_sprites])
                         if style =="speed":
                             SpeedOrbs((x, y), [self.speed_orbs, self.visible_sprites])
+                        if style =="extra_speed":
+                            # Adicionar speed orbs extras com pequeno offset
+                            SpeedOrbs((x + 16, y + 16), [self.speed_orbs, self.visible_sprites])
                         if style == "gem":
                             EldritchGem((x,y),[self.gem,self.visible_sprites])
                         if style == 'next':

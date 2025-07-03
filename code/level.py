@@ -78,7 +78,8 @@ class Level1:
             'extra_enemies': import_csv_layout('../map new/map_npc spwan(level1).csv'),  # Mais inimigos
             'health': import_csv_layout('../map new/map_healthLevel1.csv'),
             'attack': import_csv_layout('../map new/map_attackOrbslevel1.csv'),
-            'speed': import_csv_layout('../map new/map_speedOrbsLevel1.csv')
+            'speed': import_csv_layout('../map new/map_speedOrbsLevel1.csv'),
+            'extra_speed': import_csv_layout('../map new/map_speedOrbsLevel1.csv')  # Duplicar speed orbs
         }
         graphics = {
             'grass': import_folder('../graphics/grass'),
@@ -113,6 +114,9 @@ class Level1:
                             AttackOrbs((x, y), [self.attack_orbs, self.visible_sprites])
                         if style =="speed":
                             SpeedOrbs((x, y), [self.speed_orbs, self.visible_sprites])
+                        if style =="extra_speed":
+                            # Adicionar speed orbs extras com pequeno offset para não sobrepor
+                            SpeedOrbs((x + 16, y + 16), [self.speed_orbs, self.visible_sprites])
 
     def create_attack(self):
         # Create original visual weapon (shows in direction player is facing)
