@@ -82,6 +82,26 @@ class Game:
                     audio_manager.play_music('../audio/Ambient 2.mp3')
                     self.game_state = 3  # Go to Level 1
                     return
+                elif event.key == pygame.K_1:
+                    # Ir direto para Level 1
+                    audio_manager.play_music('../audio/Ambient 2.mp3')
+                    self.game_state = 3
+                    return
+                elif event.key == pygame.K_2:
+                    # Ir direto para Level 2
+                    audio_manager.play_music('../audio/Ambient 2.mp3')
+                    self.game_state = 4
+                    return
+                elif event.key == pygame.K_3:
+                    # Ir direto para Level 3
+                    audio_manager.play_music('../audio/darkambience(from fable).mp3')
+                    self.game_state = 5
+                    return
+                elif event.key == pygame.K_4:
+                    # Ir direto para Level 4
+                    audio_manager.play_music('../audio/home.mp3')
+                    self.game_state = 6
+                    return
                 else:
                     # Handle settings controls
                     self.settings.handle_keydown(event)

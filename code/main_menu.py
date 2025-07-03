@@ -280,11 +280,12 @@ class AdvancedMainMenu:
             button.draw(self.screen)
         
         # Instruções de controle - movidas para baixo para não sobrepor botões
-        controls_y = HEIGTH - 120
+        controls_y = HEIGTH - 140
         controls = [
             "⌨️ WASD/Setas: Movimento | Shift: Correr | Espaço: Ataque 360°",
             "🎵 M: Mudo | ↑↓: Volume | ⚙️: Configurações",
-            "🗺️ TAB: Minimapa (Fase 3)"
+            "🗺️ TAB: Minimapa (Fase 3)",
+            "🎮 Teclas 1-4: Ir direto para fase específica (para testes)"
         ]
         
         for i, control in enumerate(controls):
