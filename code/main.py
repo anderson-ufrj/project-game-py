@@ -12,6 +12,7 @@ from pygame.locals import *
 from loading import LoadingScreen
 from settings_manager import SettingsManager
 from audio_manager import audio_manager
+from main_menu import AdvancedMainMenu
 # pygame.mixer.pre_init(44100, 16, 2, 4096)
 from pygame.locals import*
 
@@ -50,60 +51,62 @@ class Game:
 
         # Settings manager
         self.settings = SettingsManager(initial_volume=0.5)
+        
+        # Advanced main menu
+        fonts = {
+            'title': self.title_font,
+            'subtitle': self.subtitle_font,
+            'info': self.info_font,
+            'button': self.info_font
+        }
+        self.advanced_menu = AdvancedMainMenu(self.screen, fonts)
+        
         # Use AudioManager for music control
         audio_manager.play_music('../audio/home.mp3')
 
 
     def homescreen(self):
-        self.screen.blit(self.homescreen_image, (0,0))
+        # Get mouse position and click status
+        mouse_pos = pygame.mouse.get_pos()
         
-        # Add title
-        title_text = self.title_font.render("CORRIDA PELA RELÍQUIA", True, (255, 255, 255))
-        title_rect = title_text.get_rect(center=(WIDTH//2, 100))
-        # Add shadow for better readability
-        title_shadow = self.title_font.render("CORRIDA PELA RELÍQUIA", True, (0, 0, 0))
-        shadow_rect = title_shadow.get_rect(center=(WIDTH//2 + 3, 103))
-        self.screen.blit(title_shadow, shadow_rect)
-        self.screen.blit(title_text, title_rect)
+        # Check for mouse clicks in the events
+        mouse_click = False
+        for event in pygame.event.get():
+            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                mouse_click = True
+                # Also handle settings mouse clicks
+                self.settings.handle_mouse_click(mouse_pos)
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_RETURN:
+                    # Allow ENTER key to start game
+                    audio_manager.play_music('../audio/Ambient 2.mp3')
+                    self.game_state = 3  # Go to Level 1
+                    return
+                else:
+                    # Handle settings controls
+                    self.settings.handle_keydown(event)
+            elif event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            
+            # Put back non-consumed events
+            if event.type not in [pygame.MOUSEBUTTONDOWN, pygame.KEYDOWN, pygame.QUIT]:
+                pygame.event.post(event)
         
-        # Add subtitle
-        subtitle_text = self.subtitle_font.render("A Busca pela Gema Eldritch", True, (200, 200, 200))
-        subtitle_rect = subtitle_text.get_rect(center=(WIDTH//2, 160))
-        subtitle_shadow = self.subtitle_font.render("A Busca pela Gema Eldritch", True, (0, 0, 0))
-        subtitle_shadow_rect = subtitle_shadow.get_rect(center=(WIDTH//2 + 2, 162))
-        self.screen.blit(subtitle_shadow, subtitle_shadow_rect)
-        self.screen.blit(subtitle_text, subtitle_rect)
+        # Use the advanced menu system
+        menu_action = self.advanced_menu.update_and_draw(mouse_pos, mouse_click)
         
-        # Add instructions
-        instruction_text = self.info_font.render("Pressione ENTER para começar", True, (255, 255, 255))
-        instruction_rect = instruction_text.get_rect(center=(WIDTH//2, HEIGTH - 150))
-        instruction_shadow = self.info_font.render("Pressione ENTER para começar", True, (0, 0, 0))
-        instruction_shadow_rect = instruction_shadow.get_rect(center=(WIDTH//2 + 1, HEIGTH - 149))
-        self.screen.blit(instruction_shadow, instruction_shadow_rect)
-        self.screen.blit(instruction_text, instruction_rect)
+        # Handle menu actions
+        if menu_action == "start_game":
+            # Start the game
+            audio_manager.play_music('../audio/Ambient 2.mp3')
+            self.game_state = 3  # Go to Level 1
+        elif menu_action == "quit_game":
+            pygame.quit()
+            sys.exit()
         
-        # Add academic project info
-        project_info_y = HEIGTH - 80
-        project_text1 = self.info_font.render("Projeto Acadêmico - Tópicos Especiais I", True, (180, 180, 180))
-        project_rect1 = project_text1.get_rect(center=(WIDTH//2, project_info_y))
-        self.screen.blit(project_text1, project_rect1)
-        
-        project_text2 = self.info_font.render("IFSULDEMINAS Campus Muzambinho", True, (180, 180, 180))
-        project_rect2 = project_text2.get_rect(center=(WIDTH//2, project_info_y + 20))
-        self.screen.blit(project_text2, project_rect2)
-        
-        project_text3 = self.info_font.render("Aluno: Anderson Henrique da Silva", True, (180, 180, 180))
-        project_rect3 = project_text3.get_rect(center=(WIDTH//2, project_info_y + 40))
-        self.screen.blit(project_text3, project_rect3)
-        
-        project_text4 = self.info_font.render("Orientador: Prof. Ricardo Martins", True, (180, 180, 180))
-        project_rect4 = project_text4.get_rect(center=(WIDTH//2, project_info_y + 60))
-        self.screen.blit(project_text4, project_rect4)
-        
-        # Draw settings button and menu
+        # Still draw settings overlay for compatibility
         self.settings.draw(self.screen)
-        
-        pygame.display.update()
     
     
     def gameover(self):
@@ -123,25 +126,9 @@ class Game:
     def run(self):
 
         while True:
-            # Only handle events on homescreen, let levels handle their own events
-            if self.game_state == 0:  # Homescreen - handle events here
-                for event in pygame.event.get():
-                    if event.type == pygame.QUIT:
-                        pygame.quit()
-                        sys.exit()
-                    elif event.type == pygame.KEYDOWN:
-                        if event.key == pygame.K_RETURN:
-                            # Skip intro animations, go directly to Level 1
-                            audio_manager.play_music('../audio/Ambient 2.mp3')
-                            self.game_state = 3  # Go directly to Level 1
-                        else:
-                            # Handle settings controls
-                            self.settings.handle_keydown(event)
-                    
-                    elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-                        mouse_pos = pygame.mouse.get_pos()
-                        # Handle settings mouse clicks
-                        self.settings.handle_mouse_click(mouse_pos)
+            # Handle events based on game state
+            if self.game_state == 0:  # Homescreen - events handled in homescreen() method
+                pass  # Events are handled inside homescreen()
             else:  # In levels - only handle QUIT events, let levels handle the rest
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT:
