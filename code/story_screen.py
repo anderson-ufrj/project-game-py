@@ -1,5 +1,6 @@
 import pygame
 import math
+import random
 from settings import WIDTH, HEIGTH, TEXT_COLOR
 from game_story import PHASE_STORIES
 
@@ -28,10 +29,10 @@ class StoryScreen:
         self.stars = []
         for _ in range(100):
             self.stars.append({
-                'x': pygame.math.Vector2.random() * WIDTH,
-                'y': pygame.math.Vector2.random() * HEIGTH,
-                'speed': 0.5 + pygame.math.Vector2.random() * 1.5,
-                'brightness': 100 + int(pygame.math.Vector2.random() * 155)
+                'x': random.random() * WIDTH,
+                'y': random.random() * HEIGTH,
+                'speed': 0.5 + random.random() * 1.5,
+                'brightness': 100 + int(random.random() * 155)
             })
     
     def create_story_surface(self):
@@ -78,7 +79,7 @@ class StoryScreen:
             star['y'] += star['speed']
             if star['y'] > HEIGTH:
                 star['y'] = -5
-                star['x'] = pygame.math.Vector2.random() * WIDTH
+                star['x'] = random.random() * WIDTH
     
     def draw_stars(self):
         """Draw animated starfield"""
