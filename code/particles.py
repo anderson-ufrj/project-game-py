@@ -188,14 +188,14 @@ class FloatingText(pygame.sprite.Sprite):
         self.color = color
         self.alpha = 255
         
-        # Criar surface inicial
-        self.create_text_surface()
-        
-        # Efeitos
+        # Efeitos (definir antes de create_text_surface)
         self.scale = 1.0
         self.scale_speed = 0.02
         self.bounce_amplitude = 3
         self.bounce_frequency = 0.1
+        
+        # Criar surface inicial
+        self.create_text_surface()
         
     def create_text_surface(self):
         """Criar a surface do texto com alpha"""
