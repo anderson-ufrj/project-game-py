@@ -13,6 +13,7 @@ from loading import LoadingScreen
 from settings_manager import SettingsManager
 from audio_manager import audio_manager
 from main_menu import AdvancedMainMenu
+from story_screen import StoryScreen
 # pygame.mixer.pre_init(44100, 16, 2, 4096)
 from pygame.locals import*
 
@@ -141,7 +142,15 @@ class Game:
         self.level2.reset()
         self.level3.reset()
         self.level4.reset()
-        # Intro classes removed
+        # Reset story flags
+        if hasattr(self, 'level1_story_shown'):
+            del self.level1_story_shown
+        if hasattr(self, 'level2_story_shown'):
+            del self.level2_story_shown
+        if hasattr(self, 'level3_story_shown'):
+            del self.level3_story_shown
+        if hasattr(self, 'level4_story_shown'):
+            del self.level4_story_shown
 
     def run(self):
 
@@ -163,6 +172,18 @@ class Game:
                 self.homescreen()
 
             elif self.game_state == 3:  # Level 1 (skipped intro animations)
+                # Mostrar história antes da fase 1
+                if not hasattr(self, 'level1_story_shown'):
+                    story = StoryScreen("phase_1")
+                    story_finished = False
+                    while not story_finished:
+                        story_finished = story.update()
+                        for event in pygame.event.get():
+                            if event.type == pygame.QUIT:
+                                pygame.quit()
+                                sys.exit()
+                    self.level1_story_shown = True
+                
                 self.level1.run()
                 if self.level1.gameover:
                     audio_manager.stop_music()
@@ -173,6 +194,18 @@ class Game:
 
 
             elif self.game_state == 4:  # Level 2 (simplified)
+                # Mostrar história antes da fase 2
+                if not hasattr(self, 'level2_story_shown'):
+                    story = StoryScreen("phase_2")
+                    story_finished = False
+                    while not story_finished:
+                        story_finished = story.update()
+                        for event in pygame.event.get():
+                            if event.type == pygame.QUIT:
+                                pygame.quit()
+                                sys.exit()
+                    self.level2_story_shown = True
+                
                 self.level2.run()
                 if self.level2.gameover:
                     self.game_state = 20
@@ -182,16 +215,49 @@ class Game:
                     audio_manager.play_music('../audio/darkambience(from fable).mp3')
 
             elif self.game_state == 5:  # Level 3 (simplified)
+                # Mostrar história antes da fase 3
+                if not hasattr(self, 'level3_story_shown'):
+                    story = StoryScreen("phase_3")
+                    story_finished = False
+                    while not story_finished:
+                        story_finished = story.update()
+                        for event in pygame.event.get():
+                            if event.type == pygame.QUIT:
+                                pygame.quit()
+                                sys.exit()
+                    self.level3_story_shown = True
+                
                 self.level3.run()
                 if self.level3.completed:
                     self.game_state = 6  # Go to Level 4
                     audio_manager.play_music('../audio/home.mp3')
 
             elif self.game_state == 6:  # Level 4 (simplified)
+                # Mostrar história antes da fase 4
+                if not hasattr(self, 'level4_story_shown'):
+                    story = StoryScreen("phase_4")
+                    story_finished = False
+                    while not story_finished:
+                        story_finished = story.update()
+                        for event in pygame.event.get():
+                            if event.type == pygame.QUIT:
+                                pygame.quit()
+                                sys.exit()
+                    self.level4_story_shown = True
+                
                 self.level4.run()
                 if self.level4.completed:
-                    # Game completed! Could add victory screen here
-                    pass
+                    # Mostrar história de vitória
+                    story = StoryScreen("victory")
+                    story_finished = False
+                    while not story_finished:
+                        story_finished = story.update()
+                        for event in pygame.event.get():
+                            if event.type == pygame.QUIT:
+                                pygame.quit()
+                                sys.exit()
+                    self.game_state = 0  # Voltar ao menu principal
+                    audio_manager.stop_music()
                 if self.level4.gameover:
                     self.game_state = 20
                     
