@@ -21,9 +21,23 @@ class StoryScreen:
         
         # Animation variables
         self.scroll_y = HEIGTH
-        self.scroll_speed = 1.5
+        self.scroll_speed = 0.4  # Velocidade muito mais lenta
         self.finished = False
         self.time = 0
+        self.skip_requested = False
+        
+        # Carregar imagem de fundo
+        try:
+            self.background_image = pygame.image.load('../map new/map.png').convert()
+            # Escalar para tela inteira com efeito escurecido
+            self.background_image = pygame.transform.scale(self.background_image, (WIDTH, HEIGTH))
+            # Criar uma sobreposição escura
+            dark_overlay = pygame.Surface((WIDTH, HEIGTH))
+            dark_overlay.set_alpha(180)  # Semi-transparente
+            dark_overlay.fill((0, 0, 20))  # Azul escuro
+            self.background_image.blit(dark_overlay, (0, 0))
+        except:
+            self.background_image = None
         
         # Create starfield background
         self.stars = []
@@ -93,7 +107,7 @@ class StoryScreen:
         """Handle input to skip story"""
         keys = pygame.key.get_pressed()
         if keys[pygame.K_RETURN] or keys[pygame.K_SPACE] or keys[pygame.K_ESCAPE]:
-            self.finished = True
+            self.skip_requested = True
     
     def update(self):
         """Update story screen"""
@@ -109,11 +123,14 @@ class StoryScreen:
             
             # Check if story finished scrolling
             story_surface = self.create_story_surface()
-            if self.scroll_y < -story_surface.get_height():
+            if self.scroll_y < -story_surface.get_height() - 200:
                 self.finished = True
         
-        # Clear screen with space background
-        self.display_surface.fill((10, 10, 30))
+        # Clear screen and draw background
+        if self.background_image:
+            self.display_surface.blit(self.background_image, (0, 0))
+        else:
+            self.display_surface.fill((10, 10, 30))
         
         # Draw stars
         self.draw_stars()
@@ -135,10 +152,20 @@ class StoryScreen:
             
             self.display_surface.blit(scaled_surface, (x, y))
         
-        # Draw skip instruction
-        skip_text = self.text_font.render("Pressione ENTER para pular", True, (150, 150, 150))
-        skip_rect = skip_text.get_rect(center=(WIDTH // 2, HEIGTH - 30))
+        # Draw skip instruction with background
+        skip_bg = pygame.Surface((400, 30))
+        skip_bg.set_alpha(120)
+        skip_bg.fill((0, 0, 0))
+        skip_bg_rect = pygame.Rect((WIDTH // 2 - 200, HEIGTH - 40), (400, 30))
+        self.display_surface.blit(skip_bg, skip_bg_rect)
+        
+        skip_text = self.text_font.render("Pressione ESPACO para pular", True, (255, 255, 100))
+        skip_rect = skip_text.get_rect(center=(WIDTH // 2, HEIGTH - 25))
         self.display_surface.blit(skip_text, skip_rect)
+        
+        # Verificar se deve pular
+        if self.skip_requested:
+            self.finished = True
         
         pygame.display.update()
         
