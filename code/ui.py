@@ -49,13 +49,13 @@ class UI:
 
 	def show_exp(self,player):
 		if self.current_level == 1:
-			text_surf = self.font.render(f"Espaço para atacar, Shift para correr",False,TEXT_COLOR)
+			text_surf = self.font.render(f"Espaço: Atacar | Q: Trocar arma | E: Trocar magia | Ctrl: Usar magia",False,TEXT_COLOR)
 		elif self.current_level == 2:
-			text_surf = self.font.render(f"Encontre uma saída do labirinto!",False,TEXT_COLOR)
+			text_surf = self.font.render(f"Encontre uma saída do labirinto! | Q: Trocar arma | E: Magia",False,TEXT_COLOR)
 		elif self.current_level == 3:
-			text_surf = self.font.render(f"Você tem {player.inventory['keys']} chaves",False,TEXT_COLOR)
+			text_surf = self.font.render(f"Você tem {player.inventory['keys']} chaves | Q: Trocar arma",False,TEXT_COLOR)
 		elif self.current_level == 4:
-			text_surf = self.font.render(f"Fuja!",False,TEXT_COLOR)
+			text_surf = self.font.render(f"Fuja! | Q: Trocar arma | E: Magia",False,TEXT_COLOR)
 		x = self.display_surface.get_size()[0] - 20
 		y = self.display_surface.get_size()[1] - 20
 		text_rect = text_surf.get_rect(bottomright = (x,y))
