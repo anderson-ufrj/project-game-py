@@ -9,19 +9,21 @@ class StoryScreen:
         self.display_surface = pygame.display.get_surface()
         self.story_data = PHASE_STORIES.get(story_key, PHASE_STORIES["intro"])
         
-        # Font setup
+        # Font setup - usar fontes arredondadas como nos créditos
         try:
+            # Tentar carregar fonte especial primeiro
             self.title_font = pygame.font.Font('../graphics/font/PressStart2P.ttf', 28)
             self.subtitle_font = pygame.font.Font('../graphics/font/PressStart2P.ttf', 16)
             self.text_font = pygame.font.Font('../graphics/font/PressStart2P.ttf', 14)
         except:
-            self.title_font = pygame.font.Font(None, 32)
-            self.subtitle_font = pygame.font.Font(None, 20)
-            self.text_font = pygame.font.Font(None, 16)
+            # Usar fontes arredondadas do sistema (como nos créditos)
+            self.title_font = pygame.font.Font(None, 40)      # Maior e mais bonita
+            self.subtitle_font = pygame.font.Font(None, 24)   # Fonte arredondada
+            self.text_font = pygame.font.Font(None, 18)       # Fonte legível e arredondada
         
         # Animation variables
         self.scroll_y = HEIGTH
-        self.scroll_speed = 0.4  # Velocidade muito mais lenta
+        self.scroll_speed = 0.15  # Velocidade MUITO mais lenta - quase parando!
         self.finished = False
         self.time = 0
         self.skip_requested = False
@@ -51,11 +53,11 @@ class StoryScreen:
     
     def create_story_surface(self):
         """Create the scrolling text surface"""
-        # Calculate total height needed
-        line_height = 25
-        title_height = 60
-        subtitle_height = 40
-        gap_height = 30
+        # Calculate total height needed - mais espaçamento para leitura
+        line_height = 35          # Mais espaçamento entre linhas
+        title_height = 80         # Mais espaço para título
+        subtitle_height = 50      # Mais espaço para subtítulo
+        gap_height = 50           # Mais gap entre seções
         
         total_lines = len(self.story_data["text"])
         total_height = title_height + subtitle_height + gap_height + (total_lines * line_height) + 200
@@ -152,15 +154,17 @@ class StoryScreen:
             
             self.display_surface.blit(scaled_surface, (x, y))
         
-        # Draw skip instruction with background
-        skip_bg = pygame.Surface((400, 30))
-        skip_bg.set_alpha(120)
+        # Draw skip instruction with background - mais visível
+        skip_bg = pygame.Surface((500, 40))
+        skip_bg.set_alpha(150)
         skip_bg.fill((0, 0, 0))
-        skip_bg_rect = pygame.Rect((WIDTH // 2 - 200, HEIGTH - 40), (400, 30))
+        skip_bg_rect = pygame.Rect((WIDTH // 2 - 250, HEIGTH - 50), (500, 40))
         self.display_surface.blit(skip_bg, skip_bg_rect)
         
-        skip_text = self.text_font.render("Pressione ESPACO para pular", True, (255, 255, 100))
-        skip_rect = skip_text.get_rect(center=(WIDTH // 2, HEIGTH - 25))
+        # Texto maior e mais visível
+        skip_font = pygame.font.Font(None, 20)  # Fonte maior para instrução
+        skip_text = skip_font.render("Pressione ESPACO para pular a historia", True, (255, 255, 100))
+        skip_rect = skip_text.get_rect(center=(WIDTH // 2, HEIGTH - 30))
         self.display_surface.blit(skip_text, skip_rect)
         
         # Verificar se deve pular
