@@ -288,9 +288,9 @@ class Level3:
             self.player.inventory["keys"] += 1
             self.collectable_music_channel.play(self.collectable_music)
             self.ui.set_status_message('Chave Obtida!')
-        if self.player.inventory['keys']<4:
+        if self.player.inventory['keys']<3:
             if pygame.sprite.spritecollide(self.player,self.door, False):
-                self.ui.set_status_message('Você precisa de 4 chaves para abrir esta porta!')
+                self.ui.set_status_message('Você precisa de 3 chaves para abrir esta porta!')
         else:
             if pygame.sprite.spritecollide(self.player,self.door, True):
                 self.ui.set_status_message('Porta Aberta!')
