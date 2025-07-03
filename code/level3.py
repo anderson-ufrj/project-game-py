@@ -78,8 +78,9 @@ class Level3:
             'boundary': import_csv_layout('../map new/dungeon_collision.csv'),
             'player': import_csv_layout('../map new/dungeon_PLayer.csv'),
             'enemy': import_csv_layout('../map new/dungeon_dungeon bigboi.csv'),
+            'black_enemy': import_csv_layout('../map new/dungeon_big boys .csv'),  # Inimigos black adicionais
             'health': import_csv_layout('../map new/dungeon_health.csv'),
-            'speed': import_csv_layout('../map new/dungeon_health.csv'),
+            'speed': import_csv_layout('../map new/dungeon_spped.csv'),  # Corrigido o nome do arquivo
             'gem': import_csv_layout('../map new/dungeon_eldritchGem.csv'),
             'door': import_csv_layout('../map new/dungeon_door message.csv'),
             'keys': import_csv_layout('../map new/dungeon_key.csv')
@@ -102,8 +103,11 @@ class Level3:
                                     self.destroy_attack,
                                     self.create_magic)
                         if style == "enemy":
-                            self.enemy = Enemy('bigboi',(x, y),[self.visible_sprites, self.attackable_sprites],self.obstacle_sprites,self.damage_player,2, visible_sprites=self.visible_sprites)
-                            self.enemy.animation_speed = 0.04
+                            enemy = Enemy('bigboi',(x, y),[self.visible_sprites, self.attackable_sprites],self.obstacle_sprites,self.damage_player,2, visible_sprites=self.visible_sprites)
+                            enemy.animation_speed = 0.04
+                        if style == "black_enemy":
+                            black_enemy = Enemy('black',(x, y),[self.visible_sprites, self.attackable_sprites],self.obstacle_sprites,self.damage_player,1, visible_sprites=self.visible_sprites)
+                            black_enemy.animation_speed = 0.06
                         if style =="health":
                             HealthOrbs((x, y), [self.health_orbs, self.visible_sprites])
                         if style == "attack":
