@@ -7,7 +7,7 @@ TILESIZE = 32
 # ui 
 BAR_HEIGHT = 20
 HEALTH_BAR_WIDTH = 200
-ENERGY_BAR_WIDTH = 140
+ENERGY_BAR_WIDTH = 300  # Metade da largura da barra de vida (600/2)
 ITEM_BOX_SIZE = 80
 UI_FONT = '../graphics/font/PressStart2P.ttf'
 UI_FONT_SIZE = 18
