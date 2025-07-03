@@ -39,7 +39,7 @@ class Player(Entity):
 		self.magic_switch_time = None
 
 		# stats
-		self.stats = {'health': 500,'energy':60,'attack': 10,'magic': 4,'speed': 3}
+		self.stats = {'health': 500,'energy':120,'attack': 10,'magic': 4,'speed': 3}
 		self.health = self.stats['health']
 		self.energy = self.stats['energy'] * 0.8
 		self.exp = 123
@@ -69,7 +69,7 @@ class Player(Entity):
 
 			# movement input
 			if keys[pygame.K_LSHIFT]:
-				self.energy -= 0.3
+				self.energy -= 0.2  # Reduzido de 0.3 para 0.2
 
 				if self.energy < 0:
 					self.energy = 0
@@ -80,7 +80,7 @@ class Player(Entity):
 					self.speedmod = 3
 			else:
 				if 0 <= self.energy <= self.stats['energy']:
-					self.energy += 0.1
+					self.energy += 0.15  # Aumentado de 0.1 para 0.15 (recuperação mais rápida)
 					self.speedmod = 0
 
 			if keys[pygame.K_UP]:
