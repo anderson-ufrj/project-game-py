@@ -1,122 +1,148 @@
 """
-NARRATIVA DO JOGO: O GUARDIÃO DAS RELÍQUIAS PERDIDAS
-Game Story: The Guardian of Lost Relics
+NARRATIVA DO JOGO: CORRIDA PELA RELÍQUIA - A BUSCA PELA PEDRA MÍSTICA DO ZAPPAGURI
+Game Story: The Zappaguri Mystic Stone Quest
 
 === CONTEXTO PRINCIPAL ===
-Era uma vez um reino em harmonia, protegido por quatro Relíquias Sagradas:
-- Relíquia da Vida (Esmeralda de Cura)
-- Relíquia da Força (Cristal do Poder)  
-- Relíquia da Velocidade (Orbe dos Ventos)
-- Relíquia Suprema (Pedra Mística do Zappaguri)
+Há milênios, a lendária PEDRA MÍSTICA DO ZAPPAGURI mantinha o equilíbrio entre os mundos.
+Para protegê-la, os antigos sábios a dividiram em três essências menores e a ocultaram:
+- Essência da Vida (Orbes Verdes - cura e regeneração)
+- Essência da Força (Orbes Vermelhos - poder de combate)
+- Essência da Velocidade (Orbes Azuis - agilidade e movimento)
+- A PEDRA MÍSTICA DO ZAPPAGURI (núcleo principal - poder absoluto)
 
-O protagonista KAEL é o último Guardião da Ordem dos Protetores,
-uma antiga ordem de guerreiros que protegia essas relíquias.
+O protagonista KAEL é um jovem aventureiro que descobriu os antigos pergaminhos
+falando sobre a Pedra do Zappaguri. Quando forças sombrias começaram a despertar,
+ele percebeu que apenas coletando as essências e encontrando a Pedra sagrada
+poderia restaurar o equilíbrio e salvar seu mundo.
 
-As Sombras Corrompidas invadiram o reino e espalharam as relíquias
-pelos quatro domínios sombrios. Kael deve recuperá-las antes que
-o reino seja consumido pela escuridão eterna.
+Sua jornada o levará através de quatro domínios perigosos, cada um guardado
+por criaturas antigas que protegem os segredos da Pedra Mística...
 """
 
 # Histórias entre fases (estilo Star Wars)
 PHASE_STORIES = {
     "intro": {
-        "title": "O GUARDIÃO DAS RELÍQUIAS",
-        "subtitle": "Episódio I: O Despertar das Sombras",
+        "title": "CORRIDA PELA RELÍQUIA",
+        "subtitle": "Capítulo I: O Despertar da Busca",
         "text": [
-            "Há muito tempo, em um reino distante...",
+            "Nas profundezas da biblioteca abandonada,",
+            "KAEL descobriu os pergaminhos antigos que",
+            "falavam de uma lenda esquecida:",
             "",
-            "O último guardião KAEL desperta em",
-            "um mundo devastado pelas SOMBRAS",
-            "CORROMPIDAS que roubaram as quatro",
-            "Relíquias Sagradas do reino.",
+            "A PEDRA MÍSTICA DO ZAPPAGURI - uma relíquia",
+            "de poder incomensurável que mantinha a paz",
+            "entre os mundos por milênios.",
             "",
-            "Com apenas sua espada e coragem,",
-            "Kael deve atravessar os domínios",
-            "sombrios para recuperar as relíquias",
-            "e restaurar o equilíbrio perdido.",
+            "Quando sinais sombrios começaram a surgir,",
+            "Kael compreendeu que apenas encontrando",
+            "a Pedra sagrada e coletando suas essências",
+            "poderia impedir o caos iminente.",
             "",
-            "A jornada começa nas RUÍNAS",
-            "ANTIGAS, onde a primeira relíquia",
-            "aguarda entre perigos mortais..."
+            "Sua jornada começa na FLORESTA ANCESTRAL,",
+            "onde as primeiras Essências da Vida",
+            "aguardam entre as criaturas guardiãs",
+            "da natureza..."
         ]
     },
     
-    "level_1_to_2": {
-        "title": "A PRIMEIRA RELÍQUIA",
-        "subtitle": "A Esmeralda de Cura foi recuperada",
+    "phase_1": {
+        "title": "ESSÊNCIAS DA VIDA",
+        "subtitle": "Capítulo II: A Floresta dos Guardiões",
         "text": [
-            "Kael conquistou a ESMERALDA DE CURA",
-            "nas Ruínas Antigas, sentindo suas",
-            "feridas se regenerarem rapidamente.",
+            "Kael coletou as primeiras ESSÊNCIAS DA VIDA",
+            "na Floresta Ancestral, sentindo sua força",
+            "vital se renovar a cada orbe coletado.",
             "",
-            "Mas as Sombras Corrompidas crescem",
-            "mais fortes. Ele deve seguir para o",
-            "LABIRINTO DAS ILUSÕES, onde a",
-            "Relíquia da Força está escondida.",
+            "Os pergaminhos falam de um antigo",
+            "LABIRINTO SUBTERRÂNEO onde as Essências",
+            "da Força foram escondidas pelos sábios.",
             "",
-            "Os ecos de risadas sinistras ecoam",
-            "pelos corredores infinitos...",
-            "Kael avança, determinado."
+            "Criaturas mais perigosas aguardam nas",
+            "profundezas. O caminho até a Pedra do",
+            "Zappaguri torna-se mais treacherous...",
+            "",
+            "Kael respira fundo e adentra as",
+            "sombras do labirinto perdido..."
         ]
     },
     
-    "level_2_to_3": {
-        "title": "O PODER CRESCENTE",
-        "subtitle": "O Cristal do Poder fortalece o guardião",
+    "phase_2": {
+        "title": "ESSÊNCIAS DA FORÇA",
+        "subtitle": "Capítulo III: O Labirinto das Profundezas",
         "text": [
-            "O CRISTAL DO PODER pulsa em suas",
-            "mãos, multiplicando sua força de",
-            "combate contra as criaturas sombrias.",
+            "No labirinto subterrâneo, Kael coletou",
+            "as ESSÊNCIAS DA FORÇA, sentindo seu",
+            "poder de combate se multiplicar.",
             "",
-            "Duas relíquias recuperadas, duas ainda",
-            "perdidas. Kael segue para a FORTALEZA",
-            "SOMBRIA, onde a Relíquia da Velocidade",
-            "está guardada pelo temível BIGBOI.",
+            "Os pergaminhos revelam a localização",
+            "da FORTALEZA DOS QUATRO SELOS, onde",
+            "as Essências da Velocidade foram",
+            "protegidas por guardiões antigos.",
             "",
-            "As chaves mágicas serão necessárias",
-            "para atravessar as defesas da fortaleza.",
-            "A batalha se intensifica..."
+            "Quatro chaves místicas são necessárias",
+            "para romper os selos da fortaleza.",
+            "A jornada se intensifica..."
         ]
     },
     
-    "level_3_to_4": {
-        "title": "A VELOCIDADE DOS VENTOS",
-        "subtitle": "O Orbe dos Ventos acelera o destino",
+    "phase_3": {
+        "title": "ESSÊNCIAS DA VELOCIDADE",
+        "subtitle": "Capítulo IV: A Fortaleza dos Quatro Selos",
         "text": [
-            "Com o ORBE DOS VENTOS, Kael move-se",
-            "como o próprio vento, esquivando dos",
-            "ataques das Sombras Corrompidas.",
+            "Com as quatro chaves, Kael desbloqueou",
+            "os selos da fortaleza e coletou as",
+            "ESSÊNCIAS DA VELOCIDADE, ganhando",
+            "agilidade sobre-humana.",
             "",
-            "Apenas uma relíquia resta: a lendária",
-            "PEDRA MÍSTICA DO ZAPPAGURI, guardada",
-            "no SANTUÁRIO FINAL pelas forças",
-            "mais sombrias do reino.",
+            "Agora, com todas as três essências,",
+            "o caminho para a lendária PEDRA MÍSTICA",
+            "DO ZAPPAGURI finalmente se revela.",
             "",
-            "Kael reúne todas as suas forças.",
-            "O destino do reino será decidido",
-            "na batalha final..."
+            "O SANTUÁRIO FINAL aguarda, guardado",
+            "pelo mais temível dos guardiões antigos.",
+            "O destino do mundo será decidido..."
+        ]
+    },
+    
+    "phase_4": {
+        "title": "A PEDRA MÍSTICA DO ZAPPAGURI",
+        "subtitle": "Capítulo V: O Santuário do Poder Absoluto",
+        "text": [
+            "No coração do Santuário Final,",
+            "Kael finalmente encontrou a lendária",
+            "PEDRA MÍSTICA DO ZAPPAGURI.",
+            "",
+            "Mas um guardião supremo se interpõe",
+            "entre ele e a relíquia sagrada.",
+            "A batalha derradeira começou!",
+            "",
+            "Com todas as essências coletadas,",
+            "Kael sente o poder ancestral fluindo",
+            "através de seu ser. O momento final",
+            "da verdade chegou..."
         ]
     },
     
     "victory": {
         "title": "O EQUILÍBRIO RESTAURADO",
-        "subtitle": "O Guardião cumpriu sua missão",
+        "subtitle": "O Poder da Pedra Zappaguri Desperta",
         "text": [
-            "Com as quatro Relíquias Sagradas",
+            "Com a PEDRA MÍSTICA DO ZAPPAGURI",
+            "em suas mãos e todas as essências",
             "reunidas, Kael canaliza o poder",
-            "ancestral dos Guardiões.",
+            "ancestral dos antigos sábios.",
             "",
-            "A PEDRA MÍSTICA DO ZAPPAGURI brilha intensamente,",
-            "banindo as Sombras Corrompidas para",
-            "as dimensões distantes de onde vieram.",
+            "A Pedra brilha intensamente, banindo",
+            "as forças sombrias para as dimensões",
+            "distantes de onde vieram.",
             "",
-            "O reino está salvo. A ordem é",
-            "restaurada. Kael, o último Guardião,",
-            "torna-se uma lenda.",
+            "O equilíbrio entre os mundos está",
+            "restaurado. Kael, agora guardião da",
+            "Pedra Zappaguri, torna-se uma lenda.",
             "",
             "Mas ele sabe que sempre estará",
-            "vigilante, protegendo o equilíbrio",
-            "entre luz e escuridão..."
+            "vigilante, protegendo o poder sagrado",
+            "que une todos os mundos..."
         ]
     }
 }
