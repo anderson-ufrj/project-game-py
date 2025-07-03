@@ -71,6 +71,7 @@ class Level1:
             'next': import_csv_layout('../map new/map._nextwall.csv'),
             'player': import_csv_layout('../map new/map_player spawn(level1).csv'),
             'enemy': import_csv_layout('../map new/map_enemy spawn(golu).csv'),
+            'extra_enemies': import_csv_layout('../map new/map_npc spwan(level1).csv'),  # Mais inimigos
             'health': import_csv_layout('../map new/map_healthLevel1.csv'),
             'attack': import_csv_layout('../map new/map_attackOrbslevel1.csv'),
             'speed': import_csv_layout('../map new/map_speedOrbsLevel1.csv')
@@ -99,6 +100,9 @@ class Level1:
                                     self.create_magic)
                         if style == "enemy":
                             Enemy('golu',(x, y),[self.visible_sprites, self.attackable_sprites],self.obstacle_sprites,self.damage_player, visible_sprites=self.visible_sprites)
+                        if style == "extra_enemies":
+                            extra_enemy = Enemy('black',(x, y),[self.visible_sprites, self.attackable_sprites],self.obstacle_sprites,self.damage_player, visible_sprites=self.visible_sprites)
+                            extra_enemy.animation_speed = 0.08  # Inimigos mais rápidos
                         if style =="health":
                             HealthOrbs((x, y), [self.health_orbs, self.visible_sprites])
                         if style == "attack":

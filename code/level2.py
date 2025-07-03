@@ -69,6 +69,7 @@ class Level2:
             'next': import_csv_layout('../map new/maze map_Tile Layer end.csv'),
             'player': import_csv_layout('../map new/maze map_playerLevel2.csv'),
             'enemy': import_csv_layout('../map new/maze map_goluLevel2.csv'),
+            'extra_enemies': import_csv_layout('../map new/maze map_test player.csv'),  # Mais inimigos
             'health': import_csv_layout('../map new/maze map_health(level2).csv'),
             'attack': import_csv_layout('../map new/maze map_attackLevel2.csv'),
             'speed': import_csv_layout('../map new/maze map_speed(level2).csv'),
@@ -98,6 +99,9 @@ class Level2:
                                     self.create_magic)
                         if style == "enemy":
                             Enemy('golu',(x, y),[self.visible_sprites, self.attackable_sprites],self.obstacle_sprites,self.damage_player, visible_sprites=self.visible_sprites)
+                        if style == "extra_enemies":
+                            extra_enemy = Enemy('bigboi',(x, y),[self.visible_sprites, self.attackable_sprites],self.obstacle_sprites,self.damage_player,2, visible_sprites=self.visible_sprites)
+                            extra_enemy.animation_speed = 0.05  # Mini-bosses no labirinto
                         if style =="health":
                             HealthOrbs((x, y), [self.health_orbs, self.visible_sprites])
                         if style == "attack":
