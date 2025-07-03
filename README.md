@@ -277,5 +277,5 @@ This project is under the MIT license. See the [LICENSE](LICENSE) file for more 
 
 ---
 
-**📧 Contact / Contato**: anderson.henrique@estudante.ifsuldeminas.edu.br  
+**📧 Contact / Contato**: andersonhs27@gmail.com
 **🎮 Enjoy the game! / Divirta-se jogando!**
