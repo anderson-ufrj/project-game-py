@@ -205,12 +205,12 @@ class Level3:
         
         # Keys info
         keys_collected = self.player.inventory.get('keys', 0)
-        keys_info = self.minimap_font.render(f"🔑 Chaves: {keys_collected}/3", True, (255, 255, 100))
+        keys_info = self.minimap_font.render(f"🔑 Chaves: {keys_collected}/4", True, (255, 255, 100))
         surface.blit(keys_info, (map_x + 5, info_y))
         info_y += 15
         
         # Key locations hint
-        if keys_collected < 3:
+        if keys_collected < 4:
             hint1 = self.minimap_font.render("Locais das chaves:", True, (200, 200, 200))
             surface.blit(hint1, (map_x + 5, info_y))
             info_y += 12
@@ -225,17 +225,21 @@ class Level3:
             
             hint4 = self.minimap_font.render("• Leste: Torre do Bigboi", True, (150, 255, 150))
             surface.blit(hint4, (map_x + 10, info_y))
+            info_y += 12
+            
+            hint5 = self.minimap_font.render("• Oeste: Câmara Secreta", True, (150, 255, 150))
+            surface.blit(hint5, (map_x + 10, info_y))
             info_y += 15
         
         # Exit info
-        if keys_collected >= 3:
+        if keys_collected >= 4:
             exit_info = self.minimap_font.render("🚪 Saída desbloqueada!", True, (100, 255, 100))
             surface.blit(exit_info, (map_x + 5, info_y))
             info_y += 12
             exit_hint = self.minimap_font.render("Vá para o centro!", True, (100, 255, 100))
             surface.blit(exit_hint, (map_x + 5, info_y))
         else:
-            exit_info = self.minimap_font.render("🚪 Colete 3 chaves para sair", True, (255, 150, 150))
+            exit_info = self.minimap_font.render("🚪 Colete 4 chaves para sair", True, (255, 150, 150))
             surface.blit(exit_info, (map_x + 5, info_y))
         
         # Controls
@@ -375,9 +379,9 @@ class Level3:
                 
                 self.player.inventory["keys"] += 1
                 self.collectable_music_channel.play(self.collectable_music)
-        if self.player.inventory['keys']<3:
+        if self.player.inventory['keys']<4:
             if pygame.sprite.spritecollide(self.player,self.door, False):
-                self.ui.set_status_message('Você precisa de 3 chaves para abrir esta porta!')
+                self.ui.set_status_message('Você precisa de 4 chaves para abrir esta porta!')
         else:
             if pygame.sprite.spritecollide(self.player,self.door, True):
                 self.ui.set_status_message('Porta Aberta!')
