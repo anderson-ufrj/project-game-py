@@ -14,6 +14,8 @@ from settings_manager import SettingsManager
 from audio_manager import audio_manager
 from main_menu import AdvancedMainMenu
 from story_screen import StoryScreen
+# CHEAT: Import cheat system for testing (remove for final version)
+from cheat_system import cheat_system
 # pygame.mixer.pre_init(44100, 16, 2, 4096)
 from pygame.locals import*
 
@@ -78,6 +80,12 @@ class Game:
                 # Also handle settings mouse clicks
                 self.settings.handle_mouse_click(mouse_pos)
             elif event.type == pygame.KEYDOWN:
+                # CHEAT: Handle cheat codes in menu (remove for final version)
+                cheat_action = cheat_system.handle_cheat_input(event)
+                if cheat_action:
+                    self.handle_cheat_action(cheat_action)
+                    return
+                
                 if event.key == pygame.K_RETURN:
                     # Allow ENTER key to start game
                     audio_manager.play_music('../audio/Ambient 2.mp3')
@@ -128,12 +136,34 @@ class Game:
         
         # Still draw settings overlay for compatibility
         self.settings.draw(self.screen)
+        
+        # CHEAT: Display cheat information in menu (remove for final version)
+        cheat_system.display_cheat_info(self.screen)
     
     
     def gameover(self):
+        # CHEAT: Handle cheat codes in gameover screen (remove for final version)
+        for event in pygame.event.get():
+            if event.type == pygame.KEYDOWN:
+                cheat_action = cheat_system.handle_cheat_input(event)
+                if cheat_action:
+                    self.handle_cheat_action(cheat_action)
+                    return
+                elif event.key == pygame.K_RETURN or event.key == pygame.K_SPACE:
+                    self.game_state = 0  # Return to main menu
+                    audio_manager.play_music('../audio/home.mp3')
+                    self.reset_game()
+                    return
+            elif event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+        
         self.gameover_image = pygame.transform.scale(self.gameover_image,(1280,720))
         self.screen.blit(self.gameover_image,(0,0))
-        self.reset_game()
+        
+        # CHEAT: Display cheat information in gameover (remove for final version)
+        cheat_system.display_cheat_info(self.screen)
+        
         pygame.display.update()
 
     def reset_game(self):
@@ -151,6 +181,26 @@ class Game:
             del self.level3_story_shown
         if hasattr(self, 'level4_story_shown'):
             del self.level4_story_shown
+    
+    # CHEAT: Handle cheat actions from levels (remove for final version)
+    def handle_cheat_action(self, cheat_action):
+        """Handle cheat actions from levels"""
+        if cheat_action == "level1":
+            audio_manager.play_music('../audio/Ambient 2.mp3')
+            self.game_state = 3
+        elif cheat_action == "level2":
+            audio_manager.play_music('../audio/Ambient 2.mp3')
+            self.game_state = 4
+        elif cheat_action == "level3":
+            audio_manager.play_music('../audio/darkambience(from fable).mp3')
+            self.game_state = 5
+        elif cheat_action == "level4":
+            audio_manager.play_music('../audio/home.mp3')
+            self.game_state = 6
+        elif cheat_action == "home":
+            audio_manager.play_music('../audio/home.mp3')
+            self.game_state = 0
+            self.reset_game()
 
     def run(self):
 
@@ -158,12 +208,24 @@ class Game:
             # Handle events based on game state
             if self.game_state == 0:  # Homescreen - events handled in homescreen() method
                 pass  # Events are handled inside homescreen()
-            else:  # In levels - only handle QUIT events, let levels handle the rest
+            else:  # In levels - handle QUIT and CHEAT events, let levels handle the rest
+                events_for_level = []
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT:
                         pygame.quit()
                         sys.exit()
-                    # Put the event back for the level to handle
+                    elif event.type == pygame.KEYDOWN:
+                        # CHEAT: Handle cheat codes in main loop (remove for final version)
+                        cheat_action = cheat_system.handle_cheat_input(event)
+                        if cheat_action:
+                            self.handle_cheat_action(cheat_action)
+                            continue  # Don't pass this event to level
+                    
+                    # Put non-consumed events back for the level to handle
+                    events_for_level.append(event)
+                
+                # Repost events for levels
+                for event in events_for_level:
                     pygame.event.post(event)
 
             self.screen.fill((0, 0, 0))  # Fill with black
@@ -210,7 +272,7 @@ class Game:
                 if self.level2.gameover:
                     self.game_state = 20
                     audio_manager.stop_music()
-                if self.level2.completed:
+                elif self.level2.completed:
                     self.game_state = 5  # Go to Level 3
                     audio_manager.play_music('../audio/darkambience(from fable).mp3')
 
@@ -263,6 +325,7 @@ class Game:
                     
             elif self.game_state == 20:  # Game Over
                 self.gameover()
+                # Don't reset automatically - let gameover() handle it
             pygame.display.update()
             self.clock.tick(FPS)
 

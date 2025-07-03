@@ -3,6 +3,8 @@ import math
 import random
 from settings import WIDTH, HEIGTH, TEXT_COLOR
 from game_story import PHASE_STORIES
+# CHEAT: Import cheat system for testing (remove for final version)
+from cheat_system import cheat_system
 
 class StoryScreen:
     def __init__(self, story_key="intro"):
@@ -107,6 +109,7 @@ class StoryScreen:
     
     def handle_input(self):
         """Handle input to skip story"""
+        # Don't consume events here - let main.py handle cheats
         keys = pygame.key.get_pressed()
         if keys[pygame.K_RETURN] or keys[pygame.K_SPACE] or keys[pygame.K_ESCAPE]:
             self.skip_requested = True
@@ -166,6 +169,9 @@ class StoryScreen:
         skip_text = skip_font.render("Pressione ESPACO para pular a historia", True, (255, 255, 100))
         skip_rect = skip_text.get_rect(center=(WIDTH // 2, HEIGTH - 30))
         self.display_surface.blit(skip_text, skip_rect)
+        
+        # CHEAT: Display cheat information in story screen (remove for final version)
+        cheat_system.display_cheat_info(self.display_surface)
         
         # Verificar se deve pular
         if self.skip_requested:

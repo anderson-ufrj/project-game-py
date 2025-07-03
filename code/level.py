@@ -5,12 +5,14 @@ from player import Player
 from debug import debug
 from support import *
 from random import choice
-from weapon import Weapon, Weapon360Damage
+from weapon import Weapon, Weapon360Damage, Magic
 from ui import UI
 from enemy import Enemy
 from collectables import *
 from particles import CollectParticle, GemCollectAnimation, DeathParticle, EnemyDeathAnimation, FloatingText
 from settings_manager import SettingsManager
+# CHEAT: Import cheat system for testing (remove for final version)
+from cheat_system import cheat_system
 
 
 
@@ -36,6 +38,9 @@ class Level1:
         self.attack_sprites = pygame.sprite.Group()
         self.attackable_sprites = pygame.sprite.Group()
         
+        # magic sprites
+        self.magic_sprites = pygame.sprite.Group()
+        
         # animation sprites
         self.floating_text_sprites = pygame.sprite.Group()
 
@@ -50,6 +55,8 @@ class Level1:
         
         # Settings manager for in-game menu
         self.settings = SettingsManager()
+        # CHEAT: Add cheat action for level switching (remove for final version)
+        self.cheat_action = None
         # level music
         # collectable music
         self.collectable_music = pygame.mixer.Sound('../audio/heal.wav')
@@ -65,6 +72,7 @@ class Level1:
         self.health_orbs.empty()
         self.attack_orbs.empty()
         self.speed_orbs.empty()
+        self.magic_sprites.empty()
         self.floating_text_sprites.empty()
         self.create_map()
 
@@ -128,7 +136,10 @@ class Level1:
         self.damage_area = Weapon360Damage(self.player, [self.attack_sprites])
 
     def create_magic(self, style, strength, cost):
-        pass
+        if self.player.energy >= cost:
+            self.player.energy -= cost
+            magic_sprite = Magic(self.player, [self.visible_sprites, self.magic_sprites, self.attack_sprites], style, strength, cost)
+            print(f"Magia {style} usada! Energia restante: {self.player.energy}")
     def destroy_attack(self):
         if self.current_attack:
             self.current_attack.kill()
@@ -146,6 +157,10 @@ class Level1:
                             target_sprite.get_damage(self.player, attack_sprite.sprite_type)
 
     def damage_player(self, amount, attack_type):
+        # CHEAT: Check god mode (remove for final version)
+        if cheat_system.god_mode:
+            return  # No damage in god mode
+            
         if self.player.vulnerable:
             self.player.health -= amount
             self.player.vulnerable = False
@@ -166,10 +181,15 @@ class Level1:
         
         # Only update game if settings menu is closed (pause when open)
         if not self.settings.is_menu_open():
+            # CHEAT: Apply cheat effects (remove for final version)
+            cheat_system.apply_god_mode(self.player)
+            cheat_system.apply_max_energy(self.player)
+            
             # update and draw the game
             self.visible_sprites.update()
             self.visible_sprites.enemy_update(self.player)
             self.player_attack_logic()
+            self.magic_sprites.update()  # Update magic sprites
             self.floating_text_sprites.update()  # Atualizar textos flutuantes
         
         # Always draw (but don't update when paused)
@@ -182,6 +202,9 @@ class Level1:
             pygame.display.get_surface().blit(text.image, screen_pos)
         
         self.ui.display(self.player)
+        
+        # CHEAT: Display cheat information (remove for final version)
+        cheat_system.display_cheat_info(pygame.display.get_surface())
         
         # Draw settings button and menu
         self.settings.draw(pygame.display.get_surface())
