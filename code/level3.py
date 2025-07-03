@@ -290,7 +290,6 @@ class Level3:
                 
                 self.player.inventory["healthOrbs"] += 1
                 self.collectable_music_channel.play(self.collectable_music)
-                self.ui.set_status_message('Vida Aumentada')
                 if self.player.health < 450:
                     self.player.health += 50
                 else:
@@ -309,7 +308,6 @@ class Level3:
                 
                 self.player.inventory["speedOrbs"] += 1
                 self.collectable_music_channel.play(self.collectable_music)
-                self.ui.set_status_message('Velocidade Aumentada')
                 self.player.speed += 0.4
                 self.player.animation_speed += 0.04
 
@@ -326,7 +324,6 @@ class Level3:
                 
                 self.player.inventory['zappaguriStone'] = 1
                 self.collectable_music_channel.play(self.collectable_music)
-                self.ui.set_status_message('Pedra Mística do Zappaguri Obtida!')
 
         attack_collisions = pygame.sprite.spritecollide(self.player, self.attack_orbs, True)
         if attack_collisions:
@@ -341,7 +338,6 @@ class Level3:
                 
                 self.player.inventory["attackOrbs"] += 1
                 self.collectable_music_channel.play(self.collectable_music)
-                self.ui.set_status_message('Ataque Aumentado')
                 self.player.attack += 10
 
 
@@ -358,7 +354,6 @@ class Level3:
                 
                 self.player.inventory["keys"] += 1
                 self.collectable_music_channel.play(self.collectable_music)
-                self.ui.set_status_message('Chave Obtida!')
         if self.player.inventory['keys']<3:
             if pygame.sprite.spritecollide(self.player,self.door, False):
                 self.ui.set_status_message('Você precisa de 3 chaves para abrir esta porta!')
