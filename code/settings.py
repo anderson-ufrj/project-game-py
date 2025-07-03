@@ -38,6 +38,6 @@ magic_data = {
 
 # enemy
 monster_data = {
-	'bigboi': {'health': 450, 'exp': 120, 'damage': 180, 'attack_type': 'leaf_attack', 'attack_sound': '../audio/attack/slash.wav', 'speed': 1, 'resistance': 3, 'attack_radius': 70,'notice_radius': 100},
-	'black': {'health': 10, 'exp': 120, 'damage': 6, 'attack_type': 'leaf_attack','attack_sound': '../audio/attack/slash.wav', 'speed': 3, 'resistance': 3, 'attack_radius': 70,'notice_radius': 1000},
-	'golu': {'health': 200, 'exp': 120, 'damage': 60, 'attack_type': 'leaf_attack', 'attack_sound': '../audio/attack/slash.wav', 'speed': 1, 'resistance': 3, 'attack_radius': 40,'notice_radius': 800}}
+	'bigboi': {'health': 450, 'exp': 120, 'damage': 180, 'attack_type': 'leaf_attack', 'attack_sound': '../audio/attack/slash.wav', 'speed': 1.3, 'resistance': 3, 'attack_radius': 90,'notice_radius': 150},
+	'black': {'health': 10, 'exp': 120, 'damage': 6, 'attack_type': 'leaf_attack','attack_sound': '../audio/attack/slash.wav', 'speed': 4, 'resistance': 3, 'attack_radius': 80,'notice_radius': 1200},
+	'golu': {'health': 200, 'exp': 120, 'damage': 60, 'attack_type': 'leaf_attack', 'attack_sound': '../audio/attack/slash.wav', 'speed': 1.5, 'resistance': 3, 'attack_radius': 60,'notice_radius': 1000}}
