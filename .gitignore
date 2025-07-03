@@ -90,3 +90,6 @@ settings.local.*
 # Arquivos gerados automaticamente
 create_portuguese_images.py
 fix_home_image.py
+
+# Arquivos de desenvolvimento
+CLAUDE.md
