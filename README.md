@@ -110,3 +110,7 @@ python main.py
 ```
 
 Embarque nesta jornada mágica, onde a combinação de assets do OpenGameArt e design de áudio dinâmico aguarda para transportá-lo para o mundo da Corrida pela Relíquia!
+
+---
+
+*Projeto desenvolvido com assistência de IA para otimização de código e implementação de recursos avançados.*
