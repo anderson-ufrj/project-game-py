@@ -59,3 +59,15 @@ settings.local.py
 # Diretórios de saída/compilação
 output/
 compiled/
+
+# Arquivos específicos do projeto
+pgzhelper-main/tests/
+pgzhelper-main/README.*
+pgzhelper-main/setup.py
+pgzhelper-main/LICENSE
+images/Inspo/
+images/PSD/
+
+# Arquivos Claude
+claude.md
+CLAUDE.md

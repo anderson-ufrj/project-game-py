@@ -1,116 +1,127 @@
-# Wizarding Duel: Varinha vs Diabretes
+# 🔥 ICARUS - Um Jogo de Plataforma Mitológico
 
-Um jogo mágico inspirado no mundo de Harry Potter onde você controla uma varinha mágica voadora para repelir diabretes da Cornualha.
+[Português](#português) | [English](#english)
 
-## Características do Jogo
+---
 
-- **Controle de varinha mágica voadora**: Use as setas ou WASD para mover
-- **Sistema de feitiços**: Pressione ESPAÇO para lançar feitiços mágicos
-- **Múltiplas varinhas**: Escolha entre diferentes tipos de varinha (Clássica, Sabugueiro, Azevinho, Cristal)
-- **Diversos inimigos**: Enfrente diferentes tipos de diabretes (Azul, Verde, Fada, Sombrio)
-- **Fundo mágico animado**: Galáxia com estrelas e partículas mágicas em movimento
-- **Sistema de pontuação e níveis**: A dificuldade aumenta com o tempo
-- **Gráficos gerados proceduralmente**: Todas as imagens são criadas pelo próprio jogo
+<a id="português"></a>
+## 🎮 Português
 
-## Instalação e Execução
+### Sobre o Jogo
+**ICARUS** é um jogo de plataforma 2D inspirado na mitologia grega, onde os jogadores controlam Ícaro em sua jornada para alcançar o sol. Colete penas para melhorar suas habilidades de voo, mas cuidado - voe muito perto do sol e suas asas queimarão!
 
-### Pré-requisitos
-- Python 3.7 ou superior
-- pygame
+### 🎯 Objetivos do Jogo
+- Coletar 10 penas mágicas através de 8 níveis desafiadores
+- Cada pena aumenta seu poder de pulo/voo
+- Navegar por nuvens, pilares e evitar raios
+- Vivenciar o conto mitológico através da jogabilidade
+- Sobreviver à queda após suas asas queimarem com o calor do sol
 
-### Instalação das Dependências
+### 🛠️ Tecnologias Utilizadas
+- **Python 3.8+**
+- **Pygame Zero** - Framework de desenvolvimento de jogos
+- **Pygame** - Biblioteca principal de jogos
+- **pgzhelper** - Utilitários adicionais para Pygame Zero
 
-**Opção 1: Usando o script automático (recomendado)**
+### 📦 Instalação
+
+1. Clone o repositório:
 ```bash
-./run.sh
+git clone https://github.com/seuusuario/icarus-game.git
+cd icarus-game
 ```
 
-**Opção 2: Instalação manual**
+2. Instale as dependências:
 ```bash
-# Criar ambiente virtual
-python3 -m venv venv
-
-# Ativar ambiente virtual
-source venv/bin/activate
-
-# Instalar dependências
 pip install -r requirements.txt
 ```
 
-### Como Jogar
-
-**Opção 1: Usando o script (mais fácil)**
+3. Execute o jogo:
 ```bash
-./run.sh
+python main.py
 ```
 
-**Opção 2: Execução manual**
+### 🎮 Como Jogar
+- **Setas direcionais**: Mover para esquerda/direita
+- **Seta para cima**: Pular (segure para pulos mais altos)
+- **Enter**: Iniciar jogo / Reiniciar após game over
+
+### 🎨 Créditos Visuais
+Os sprites e assets do jogo foram obtidos de:
+- **Fundos**: Backgrounds de pixel art gratuitos de várias fontes
+- **Sprites de personagem**: Criados customizados para este projeto
+- **Sprites de plataforma**: Modificados de recursos de pixel art gratuitos
+- **Efeitos especiais**: Efeitos de raio e fogo de arte de jogos aberta
+
+### 📝 Licença
+Este projeto está licenciado sob a Licença MIT - veja o arquivo LICENSE para detalhes.
+
+### 🏷️ Tags
+`jogo-2D` `jogo-plataforma` `mitologia-grega` `pygame` `pygame-zero` `python` `python3` `educacional` `pixel-art` `indie-game` `platformer` `2d-platformer` `greek-mythology` `icarus` `pgzhelper`
+
+### 🏛️ Contexto Acadêmico
+Este projeto foi desenvolvido para a disciplina **Tópicos Especiais I** do curso de Ciência da Computação do **IFSULDEMINAS – Campus Muzambinho**.
+
+---
+
+<a id="english"></a>
+## 🎮 English
+
+### About the Game
+**ICARUS** is a 2D platform game inspired by Greek mythology, where players control Icarus in his journey to reach the sun. Collect feathers to enhance your flying abilities, but beware - fly too close to the sun and your wings will burn!
+
+### 🎯 Game Objectives
+- Collect 10 magical feathers across 8 challenging levels
+- Each feather increases your jumping/flying power
+- Navigate through clouds, pillars, and avoid lightning strikes
+- Experience the mythological tale through gameplay
+- Survive the fall after your wings burn from the sun's heat
+
+### 🛠️ Technologies Used
+- **Python 3.8+**
+- **Pygame Zero** - Game development framework
+- **Pygame** - Core game library
+- **pgzhelper** - Additional utilities for Pygame Zero
+
+### 📦 Installation
+
+1. Clone the repository:
 ```bash
-source venv/bin/activate
-python3 jogo.py
+git clone https://github.com/yourusername/icarus-game.git
+cd icarus-game
 ```
 
-## Controles
-
-- **Movimento**: Setas direcionais ou WASD
-- **Lançar feitiços**: ESPAÇO
-- **Pausar**: ESC
-- **Menu**: ENTER para começar/confirmar
-- **Seleção de personagem**: Setas para navegar, CIMA/BAIXO para alternar entre seletores
-
-## Gameplay
-
-1. **Menu Principal**: Pressione ENTER para começar
-2. **Seleção de Personagem**: 
-   - Escolha sua varinha mágica
-   - Escolha o tipo de diabrete que enfrentará
-   - Use as setas para navegar e ENTER para confirmar
-3. **Jogo**: 
-   - Mova sua varinha para evitar diabretes e seus feitiços
-   - Lance feitiços para destruir os diabretes
-   - Ganhe pontos e sobreviva o máximo de tempo possível
-   - A dificuldade aumenta com o tempo
-
-## Estrutura do Projeto
-
-```
-project-game-py/
-├── jogo.py              # Arquivo principal do jogo
-├── requirements.txt     # Dependências do projeto
-├── README.md           # Este arquivo
-├── assets/             # Diretório para recursos (criado automaticamente)
-│   ├── images/         # Imagens (geradas proceduralmente)
-│   └── sounds/         # Sons (gerados proceduralmente)
-└── images/             # Diretório adicional de imagens (criado automaticamente)
+2. Install dependencies:
+```bash
+pip install -r requirements.txt
 ```
 
-## Características Técnicas
+3. Run the game:
+```bash
+python main.py
+```
 
-- **Engine**: pygame
-- **Gráficos**: Gerados proceduralmente (sem arquivos externos)
-- **Sons**: Gerados programaticamente
-- **Resolução**: 800x600 pixels
-- **FPS**: 60 quadros por segundo
+### 🎮 How to Play
+- **Arrow Keys**: Move left/right
+- **Up Arrow**: Jump (hold for higher jumps)
+- **Enter**: Start game / Restart after game over
 
-## Tipos de Varinha
+### 🎨 Visual Credits
+Game sprites and assets were obtained from:
+- **Backgrounds**: Free pixel art backgrounds from various sources
+- **Character sprites**: Custom created for this project
+- **Platform sprites**: Modified from free pixel art resources
+- **Special effects**: Lightning and fire effects from open game art
 
-1. **Varinha Clássica**: Varinha tradicional marrom
-2. **Varinha de Sabugueiro**: A varinha mais poderosa (inspirada em Harry Potter)
-3. **Varinha de Azevinho**: Varinha do Harry Potter
-4. **Varinha de Cristal**: Varinha mágica translúcida
+### 📝 License
+This project is licensed under the MIT License - see the LICENSE file for details.
 
-## Tipos de Diabrete
+### 🏷️ Tags
+`2D-game` `platform-game` `greek-mythology` `pygame` `pygame-zero` `python` `python3` `educational` `pixel-art` `indie-game` `platformer` `2d-platformer` `icarus` `pgzhelper`
 
-1. **Diabrete Azul**: Diabrete padrão da Cornualha
-2. **Duende Verde**: Variante verde dos diabretes
-3. **Fada da Floresta**: Criatura mágica mais amigável
-4. **Diabrete Sombrio**: Versão mais sinistra com olhos vermelhos
+### 🏛️ Academic Context
+This project was developed for the **Special Topics I** course of the Computer Science program at **IFSULDEMINAS – Campus Muzambinho**.
 
-## Sistema de Dificuldade
+---
 
-- O nível aumenta a cada 30 segundos
-- Diabretes aparecem mais frequentemente
-- Diabretes ganham mais vida em níveis altos
-- Pontuação aumenta com a dificuldade
-
-Divirta-se jogando Wizarding Duel!
+> 🧠 *This project had punctual support from Artificial Intelligence tools for code optimization and technical documentation.*
