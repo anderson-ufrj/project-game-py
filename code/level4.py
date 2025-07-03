@@ -63,6 +63,8 @@ class Level4:
             'speed': import_csv_layout('../map new/last level_speed.csv'),
             'attack':import_csv_layout('../map new/last level_attac.csv'),
             'enemy':import_csv_layout('../map new/last level_golu.csv'),
+            'big_enemies': import_csv_layout('../map new/latest_final_big boys.csv'),  # Inimigos bigboi extras
+            'monster_spawn': import_csv_layout('../map new/latest_final_main monster spwam.csv'),  # Mais monstros
             'next' : import_csv_layout('../map new/last level_end.csv')
         }
         for style, layout in layouts.items():
@@ -83,7 +85,13 @@ class Level4:
                                     self.create_magic)
                             self.boss = Boss((x+500, y-30),[self.bosssprites, self.visible_sprites])
                         if style == "enemy":
-                            self.enemy = Enemy('golu',(x, y),[self.visible_sprites, self.attackable_sprites],self.obstacle_sprites,self.damage_player, visible_sprites=self.visible_sprites)
+                            enemy = Enemy('golu',(x, y),[self.visible_sprites, self.attackable_sprites],self.obstacle_sprites,self.damage_player, visible_sprites=self.visible_sprites)
+                        if style == "big_enemies":
+                            big_enemy = Enemy('bigboi',(x, y),[self.visible_sprites, self.attackable_sprites],self.obstacle_sprites,self.damage_player,3, visible_sprites=self.visible_sprites)
+                            big_enemy.animation_speed = 0.03
+                        if style == "monster_spawn":
+                            monster = Enemy('black',(x, y),[self.visible_sprites, self.attackable_sprites],self.obstacle_sprites,self.damage_player,1, visible_sprites=self.visible_sprites)
+                            monster.animation_speed = 0.08
                         if style =="health":
                             HealthOrbs((x, y), [self.health_orbs, self.visible_sprites])
                         if style == "attack":
