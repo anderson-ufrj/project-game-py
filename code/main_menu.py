@@ -117,6 +117,20 @@ class AdvancedMainMenu:
         except:
             print("Erro ao carregar imagens do menu")
         
+        # Carregar fontes mais arredondadas
+        try:
+            # Usar fonte padrão do sistema mais arredondada
+            self.custom_title_font = pygame.font.Font(None, 48)  # Fonte maior para título
+            self.custom_subtitle_font = pygame.font.Font(None, 24)  # Fonte média para subtítulo
+            self.custom_button_font = pygame.font.Font(None, 20)  # Fonte para botões
+            self.custom_info_font = pygame.font.Font(None, 16)  # Fonte para informações
+        except:
+            # Fallback para fontes originais se houver erro
+            self.custom_title_font = self.title_font
+            self.custom_subtitle_font = self.subtitle_font
+            self.custom_button_font = self.button_font
+            self.custom_info_font = self.info_font
+        
         # Sistema de partículas
         self.particles = []
         self.particle_spawn_timer = 0
@@ -158,10 +172,10 @@ class AdvancedMainMenu:
     def create_main_buttons(self):
         """Criar botões do menu principal"""
         buttons = []
-        button_width = 300
-        button_height = 50
-        start_y = HEIGTH // 2 + 50
-        spacing = 70
+        button_width = 280
+        button_height = 45
+        start_y = HEIGTH // 2 + 30  # Começar mais cedo para não sobrepor instruções
+        spacing = 60
         
         button_data = [
             ("🎮 INICIAR JOGO", "start_game"),
@@ -173,17 +187,17 @@ class AdvancedMainMenu:
         for i, (text, action) in enumerate(button_data):
             x = WIDTH // 2 - button_width // 2
             y = start_y + i * spacing
-            buttons.append(MenuButton(x, y, button_width, button_height, text, self.button_font, action))
+            buttons.append(MenuButton(x, y, button_width, button_height, text, self.custom_button_font, action))
             
         return buttons
     
     def create_credits_buttons(self):
         """Criar botões da tela de créditos"""
-        return [MenuButton(50, HEIGTH - 100, 150, 40, "← VOLTAR", self.button_font, "back_to_main")]
+        return [MenuButton(50, HEIGTH - 100, 150, 40, "← VOLTAR", self.custom_button_font, "back_to_main")]
     
     def create_stats_buttons(self):
         """Criar botões da tela de estatísticas"""
-        return [MenuButton(50, HEIGTH - 100, 150, 40, "← VOLTAR", self.button_font, "back_to_main")]
+        return [MenuButton(50, HEIGTH - 100, 150, 40, "← VOLTAR", self.custom_button_font, "back_to_main")]
     
     def update_particles(self):
         """Atualizar sistema de partículas"""
@@ -215,39 +229,40 @@ class AdvancedMainMenu:
             self.title_glow_direction = 1
     
     def draw_title_with_glow(self):
-        """Desenhar título com efeito glow"""
+        """Desenhar título com efeito glow e fontes melhoradas"""
         title_text = "CORRIDA PELA RELÍQUIA"
         
         # Calcular posição do título
-        title_surface = self.title_font.render(title_text, True, (255, 255, 255))
-        title_rect = title_surface.get_rect(center=(WIDTH//2, 120))
+        title_surface = self.custom_title_font.render(title_text, True, (255, 255, 255))
+        title_rect = title_surface.get_rect(center=(WIDTH//2, 110))
         
-        # Desenhar múltiplas camadas para efeito glow
-        glow_colors = [
-            (138, 43, 226, 30),  # Roxo transparente
-            (255, 215, 0, 60),   # Dourado transparente
-            (255, 255, 255, 100) # Branco transparente
+        # Desenhar sombra simples para melhor contraste
+        shadow_surface = self.custom_title_font.render(title_text, True, (0, 0, 0))
+        self.screen.blit(shadow_surface, (title_rect.x + 3, title_rect.y + 3))
+        
+        # Desenhar título principal com gradiente suave
+        gradient_colors = [
+            (255, 215, 0),   # Dourado
+            (255, 255, 255)  # Branco
         ]
         
-        for i, color in enumerate(glow_colors):
-            offset = (len(glow_colors) - i) * 2 + self.title_glow // 10
-            for dx in range(-offset, offset + 1):
-                for dy in range(-offset, offset + 1):
-                    if dx*dx + dy*dy <= offset*offset:
-                        glow_surface = self.title_font.render(title_text, True, color[:3])
-                        glow_surface.set_alpha(color[3])
-                        self.screen.blit(glow_surface, (title_rect.x + dx, title_rect.y + dy))
+        # Efeito gradiente simples
+        for i, color in enumerate(gradient_colors):
+            offset = i + 1
+            title_glow = self.custom_title_font.render(title_text, True, color)
+            title_glow.set_alpha(200 - i * 50)
+            self.screen.blit(title_glow, (title_rect.x - offset, title_rect.y - offset))
         
         # Desenhar título principal
         self.screen.blit(title_surface, title_rect)
         
-        # Subtitle com animação
-        subtitle_y = 170 + math.sin(self.time * 0.05) * 3
-        subtitle_text = self.subtitle_font.render("A Busca pela Gema Eldritch", True, (200, 200, 255))
+        # Subtitle com animação mais sutil
+        subtitle_y = 150 + math.sin(self.time * 0.03) * 2
+        subtitle_text = self.custom_subtitle_font.render("A Busca pela Gema Eldritch", True, (220, 220, 255))
         subtitle_rect = subtitle_text.get_rect(center=(WIDTH//2, subtitle_y))
         
         # Sombra do subtitle
-        subtitle_shadow = self.subtitle_font.render("A Busca pela Gema Eldritch", True, (0, 0, 0))
+        subtitle_shadow = self.custom_subtitle_font.render("A Busca pela Gema Eldritch", True, (0, 0, 0))
         self.screen.blit(subtitle_shadow, (subtitle_rect.x + 2, subtitle_rect.y + 2))
         self.screen.blit(subtitle_text, subtitle_rect)
     
@@ -264,8 +279,8 @@ class AdvancedMainMenu:
                 action = button_action
             button.draw(self.screen)
         
-        # Instruções de controle
-        controls_y = HEIGTH - 150
+        # Instruções de controle - movidas para baixo para não sobrepor botões
+        controls_y = HEIGTH - 120
         controls = [
             "⌨️ WASD/Setas: Movimento | Shift: Correr | Espaço: Ataque 360°",
             "🎵 M: Mudo | ↑↓: Volume | ⚙️: Configurações",
@@ -273,10 +288,10 @@ class AdvancedMainMenu:
         ]
         
         for i, control in enumerate(controls):
-            text = self.info_font.render(control, True, (180, 180, 180))
-            rect = text.get_rect(center=(WIDTH//2, controls_y + i * 20))
+            text = self.custom_info_font.render(control, True, (200, 200, 200))
+            rect = text.get_rect(center=(WIDTH//2, controls_y + i * 18))
             # Sombra
-            shadow = self.info_font.render(control, True, (0, 0, 0))
+            shadow = self.custom_info_font.render(control, True, (0, 0, 0))
             self.screen.blit(shadow, (rect.x + 1, rect.y + 1))
             self.screen.blit(text, rect)
         
@@ -290,7 +305,7 @@ class AdvancedMainMenu:
         self.screen.blit(overlay, (0, 0))
         
         # Título da seção
-        title = self.title_font.render("CRÉDITOS", True, (255, 215, 0))
+        title = self.custom_title_font.render("CRÉDITOS", True, (255, 215, 0))
         title_rect = title.get_rect(center=(WIDTH//2, 80))
         self.screen.blit(title, title_rect)
         
@@ -310,7 +325,7 @@ class AdvancedMainMenu:
         
         for i, info in enumerate(dev_info):
             color = (255, 215, 0) if i == 0 else (255, 255, 255)
-            font = self.subtitle_font if i == 0 else self.info_font
+            font = self.custom_subtitle_font if i == 0 else self.custom_info_font
             text = font.render(info, True, color)
             self.screen.blit(text, (WIDTH//2 - 80, dev_y + i * 25))
         
@@ -329,13 +344,13 @@ class AdvancedMainMenu:
         
         for i, info in enumerate(academic_info):
             color = (255, 215, 0) if i == 0 else (255, 255, 255)
-            font = self.subtitle_font if i == 0 else self.info_font
+            font = self.custom_subtitle_font if i == 0 else self.custom_info_font
             text = font.render(info, True, color)
             self.screen.blit(text, (WIDTH//2 - 80, academic_y + i * 25))
         
         # Tecnologias utilizadas
         tech_y = academic_y + 150
-        tech_title = self.subtitle_font.render("TECNOLOGIAS", True, (255, 215, 0))
+        tech_title = self.custom_subtitle_font.render("TECNOLOGIAS", True, (255, 215, 0))
         self.screen.blit(tech_title, (WIDTH//2 - 100, tech_y))
         
         technologies = [
@@ -347,7 +362,7 @@ class AdvancedMainMenu:
         ]
         
         for i, tech in enumerate(technologies):
-            text = self.info_font.render(tech, True, (200, 200, 255))
+            text = self.custom_info_font.render(tech, True, (200, 200, 255))
             self.screen.blit(text, (WIDTH//2 - 200, tech_y + 30 + i * 20))
         
         # Botão voltar
@@ -368,7 +383,7 @@ class AdvancedMainMenu:
         self.screen.blit(overlay, (0, 0))
         
         # Título
-        title = self.title_font.render("ESTATÍSTICAS", True, (255, 215, 0))
+        title = self.custom_title_font.render("ESTATÍSTICAS", True, (255, 215, 0))
         title_rect = title.get_rect(center=(WIDTH//2, 80))
         self.screen.blit(title, title_rect)
         
@@ -383,17 +398,17 @@ class AdvancedMainMenu:
         
         for i, (label, value) in enumerate(stats_data):
             # Label
-            label_text = self.subtitle_font.render(label, True, (255, 215, 0))
+            label_text = self.custom_subtitle_font.render(label, True, (255, 215, 0))
             self.screen.blit(label_text, (WIDTH//2 - 200, stats_y + i * 60))
             
             # Valor
-            value_text = self.title_font.render(value, True, (255, 255, 255))
+            value_text = self.custom_title_font.render(value, True, (255, 255, 255))
             value_rect = value_text.get_rect(right=WIDTH//2 + 200, y=stats_y + i * 60)
             self.screen.blit(value_text, value_rect)
         
         # Progresso visual
         progress_y = stats_y + 300
-        progress_title = self.subtitle_font.render("PROGRESSO DOS NÍVEIS", True, (255, 215, 0))
+        progress_title = self.custom_subtitle_font.render("PROGRESSO DOS NÍVEIS", True, (255, 215, 0))
         self.screen.blit(progress_title, (WIDTH//2 - 150, progress_y))
         
         # Barras de progresso por nível
@@ -404,12 +419,12 @@ class AdvancedMainMenu:
             
             # Nome do nível
             color = (100, 255, 100) if completed else (100, 100, 100)
-            text = self.info_font.render(level_name, True, color)
+            text = self.custom_info_font.render(level_name, True, color)
             self.screen.blit(text, (WIDTH//2 - 200, y))
             
             # Status
             status = "✅ COMPLETO" if completed else "⏳ PENDENTE"
-            status_text = self.info_font.render(status, True, color)
+            status_text = self.custom_info_font.render(status, True, color)
             self.screen.blit(status_text, (WIDTH//2 + 50, y))
         
         # Botão voltar
