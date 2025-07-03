@@ -1,0 +1,89 @@
+# Arquivo .gitignore para o projeto Corrida pela Relíquia
+# Projeto: Tópicos Especiais I - IFSULDEMINAS Muzambinho
+# Aluno: Anderson Henrique da Silva
+
+# Script de execução
+rungame.sh
+
+# Ambiente virtual Python
+venv/
+env/
+.venv/
+.env/
+
+# Arquivos Python compilados
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Unit test / coverage
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Sistema operacional
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Arquivos temporários
+*.tmp
+*.temp
+*.bak
+*.backup
+
+# Arquivos de configuração local
+config.local.*
+settings.local.*
+
+# Arquivos gerados automaticamente
+create_portuguese_images.py
+fix_home_image.py
