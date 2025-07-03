@@ -9,7 +9,7 @@ from weapon import Weapon, Weapon360Damage
 from ui import UI
 from enemy import Enemy
 from collectables import *
-from particles import CollectParticle, GemCollectAnimation, DeathParticle, EnemyDeathAnimation
+from particles import CollectParticle, GemCollectAnimation, DeathParticle, EnemyDeathAnimation, FloatingText
 from settings_manager import SettingsManager
 
 
@@ -35,6 +35,9 @@ class Level1:
         self.current_attack = None
         self.attack_sprites = pygame.sprite.Group()
         self.attackable_sprites = pygame.sprite.Group()
+        
+        # animation sprites
+        self.floating_text_sprites = pygame.sprite.Group()
 
         # sprite setup
         self.create_map()
@@ -62,6 +65,7 @@ class Level1:
         self.health_orbs.empty()
         self.attack_orbs.empty()
         self.speed_orbs.empty()
+        self.floating_text_sprites.empty()
         self.create_map()
 
     def create_map(self):
@@ -160,9 +164,15 @@ class Level1:
             self.visible_sprites.update()
             self.visible_sprites.enemy_update(self.player)
             self.player_attack_logic()
+            self.floating_text_sprites.update()  # Atualizar textos flutuantes
         
         # Always draw (but don't update when paused)
         self.visible_sprites.custom_draw(self.player)
+        
+        # Desenhar textos flutuantes por cima de tudo
+        for text in self.floating_text_sprites:
+            pygame.display.get_surface().blit(text.image, text.rect)
+        
         self.ui.display(self.player)
         
         # Draw settings button and menu
@@ -180,6 +190,9 @@ class Level1:
                 for _ in range(10):
                     CollectParticle(orb.rect.center, [self.visible_sprites], color=(255, 100, 100))
                 
+                # Animação de texto flutuante
+                FloatingText(orb.rect.center, [self.floating_text_sprites], "+VIDA", color=(255, 100, 100), size=16)
+                
                 self.player.inventory["healthOrbs"] += 1
                 self.collectable_music_channel.play(self.collectable_music)
                 self.ui.set_status_message('Vida Aumentada')
@@ -196,6 +209,9 @@ class Level1:
                 for _ in range(10):
                     CollectParticle(orb.rect.center, [self.visible_sprites], color=(100, 100, 255))
                 
+                # Animação de texto flutuante
+                FloatingText(orb.rect.center, [self.floating_text_sprites], "+VELOCIDADE", color=(100, 255, 100), size=16)
+                
                 self.player.inventory["speedOrbs"] += 1
                 self.collectable_music_channel.play(self.collectable_music)
                 self.ui.set_status_message('Velocidade Aumentada')
@@ -210,6 +226,9 @@ class Level1:
                 GemCollectAnimation(orb.rect.center, [self.visible_sprites])
                 for _ in range(10):
                     CollectParticle(orb.rect.center, [self.visible_sprites], color=(255, 200, 100))
+                
+                # Animação de texto flutuante
+                FloatingText(orb.rect.center, [self.floating_text_sprites], "+ATAQUE", color=(255, 200, 100), size=16)
                 
                 self.player.inventory["attackOrbs"] += 1
                 self.collectable_music_channel.play(self.collectable_music)

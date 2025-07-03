@@ -165,3 +165,79 @@ class EnemyDeathAnimation(pygame.sprite.Sprite):
         else:
             self.image = self.frames[int(self.frame_index)]
             self.rect = self.image.get_rect(center=self.pos)
+
+class FloatingText(pygame.sprite.Sprite):
+    """Texto flutuante dinâmico para coleta de pedras"""
+    def __init__(self, pos, groups, text, color=(255, 255, 255), size=20):
+        super().__init__(groups)
+        
+        # Posição e movimento
+        self.pos = pygame.math.Vector2(pos)
+        self.velocity = pygame.math.Vector2(0, -1.5)  # Move para cima
+        self.life_time = 120  # frames de vida
+        self.current_life = 0
+        
+        # Criar fonte
+        try:
+            self.font = pygame.font.Font('../graphics/font/PressStart2P.ttf', size)
+        except:
+            self.font = pygame.font.Font(None, size)
+        
+        # Criar texto
+        self.text = text
+        self.color = color
+        self.alpha = 255
+        
+        # Criar surface inicial
+        self.create_text_surface()
+        
+        # Efeitos
+        self.scale = 1.0
+        self.scale_speed = 0.02
+        self.bounce_amplitude = 3
+        self.bounce_frequency = 0.1
+        
+    def create_text_surface(self):
+        """Criar a surface do texto com alpha"""
+        # Criar texto base
+        text_surf = self.font.render(self.text, True, self.color)
+        
+        # Aplicar escala se necessário
+        if self.scale != 1.0:
+            new_width = int(text_surf.get_width() * self.scale)
+            new_height = int(text_surf.get_height() * self.scale)
+            text_surf = pygame.transform.scale(text_surf, (new_width, new_height))
+        
+        # Criar surface com alpha
+        self.image = pygame.Surface(text_surf.get_size(), pygame.SRCALPHA)
+        self.image.set_alpha(int(self.alpha))
+        self.image.blit(text_surf, (0, 0))
+        
+        self.rect = self.image.get_rect(center=self.pos)
+    
+    def update(self):
+        self.current_life += 1
+        
+        # Movimento
+        # Efeito bounce
+        bounce_offset = math.sin(self.current_life * self.bounce_frequency) * self.bounce_amplitude
+        self.pos.x += bounce_offset * 0.1
+        self.pos.y += self.velocity.y
+        
+        # Efeito de escala (cresce no início, diminui no final)
+        if self.current_life < 20:
+            self.scale = 1.0 + (self.current_life / 20) * 0.3  # Cresce até 1.3x
+        elif self.current_life > self.life_time - 30:
+            remaining = self.life_time - self.current_life
+            self.scale = 1.3 * (remaining / 30)  # Diminui até 0
+        
+        # Efeito de fade out
+        life_ratio = 1.0 - (self.current_life / self.life_time)
+        self.alpha = 255 * life_ratio
+        
+        # Atualizar visual
+        self.create_text_surface()
+        
+        # Morrer quando acabar a vida
+        if self.current_life >= self.life_time:
+            self.kill()
