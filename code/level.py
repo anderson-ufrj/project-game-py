@@ -75,7 +75,7 @@ class Level1:
             'next': import_csv_layout('../map new/map._nextwall.csv'),
             'player': import_csv_layout('../map new/map_player spawn(level1).csv'),
             'enemy': import_csv_layout('../map new/map_enemy spawn(golu).csv'),
-            'extra_enemies': import_csv_layout('../map new/map_npc spwan(level1).csv'),  # Mais inimigos
+            # 'extra_enemies': import_csv_layout('../map new/map_npc spwan(level1).csv'),  # Removido - causava spawn em posições inválidas
             'health': import_csv_layout('../map new/map_healthLevel1.csv'),
             'attack': import_csv_layout('../map new/map_attackOrbslevel1.csv'),
             'speed': import_csv_layout('../map new/map_speedOrbsLevel1.csv'),
@@ -106,8 +106,10 @@ class Level1:
                         if style == "enemy":
                             Enemy('golu',(x, y),[self.visible_sprites, self.attackable_sprites],self.obstacle_sprites,self.damage_player, visible_sprites=self.visible_sprites)
                         if style == "extra_enemies":
-                            extra_enemy = Enemy('black',(x, y),[self.visible_sprites, self.attackable_sprites],self.obstacle_sprites,self.damage_player, visible_sprites=self.visible_sprites)
-                            extra_enemy.animation_speed = 0.08  # Inimigos mais rápidos
+                            # Verificar se a posição é válida (não muito próxima das bordas)
+                            if x > 100 and y > 100 and x < 2000 and y < 2000:
+                                extra_enemy = Enemy('black',(x, y),[self.visible_sprites, self.attackable_sprites],self.obstacle_sprites,self.damage_player, visible_sprites=self.visible_sprites)
+                                extra_enemy.animation_speed = 0.08  # Inimigos mais rápidos
                         if style =="health":
                             HealthOrbs((x, y), [self.health_orbs, self.visible_sprites])
                         if style == "attack":
@@ -173,9 +175,11 @@ class Level1:
         # Always draw (but don't update when paused)
         self.visible_sprites.custom_draw(self.player)
         
-        # Desenhar textos flutuantes por cima de tudo
+        # Desenhar textos flutuantes por cima de tudo com offset da câmera
         for text in self.floating_text_sprites:
-            pygame.display.get_surface().blit(text.image, text.rect)
+            # Aplicar offset da câmera
+            screen_pos = text.rect.topleft - self.visible_sprites.offset
+            pygame.display.get_surface().blit(text.image, screen_pos)
         
         self.ui.display(self.player)
         
