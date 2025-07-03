@@ -9,7 +9,7 @@ from weapon import Weapon, Weapon360Damage
 from ui import UI
 from enemy import Enemy
 from collectables import*
-from particles import CollectParticle, GemCollectAnimation, DeathParticle, EnemyDeathAnimation
+from particles import CollectParticle, GemCollectAnimation, DeathParticle, EnemyDeathAnimation, FloatingText
 from settings_manager import SettingsManager
 
 class Level2:
@@ -33,6 +33,9 @@ class Level2:
         self.current_attack = None
         self.attack_sprites = pygame.sprite.Group()
         self.attackable_sprites = pygame.sprite.Group()
+        
+        # animation sprites
+        self.floating_text_sprites = pygame.sprite.Group()
 
         # sprite setup
         self.create_map()
@@ -60,6 +63,7 @@ class Level2:
         self.health_orbs.empty()
         self.attack_orbs.empty()
         self.speed_orbs.empty()
+        self.floating_text_sprites.empty()
         self.create_map()
 
     def create_map(self):
@@ -167,9 +171,17 @@ class Level2:
             self.visible_sprites.update()
             self.visible_sprites.enemy_update(self.player)
             self.player_attack_logic()
+            self.floating_text_sprites.update()  # Atualizar textos flutuantes
         
         # Always draw (but don't update when paused)
         self.visible_sprites.custom_draw(self.player)
+        
+        # Desenhar textos flutuantes por cima de tudo com offset da câmera
+        for text in self.floating_text_sprites:
+            # Aplicar offset da câmera
+            screen_pos = text.rect.topleft - self.visible_sprites.offset
+            pygame.display.get_surface().blit(text.image, screen_pos)
+        
         self.ui.display(self.player)
         
         # Draw settings button and menu
@@ -179,27 +191,57 @@ class Level2:
         if self.player.health <= 0:
             print('game over')
             self.gameover = True
-        if pygame.sprite.spritecollide(self.player, self.health_orbs, True):
-            self.player.inventory["healthOrbs"] += 1
-            self.collectable_music_channel.play(self.collectable_music)
-            self.ui.set_status_message('Vida Aumentada')
-            if self.player.health < 450:
-                self.player.health += 50
-            else:
-                self.player.health = 500
+        health_collisions = pygame.sprite.spritecollide(self.player, self.health_orbs, True)
+        if health_collisions:
+            for orb in health_collisions:
+                # Create collection animation
+                GemCollectAnimation(orb.rect.center, [self.visible_sprites])
+                for _ in range(10):
+                    CollectParticle(orb.rect.center, [self.visible_sprites], color=(255, 100, 100))
+                
+                # Animação de texto flutuante
+                FloatingText(orb.rect.center, [self.floating_text_sprites], "+VIDA", color=(255, 100, 100), size=16)
+                
+                self.player.inventory["healthOrbs"] += 1
+                self.collectable_music_channel.play(self.collectable_music)
+                self.ui.set_status_message('Vida Aumentada')
+                if self.player.health < 450:
+                    self.player.health += 50
+                else:
+                    self.player.health = 500
 
-        if pygame.sprite.spritecollide(self.player, self.speed_orbs, True):
-            self.player.inventory["speedOrbs"] += 1
-            self.collectable_music_channel.play(self.collectable_music)
-            self.ui.set_status_message('Velocidade Aumentada')
-            self.player.speed += 0.4
-            self.player.animation_speed += 0.04
+        speed_collisions = pygame.sprite.spritecollide(self.player, self.speed_orbs, True)
+        if speed_collisions:
+            for orb in speed_collisions:
+                # Create collection animation
+                GemCollectAnimation(orb.rect.center, [self.visible_sprites])
+                for _ in range(10):
+                    CollectParticle(orb.rect.center, [self.visible_sprites], color=(100, 100, 255))
+                
+                # Animação de texto flutuante
+                FloatingText(orb.rect.center, [self.floating_text_sprites], "+VELOCIDADE", color=(100, 255, 100), size=16)
+                
+                self.player.inventory["speedOrbs"] += 1
+                self.collectable_music_channel.play(self.collectable_music)
+                self.ui.set_status_message('Velocidade Aumentada')
+                self.player.speed += 0.4
+                self.player.animation_speed += 0.04
 
-        if pygame.sprite.spritecollide(self.player, self.attack_orbs, True):
-            self.player.inventory["attackOrbs"] += 1
-            self.collectable_music_channel.play(self.collectable_music)
-            self.ui.set_status_message('Ataque Aumentado')
-            self.player.attack += 10
+        attack_collisions = pygame.sprite.spritecollide(self.player, self.attack_orbs, True)
+        if attack_collisions:
+            for orb in attack_collisions:
+                # Create collection animation
+                GemCollectAnimation(orb.rect.center, [self.visible_sprites])
+                for _ in range(10):
+                    CollectParticle(orb.rect.center, [self.visible_sprites], color=(255, 200, 100))
+                
+                # Animação de texto flutuante
+                FloatingText(orb.rect.center, [self.floating_text_sprites], "+ATAQUE", color=(255, 200, 100), size=16)
+                
+                self.player.inventory["attackOrbs"] += 1
+                self.collectable_music_channel.play(self.collectable_music)
+                self.ui.set_status_message('Ataque Aumentado')
+                self.player.attack += 10
 
 
 
