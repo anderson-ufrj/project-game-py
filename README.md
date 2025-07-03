@@ -1,4 +1,4 @@
-# Corrida pela Relíquia: A Busca pela Gema Eldritch
+# Corrida pela Relíquia: A Busca pela Pedra Mística do Zappaguri
 
 ![Python](https://img.shields.io/badge/Python-3.8+-blue?style=for-the-badge&logo=python&logoColor=white)
 ![Pygame](https://img.shields.io/badge/Pygame-2.6+-green?style=for-the-badge&logo=pygame&logoColor=white)
@@ -31,7 +31,7 @@
 
 ## Visão Geral do Jogo
 
-Bem-vindo ao Corrida pela Relíquia, um jogo de aventura encantador que convida você a embarcar em uma missão para descobrir a mítica Gema Eldritch. Mergulhe em um mundo cativante cheio de níveis desafiadores, gemas místicas e uma rica experiência auditiva. Este jogo apresenta ambientes visualmente deslumbrantes e diversos com assets obtidos do [OpenGameArt](https://opengameart.org/).
+Bem-vindo ao Corrida pela Relíquia, um jogo de aventura encantador que convida você a embarcar em uma missão para descobrir a mítica Pedra Mística do Zappaguri. Mergulhe em um mundo cativante cheio de níveis desafiadores, gemas místicas e uma rica experiência auditiva. Este jogo apresenta ambientes visualmente deslumbrantes e diversos com assets obtidos do [OpenGameArt](https://opengameart.org/).
 
 ## Instalação
 
@@ -45,7 +45,7 @@ pip install pygame
 
 ### Objetivo
 
-Embarque em uma jornada para guiar o jogador através de níveis intrincados, coletando várias gemas e descobrindo os segredos da Gema Eldritch. Desfrute de uma experiência visualmente atraente com assets do OpenGameArt, acompanhada por música de fundo dinâmica e efeitos sonoros imersivos.
+Embarque em uma jornada para guiar o jogador através de níveis intrincados, coletando várias gemas e descobrindo os segredos da Pedra Mística do Zappaguri. Desfrute de uma experiência visualmente atraente com assets do OpenGameArt, acompanhada por música de fundo dinâmica e efeitos sonoros imersivos.
 
 ### Movimento
 

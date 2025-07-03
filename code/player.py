@@ -14,7 +14,7 @@ class Player(Entity):
 		# graphics setup
 		self.import_player_assets()
 		self.status = 'down'
-		self.inventory = {'healthOrbs':0, "attackOrbs":0 , 'speedOrbs': 0, "keys":0, "megaGem":0 }
+		self.inventory = {'healthOrbs':0, "attackOrbs":0 , 'speedOrbs': 0, "keys":0, "zappaguriStone":0 }
 
 		# movement 
 		self.attacking = False

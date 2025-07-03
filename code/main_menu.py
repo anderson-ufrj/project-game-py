@@ -258,11 +258,11 @@ class AdvancedMainMenu:
         
         # Subtitle com animação mais sutil
         subtitle_y = 150 + math.sin(self.time * 0.03) * 2
-        subtitle_text = self.custom_subtitle_font.render("A Busca pela Gema Eldritch", True, (220, 220, 255))
+        subtitle_text = self.custom_subtitle_font.render("A Busca pela Pedra Mística do Zappaguri", True, (220, 220, 255))
         subtitle_rect = subtitle_text.get_rect(center=(WIDTH//2, subtitle_y))
         
         # Sombra do subtitle
-        subtitle_shadow = self.custom_subtitle_font.render("A Busca pela Gema Eldritch", True, (0, 0, 0))
+        subtitle_shadow = self.custom_subtitle_font.render("A Busca pela Pedra Mística do Zappaguri", True, (0, 0, 0))
         self.screen.blit(subtitle_shadow, (subtitle_rect.x + 2, subtitle_rect.y + 2))
         self.screen.blit(subtitle_text, subtitle_rect)
     

@@ -7,7 +7,7 @@ Era uma vez um reino em harmonia, protegido por quatro Relíquias Sagradas:
 - Relíquia da Vida (Esmeralda de Cura)
 - Relíquia da Força (Cristal do Poder)  
 - Relíquia da Velocidade (Orbe dos Ventos)
-- Relíquia Suprema (Gema Eldritch do Equilíbrio)
+- Relíquia Suprema (Pedra Mística do Zappaguri)
 
 O protagonista KAEL é o último Guardião da Ordem dos Protetores,
 uma antiga ordem de guerreiros que protegia essas relíquias.
@@ -88,7 +88,7 @@ PHASE_STORIES = {
             "ataques das Sombras Corrompidas.",
             "",
             "Apenas uma relíquia resta: a lendária",
-            "GEMA ELDRITCH DO EQUILÍBRIO, guardada",
+            "PEDRA MÍSTICA DO ZAPPAGURI, guardada",
             "no SANTUÁRIO FINAL pelas forças",
             "mais sombrias do reino.",
             "",
@@ -106,7 +106,7 @@ PHASE_STORIES = {
             "reunidas, Kael canaliza o poder",
             "ancestral dos Guardiões.",
             "",
-            "A GEMA ELDRITCH brilha intensamente,",
+            "A PEDRA MÍSTICA DO ZAPPAGURI brilha intensamente,",
             "banindo as Sombras Corrompidas para",
             "as dimensões distantes de onde vieram.",
             "",
@@ -127,7 +127,7 @@ GAME_ELEMENTS = {
     "attack_orbs": "Fragmentos do Cristal do Poder", 
     "speed_orbs": "Fragmentos do Orbe dos Ventos",
     "keys": "Chaves Místicas",
-    "eldritch_gem": "Gema Eldritch do Equilíbrio",
+    "zappaguri_stone": "Pedra Mística do Zappaguri",
     
     "enemies": {
         "golu": "Guardião Sombrio",

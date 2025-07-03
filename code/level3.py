@@ -278,8 +278,9 @@ class Level3:
             self.player.animation_speed += 0.04
 
         if pygame.sprite.spritecollide(self.player, self.gem, True):
-
-            self.player.inventory['megaGem'] = 1
+            self.player.inventory['zappaguriStone'] = 1
+            self.collectable_music_channel.play(self.collectable_music)
+            self.ui.set_status_message('Pedra Mística do Zappaguri Obtida!')
 
         if pygame.sprite.spritecollide(self.player, self.attack_orbs, True):
             self.player.inventory["attackOrbs"] += 1
@@ -299,8 +300,8 @@ class Level3:
             if pygame.sprite.spritecollide(self.player,self.door, True):
                 self.ui.set_status_message('Porta Aberta!')
 
-        if self.player.inventory['megaGem']==1:
-            print('level completed')
+        if self.player.inventory['zappaguriStone']==1:
+            print('Pedra Mística do Zappaguri coletada!')
             self.completed = True
 
 

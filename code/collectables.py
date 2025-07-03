@@ -54,7 +54,7 @@ class AttackOrbs(pygame.sprite.Sprite):
 
     def update(self):
         self.animate()
-class EldritchGem(pygame.sprite.Sprite):
+class ZappaguriMysticStone(pygame.sprite.Sprite):
     def __init__(self, pos,groups):
         super().__init__(groups)
 
@@ -82,6 +82,10 @@ class EldritchGem(pygame.sprite.Sprite):
 
     def update(self):
         self.animate()
+
+# Alias para compatibilidade com código existente
+EldritchGem = ZappaguriMysticStone
+
 class SpeedOrbs(pygame.sprite.Sprite):
     def __init__(self, pos,groups):
         super().__init__(groups)
