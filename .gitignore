@@ -77,6 +77,9 @@ logs/
 # Arquivos temporários
 *.tmp
 *.temp
+.cache/
+
+# Arquivos de backup
 *.bak
 *.backup
 
