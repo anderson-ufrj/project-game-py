@@ -204,7 +204,6 @@ class Level2:
                 
                 self.player.inventory["healthOrbs"] += 1
                 self.collectable_music_channel.play(self.collectable_music)
-                self.ui.set_status_message('Vida Aumentada')
                 if self.player.health < 450:
                     self.player.health += 50
                 else:
@@ -223,7 +222,6 @@ class Level2:
                 
                 self.player.inventory["speedOrbs"] += 1
                 self.collectable_music_channel.play(self.collectable_music)
-                self.ui.set_status_message('Velocidade Aumentada')
                 self.player.speed += 0.4
                 self.player.animation_speed += 0.04
 
@@ -240,7 +238,6 @@ class Level2:
                 
                 self.player.inventory["attackOrbs"] += 1
                 self.collectable_music_channel.play(self.collectable_music)
-                self.ui.set_status_message('Ataque Aumentado')
                 self.player.attack += 10
 
 
