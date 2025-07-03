@@ -178,7 +178,7 @@ class AdvancedMainMenu:
         spacing = 60
         
         button_data = [
-            ("🎮 INICIAR JOGO", "start_game"),
+            ("► INICIAR JOGO", "start_game"),
             ("📊 ESTATÍSTICAS", "show_stats"),
             ("👥 CRÉDITOS", "show_credits"),
             ("❌ SAIR", "quit_game")
@@ -283,9 +283,9 @@ class AdvancedMainMenu:
         controls_y = HEIGTH - 140
         controls = [
             "⌨️ WASD/Setas: Movimento | Shift: Correr | Espaço: Ataque 360°",
-            "🎵 M: Mudo | ↑↓: Volume | ⚙️: Configurações",
+            "♪ M: Mudo | ↑↓: Volume | ⚙: Configurações",
             "🗺️ TAB: Minimapa (Fase 3)",
-            "🎮 Teclas 1-4: Ir direto para fase específica (para testes)"
+            "♦ Teclas 1-4: Ir direto para fase específica (para testes)"
         ]
         
         for i, control in enumerate(controls):
