@@ -63,6 +63,18 @@ class Enemy(Entity):
         self.health_bar_height = 8
         self.health_bar_offset_y = -20  # Above the monster
         self.show_health_bar = True
+        
+        # Magic effects
+        self.fire_effect = False
+        self.fire_effect_time = 0
+        self.fire_effect_duration = 3000  # 3 seconds
+        self.fire_damage_interval = 500   # Damage every 0.5 seconds
+        self.last_fire_damage = 0
+        
+        self.water_effect = False
+        self.water_effect_time = 0  
+        self.water_effect_duration = 2000  # 2 seconds
+        self.original_speed = self.speed
 
     def import_graphics(self, name):
         character_path = f'../graphics/monsters/{name}/'
@@ -253,4 +265,76 @@ class Enemy(Entity):
         self.move(self.speed)
         self.animate()
         self.cooldowns()
+        self.update_magic_effects()  # Update magic effects
         self.check_death()
+    
+    
+    def apply_fire_effect(self, damage):
+        """Apply fire effect to enemy"""
+        print(f"🔥 {self.monster_name} pegou fogo!")
+        self.fire_effect = True
+        self.fire_effect_time = pygame.time.get_ticks()
+        self.fire_damage = damage // 3  # Fire does damage over time
+        self.last_fire_damage = pygame.time.get_ticks()
+    
+    def apply_water_effect(self, slow_amount=0.5):
+        """Apply water/ice effect to enemy (slows down)"""
+        print(f"❄️ {self.monster_name} foi congelado!")
+        self.water_effect = True
+        self.water_effect_time = pygame.time.get_ticks()
+        self.speed = self.original_speed * slow_amount  # Slow down
+    
+    def update_magic_effects(self):
+        """Update ongoing magic effects"""
+        current_time = pygame.time.get_ticks()
+        
+        # Fire effect - continuous damage
+        if self.fire_effect:
+            if current_time - self.fire_effect_time > self.fire_effect_duration:
+                self.fire_effect = False
+                print(f"🔥 {self.monster_name} parou de queimar")
+            else:
+                # Apply fire damage periodically
+                if current_time - self.last_fire_damage > self.fire_damage_interval:
+                    self.health -= self.fire_damage
+                    self.last_fire_damage = current_time
+                    print(f"🔥 {self.monster_name} queimando! Vida: {self.health}")
+                    
+                    # Create fire particles
+                    if self.visible_sprites:
+                        from particles import FireParticle
+                        try:
+                            FireParticle(self.rect.center, [self.visible_sprites])
+                        except:
+                            pass
+        
+        # Water/ice effect - slow movement
+        if self.water_effect:
+            if current_time - self.water_effect_time > self.water_effect_duration:
+                self.water_effect = False
+                self.speed = self.original_speed  # Restore original speed
+                print(f"❄️ {self.monster_name} saiu do gelo")
+            else:
+                # Create ice particles
+                if self.visible_sprites:
+                    from particles import IceParticle
+                    try:
+                        IceParticle(self.rect.center, [self.visible_sprites])
+                    except:
+                        pass
+    
+    def draw_magic_effects(self, surface, offset):
+        """Draw visual indicators for magic effects"""
+        if self.fire_effect:
+            # Draw fire effect overlay
+            fire_surface = pygame.Surface((self.rect.width, self.rect.height), pygame.SRCALPHA)
+            fire_surface.fill((255, 100, 0, 100))  # Semi-transparent red
+            screen_pos = self.rect.topleft - offset
+            surface.blit(fire_surface, screen_pos)
+            
+        if self.water_effect:
+            # Draw ice effect overlay
+            ice_surface = pygame.Surface((self.rect.width, self.rect.height), pygame.SRCALPHA)
+            ice_surface.fill((100, 200, 255, 100))  # Semi-transparent blue
+            screen_pos = self.rect.topleft - offset
+            surface.blit(ice_surface, screen_pos)

@@ -127,6 +127,18 @@ class Game:
         
         # Handle menu actions
         if menu_action == "start_game":
+            # Show intro story first
+            if not hasattr(self, 'intro_story_shown'):
+                story = StoryScreen("intro")
+                story_finished = False
+                while not story_finished:
+                    story_finished = story.update()
+                    for event in pygame.event.get():
+                        if event.type == pygame.QUIT:
+                            pygame.quit()
+                            sys.exit()
+                self.intro_story_shown = True
+            
             # Start the game
             audio_manager.play_music('../audio/Ambient 2.mp3')
             self.game_state = 3  # Go to Level 1
@@ -173,6 +185,8 @@ class Game:
         self.level3.reset()
         self.level4.reset()
         # Reset story flags
+        if hasattr(self, 'intro_story_shown'):
+            del self.intro_story_shown
         if hasattr(self, 'level1_story_shown'):
             del self.level1_story_shown
         if hasattr(self, 'level2_story_shown'):

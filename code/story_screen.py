@@ -157,17 +157,33 @@ class StoryScreen:
             
             self.display_surface.blit(scaled_surface, (x, y))
         
-        # Draw skip instruction with background - mais visível
-        skip_bg = pygame.Surface((500, 40))
-        skip_bg.set_alpha(150)
-        skip_bg.fill((0, 0, 0))
-        skip_bg_rect = pygame.Rect((WIDTH // 2 - 250, HEIGTH - 50), (500, 40))
+        # Draw elegant skip instruction with translucent background
+        skip_bg = pygame.Surface((520, 50), pygame.SRCALPHA)
+        skip_bg.fill((20, 20, 40, 180))  # Semi-transparent background
+        
+        # Add inner glow for elegance
+        inner_bg = pygame.Surface((500, 35), pygame.SRCALPHA)
+        inner_bg.fill((60, 60, 80, 120))
+        skip_bg.blit(inner_bg, (10, 7.5))
+        
+        skip_bg_rect = pygame.Rect((WIDTH // 2 - 260, HEIGTH - 60), (520, 50))
         self.display_surface.blit(skip_bg, skip_bg_rect)
         
-        # Texto maior e mais visível
-        skip_font = pygame.font.Font(None, 20)  # Fonte maior para instrução
+        # Add elegant borders
+        pygame.draw.rect(self.display_surface, (120, 120, 140), skip_bg_rect, 2)
+        pygame.draw.rect(self.display_surface, (180, 180, 200), skip_bg_rect, 1)
+        
+        # Enhanced text with shadow
+        skip_font = pygame.font.Font(None, 22)  # Fonte maior para instrução
+        
+        # Text shadow for better readability
+        shadow_text = skip_font.render("Pressione ESPACO para pular a historia", True, (0, 0, 0))
+        shadow_rect = shadow_text.get_rect(center=(WIDTH // 2 + 2, HEIGTH - 33))
+        self.display_surface.blit(shadow_text, shadow_rect)
+        
+        # Main text
         skip_text = skip_font.render("Pressione ESPACO para pular a historia", True, (255, 255, 100))
-        skip_rect = skip_text.get_rect(center=(WIDTH // 2, HEIGTH - 30))
+        skip_rect = skip_text.get_rect(center=(WIDTH // 2, HEIGTH - 35))
         self.display_surface.blit(skip_text, skip_rect)
         
         # CHEAT: Display cheat information in story screen (remove for final version)

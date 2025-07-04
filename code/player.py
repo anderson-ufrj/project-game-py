@@ -101,16 +101,15 @@ class Player(Entity):
 			else:
 				self.direction.x = 0
 
-			# attack input
-
-			if keys[pygame.K_SPACE]:
+			# attack input - prevent overlapping animations
+			if keys[pygame.K_SPACE] and not self.attacking:
 				print('SPACE UP')
 				self.attacking = True
 				self.attack_time = pygame.time.get_ticks()
 				self.create_attack()
 
-			# magic input
-			if keys[pygame.K_LCTRL]:
+			# magic input - prevent overlapping with attacks
+			if keys[pygame.K_LCTRL] and not self.attacking:
 				self.attacking = True
 				self.attack_time = pygame.time.get_ticks()
 				style = list(magic_data.keys())[self.magic_index]

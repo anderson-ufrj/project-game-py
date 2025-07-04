@@ -145,8 +145,24 @@ class Level4:
                     for target_sprite in collision_sprites:
                         if target_sprite.sprite_type == 'grass':
                             target_sprite.kill()
+                        elif attack_sprite.sprite_type == 'magic':
+                            # Handle magic projectile collision
+                            self.handle_magic_collision(attack_sprite, target_sprite)
                         else:
                             target_sprite.get_damage(self.player, attack_sprite.sprite_type)
+
+    def handle_magic_collision(self, magic_projectile, target):
+        """Handle collision between magic projectile and target"""
+        if magic_projectile.style == 'flame':
+            # Apply fire effect
+            target.apply_fire_effect(magic_projectile.strength)
+        elif magic_projectile.style == 'heal':
+            # Water/ice magic slows enemies
+            target.apply_water_effect(0.3)  # Slow to 30% speed
+        
+        # Apply projectile effect and remove it
+        magic_projectile.apply_effect_on_hit(target)
+        magic_projectile.kill()
 
     def damage_player(self, amount, attack_type):
         # CHEAT: Check god mode (remove for final version)
