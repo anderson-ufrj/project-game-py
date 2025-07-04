@@ -7,59 +7,106 @@ class Weapon(pygame.sprite.Sprite):
 		super().__init__(groups)
 		self.sprite_type = 'weapon'
 		self.player = player
-		direction = player.status.split('_')[0]
+		self.direction = player.status.split('_')[0]
 		self.weapon_type = player.weapon
 		
 		# Animation properties
-		self.animation_frames = 6
-		self.current_frame = 0
-		self.animation_speed = 0.8
 		self.start_time = pygame.time.get_ticks()
-		self.duration = 150  # Attack animation duration
+		self.duration = 200  # Attack animation duration
+		self.animation_progress = 0.0
 
-		# Load weapon graphic based on type
-		try:
-			weapon_surf = pygame.image.load(weapon_data[self.weapon_type]['graphic']).convert_alpha()
-			# Scale weapon based on type
-			if self.weapon_type == 'sword':
-				weapon_surf = pygame.transform.scale(weapon_surf, (60, 60))
-			elif self.weapon_type == 'lance':
-				weapon_surf = pygame.transform.scale(weapon_surf, (80, 20))
-			elif self.weapon_type == 'axe':
-				weapon_surf = pygame.transform.scale(weapon_surf, (70, 70))
-			elif self.weapon_type == 'rapier':
-				weapon_surf = pygame.transform.scale(weapon_surf, (50, 15))
-			elif self.weapon_type == 'sai':
-				weapon_surf = pygame.transform.scale(weapon_surf, (40, 60))
-		except:
-			# Fallback if image not found
-			weapon_surf = pygame.Surface([64,64], pygame.SRCALPHA)
-			pygame.draw.rect(weapon_surf, (200, 200, 200), (0, 0, 64, 64))
-
-		self.base_weapon_surf = weapon_surf
-		self.direction = direction
+		# Load weapon graphic with proper scaling
+		self.original_weapon_surf = self.load_weapon_graphic()
 		
-		# Initialize animation
+		# Calculate proper positioning
+		self.base_position = self.calculate_base_position()
+		
+		# Initialize with first frame
 		self.update_animation()
 
-		weapon_offset_from_player = self.get_weapon_offset()
-		# placement based on weapon type and direction
-		if direction == 'right':
-			self.rect = self.image.get_rect(midleft = player.rect.midright + pygame.math.Vector2(0,16))
-			self.rect.x-= weapon_offset_from_player
-		elif direction == 'left': 
-			self.rect = self.image.get_rect(midright = player.rect.midleft + pygame.math.Vector2(0,16))
-			self.rect.x+= weapon_offset_from_player
-		elif direction == 'down':
-			self.rect = self.image.get_rect(midtop = player.rect.midbottom + pygame.math.Vector2(-10,0))
-			self.rect.y-= weapon_offset_from_player
+	def load_weapon_graphic(self):
+		"""Load and properly scale weapon graphic"""
+		try:
+			weapon_surf = pygame.image.load(weapon_data[self.weapon_type]['graphic']).convert_alpha()
+			
+			# Better scaling based on weapon type to avoid distortion
+			if self.weapon_type == 'sword':
+				# Maintain aspect ratio for sword
+				weapon_surf = pygame.transform.scale(weapon_surf, (48, 48))
+			elif self.weapon_type == 'lance':
+				# Lance should be long and thin
+				weapon_surf = pygame.transform.scale(weapon_surf, (64, 16))
+			elif self.weapon_type == 'axe':
+				# Axe should be square-ish but not too big
+				weapon_surf = pygame.transform.scale(weapon_surf, (52, 52))
+			elif self.weapon_type == 'rapier':
+				# Rapier should be long and very thin
+				weapon_surf = pygame.transform.scale(weapon_surf, (56, 12))
+			elif self.weapon_type == 'sai':
+				# Sai should be medium and vertical
+				weapon_surf = pygame.transform.scale(weapon_surf, (32, 48))
+			
+			return weapon_surf
+		except Exception as e:
+			print(f"⚠️ Não foi possível carregar textura da arma {self.weapon_type}: {e}")
+			# Enhanced fallback with weapon-shaped graphics
+			return self.create_fallback_weapon()
+	
+	def create_fallback_weapon(self):
+		"""Create enhanced fallback weapon graphics"""
+		if self.weapon_type == 'sword':
+			surf = pygame.Surface([48, 48], pygame.SRCALPHA)
+			# Draw sword shape
+			pygame.draw.rect(surf, (192, 192, 192), (20, 8, 8, 32))  # Blade
+			pygame.draw.rect(surf, (139, 69, 19), (18, 36, 12, 8))   # Handle
+			pygame.draw.circle(surf, (255, 215, 0), (24, 42), 3)     # Pommel
+			
+		elif self.weapon_type == 'lance':
+			surf = pygame.Surface([64, 16], pygame.SRCALPHA)
+			# Draw lance shape
+			pygame.draw.rect(surf, (139, 69, 19), (8, 6, 48, 4))     # Shaft
+			pygame.draw.polygon(surf, (192, 192, 192), [(56, 2), (62, 8), (56, 14)])  # Tip
+			
+		elif self.weapon_type == 'axe':
+			surf = pygame.Surface([52, 52], pygame.SRCALPHA)
+			# Draw axe shape
+			pygame.draw.rect(surf, (139, 69, 19), (22, 16, 8, 28))   # Handle
+			pygame.draw.polygon(surf, (105, 105, 105), [(22, 16), (8, 12), (8, 28), (22, 24)])  # Blade
+			
+		elif self.weapon_type == 'rapier':
+			surf = pygame.Surface([56, 12], pygame.SRCALPHA)
+			# Draw rapier shape
+			pygame.draw.rect(surf, (255, 215, 0), (8, 4, 40, 4))     # Thin blade
+			pygame.draw.rect(surf, (139, 69, 19), (44, 2, 8, 8))     # Handle
+			pygame.draw.circle(surf, (192, 192, 192), (50, 6), 2)    # Guard
+			
+		elif self.weapon_type == 'sai':
+			surf = pygame.Surface([32, 48], pygame.SRCALPHA)
+			# Draw sai shape
+			pygame.draw.rect(surf, (70, 130, 180), (14, 8, 4, 32))   # Main prong
+			pygame.draw.rect(surf, (70, 130, 180), (10, 12, 2, 16))  # Left prong
+			pygame.draw.rect(surf, (70, 130, 180), (20, 12, 2, 16))  # Right prong
+			pygame.draw.rect(surf, (139, 69, 19), (12, 36, 8, 8))    # Handle
+			
 		else:
-			self.rect = self.image.get_rect(midbottom = player.rect.midtop + pygame.math.Vector2(-10,0))
-			self.rect.y+= weapon_offset_from_player
+			# Generic weapon
+			surf = pygame.Surface([48, 48], pygame.SRCALPHA)
+			pygame.draw.rect(surf, (200, 200, 200), (20, 12, 8, 24))
 		
-		# Add 360-degree damage area (invisible)
-		self.attack_radius = 80  # Radius for 360-degree damage
-		self.player_center = player.rect.center
+		return surf
+
+	def calculate_base_position(self):
+		"""Calculate weapon base position relative to player"""
+		offset = self.get_weapon_offset()
+		
+		if self.direction == 'right':
+			return self.player.rect.midright + pygame.math.Vector2(-offset, 16)
+		elif self.direction == 'left':
+			return self.player.rect.midleft + pygame.math.Vector2(offset, 16)
+		elif self.direction == 'down':
+			return self.player.rect.midbottom + pygame.math.Vector2(-10, -offset)
+		else:  # up
+			return self.player.rect.midtop + pygame.math.Vector2(-10, offset)
 
 	def get_weapon_offset(self):
 		"""Get weapon offset based on weapon type"""
@@ -73,81 +120,107 @@ class Weapon(pygame.sprite.Sprite):
 		return offsets.get(self.weapon_type, 20)
 	
 	def update_animation(self):
-		"""Update weapon animation frame"""
+		"""Update weapon animation with smooth movement"""
 		elapsed_time = pygame.time.get_ticks() - self.start_time
-		progress = min(elapsed_time / self.duration, 1.0)  # 0.0 to 1.0
+		self.animation_progress = min(elapsed_time / self.duration, 1.0)
 		
-		# Calculate current frame
-		self.current_frame = progress * (self.animation_frames - 1)
+		# Create smooth animation based on weapon type
+		self.apply_weapon_animation()
 		
-		# Get animated rotation angle
-		angle_offset = self.get_animation_angle_offset(progress)
-		
-		# Apply rotation with animation
-		self.image = self.rotate_weapon_animated(self.base_weapon_surf, self.direction, angle_offset)
+		# Update position
+		self.update_position()
 	
-	def get_animation_angle_offset(self, progress):
-		"""Get angle offset based on animation progress and weapon type"""
+	def apply_weapon_animation(self):
+		"""Apply weapon-specific animation"""
+		# Get base rotation angle
+		base_angle = self.get_base_rotation_angle()
+		
+		# Apply animation offset
+		animation_offset = self.get_animation_offset()
+		
+		# Apply rotation to the original weapon surface
+		final_angle = base_angle + animation_offset
+		
+		# Rotate weapon surface - this preserves the original texture
+		self.image = pygame.transform.rotate(self.original_weapon_surf, final_angle)
+	
+	def get_base_rotation_angle(self):
+		"""Get base rotation angle for each weapon type and direction"""
+		angle_map = {
+			'sword': {
+				'right': -45, 'left': 135, 'up': 45, 'down': -135
+			},
+			'lance': {
+				'right': 0, 'left': 180, 'up': 90, 'down': -90
+			},
+			'axe': {
+				'right': -30, 'left': 150, 'up': 60, 'down': -120
+			},
+			'rapier': {
+				'right': -10, 'left': 170, 'up': 80, 'down': -100
+			},
+			'sai': {
+				'right': -45, 'left': 135, 'up': 45, 'down': -135
+			}
+		}
+		
+		return angle_map.get(self.weapon_type, {}).get(self.direction, 0)
+	
+	def get_animation_offset(self):
+		"""Get animation offset based on progress and weapon type"""
+		# Use smooth sine wave for natural movement
+		sin_progress = math.sin(self.animation_progress * math.pi)
+		
 		if self.weapon_type == 'sword':
-			# Sword: wide arc swing
-			return math.sin(progress * math.pi) * 30  # 30 degree swing
+			# Sword: arc swing
+			return sin_progress * 25
 		elif self.weapon_type == 'axe':
-			# Axe: heavy overhead swing
-			return math.sin(progress * math.pi) * 45  # 45 degree swing
+			# Axe: heavy swing
+			return sin_progress * 35
 		elif self.weapon_type == 'lance':
-			# Lance: thrust forward and back
-			thrust_distance = math.sin(progress * math.pi) * 10
-			return thrust_distance
+			# Lance: subtle thrust (minimal rotation, more position based)
+			return sin_progress * 8
 		elif self.weapon_type == 'rapier':
-			# Rapier: quick precise stab
-			return math.sin(progress * math.pi) * 15  # 15 degree precision
+			# Rapier: precise movement
+			return sin_progress * 12
 		elif self.weapon_type == 'sai':
-			# Sai: defensive parry motion
-			return math.sin(progress * math.pi) * 20  # 20 degree parry
+			# Sai: defensive movement
+			return sin_progress * 18
 		
 		return 0
 	
-	def rotate_weapon_animated(self, weapon_surf, direction, angle_offset):
-		"""Apply animated rotation to weapon"""
-		base_angle = self.get_base_angle(direction)
-		final_angle = base_angle + angle_offset
+	def update_position(self):
+		"""Update weapon position during animation"""
+		# Base position
+		pos = pygame.math.Vector2(self.base_position)
 		
-		return pygame.transform.rotate(weapon_surf, final_angle)
+		# Add animation-based position offset
+		position_offset = self.get_position_offset()
+		pos += position_offset
+		
+		# Set rect position
+		self.rect = self.image.get_rect(center=pos)
 	
-	def get_base_angle(self, direction):
-		"""Get base rotation angle for direction"""
+	def get_position_offset(self):
+		"""Get position offset during animation"""
+		# Use animation progress for smooth movement
+		thrust_amount = math.sin(self.animation_progress * math.pi) * 15
+		
 		if self.weapon_type == 'lance':
-			# Lance: pointing directions
-			if direction == 'right':
-				return 0
-			elif direction == 'left':
-				return 180
-			elif direction == 'up':
-				return 90
-			elif direction == 'down':
-				return -90
-		elif self.weapon_type == 'rapier':
-			# Rapier: angled stabs
-			if direction == 'right':
-				return -15
-			elif direction == 'left':
-				return 165
-			elif direction == 'up':
-				return 75
-			elif direction == 'down':
-				return -105
-		else:
-			# Other weapons: diagonal swings
-			if direction == 'right':
-				return -45
-			elif direction == 'left':
-				return 45
-			elif direction == 'up':
-				return 135
-			elif direction == 'down':
-				return -135
+			# Lance thrusts forward more
+			thrust_amount *= 2
 		
-		return 0
+		# Direction-based thrust
+		if self.direction == 'right':
+			return pygame.math.Vector2(thrust_amount, 0)
+		elif self.direction == 'left':
+			return pygame.math.Vector2(-thrust_amount, 0)
+		elif self.direction == 'up':
+			return pygame.math.Vector2(0, -thrust_amount)
+		elif self.direction == 'down':
+			return pygame.math.Vector2(0, thrust_amount)
+		
+		return pygame.math.Vector2(0, 0)
 	
 	def update(self):
 		"""Update weapon animation"""
