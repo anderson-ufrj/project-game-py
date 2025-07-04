@@ -25,32 +25,39 @@ class Weapon(pygame.sprite.Sprite):
 		self.update_animation()
 
 	def load_weapon_graphic(self):
-		"""Load and properly scale weapon graphic"""
+		"""Load directional weapon graphic (the correct approach!)"""
 		try:
-			weapon_surf = pygame.image.load(weapon_data[self.weapon_type]['graphic']).convert_alpha()
+			# Use directional files instead of full.png - this is the key!
+			direction_file = f"../graphics/weapons/{self.weapon_type}/{self.direction}.png"
+			print(f"🔧 Carregando: {direction_file}")
 			
-			# Better scaling based on weapon type to avoid distortion
-			if self.weapon_type == 'sword':
-				# Maintain aspect ratio for sword
-				weapon_surf = pygame.transform.scale(weapon_surf, (48, 48))
-			elif self.weapon_type == 'lance':
-				# Lance should be long and thin
-				weapon_surf = pygame.transform.scale(weapon_surf, (64, 16))
-			elif self.weapon_type == 'axe':
-				# Axe should be square-ish but not too big
-				weapon_surf = pygame.transform.scale(weapon_surf, (52, 52))
-			elif self.weapon_type == 'rapier':
-				# Rapier should be long and very thin
-				weapon_surf = pygame.transform.scale(weapon_surf, (56, 12))
-			elif self.weapon_type == 'sai':
-				# Sai should be medium and vertical
-				weapon_surf = pygame.transform.scale(weapon_surf, (32, 48))
+			weapon_surf = pygame.image.load(direction_file).convert_alpha()
+			original_size = weapon_surf.get_size()
+			print(f"📏 Tamanho original: {original_size}")
 			
+			# Scale 2x to make it visible but preserve aspect ratio
+			new_width = original_size[0] * 2
+			new_height = original_size[1] * 2
+			weapon_surf = pygame.transform.scale(weapon_surf, (new_width, new_height))
+			
+			print(f"✅ {self.weapon_type} {self.direction}: {original_size} -> {weapon_surf.get_size()}")
 			return weapon_surf
+			
 		except Exception as e:
-			print(f"⚠️ Não foi possível carregar textura da arma {self.weapon_type}: {e}")
-			# Enhanced fallback with weapon-shaped graphics
-			return self.create_fallback_weapon()
+			print(f"⚠️ Erro ao carregar {self.weapon_type}/{self.direction}.png: {e}")
+			print(f"🔄 Tentando fallback para full.png...")
+			
+			# Fallback to full.png if directional file doesn't exist
+			try:
+				weapon_surf = pygame.image.load(weapon_data[self.weapon_type]['graphic']).convert_alpha()
+				# Scale 3x for full.png since they're smaller
+				original_size = weapon_surf.get_size()
+				weapon_surf = pygame.transform.scale(weapon_surf, (original_size[0] * 3, original_size[1] * 3))
+				print(f"🔄 Fallback {self.weapon_type}: {original_size} -> {weapon_surf.get_size()}")
+				return weapon_surf
+			except Exception as e2:
+				print(f"❌ Fallback também falhou: {e2}")
+				return self.create_fallback_weapon()
 	
 	def create_fallback_weapon(self):
 		"""Create enhanced fallback weapon graphics"""
@@ -131,18 +138,18 @@ class Weapon(pygame.sprite.Sprite):
 		self.update_position()
 	
 	def apply_weapon_animation(self):
-		"""Apply weapon-specific animation"""
-		# Get base rotation angle
-		base_angle = self.get_base_rotation_angle()
+		"""Apply weapon-specific animation - simplified since we use directional images"""
+		# Since we're using directional images, we don't need rotation!
+		# Just apply subtle animation effects
 		
-		# Apply animation offset
+		# Get animation offset for subtle movement
 		animation_offset = self.get_animation_offset()
 		
-		# Apply rotation to the original weapon surface
-		final_angle = base_angle + animation_offset
-		
-		# Rotate weapon surface - this preserves the original texture
-		self.image = pygame.transform.rotate(self.original_weapon_surf, final_angle)
+		# Apply minimal rotation for animation effect only
+		if abs(animation_offset) > 0:
+			self.image = pygame.transform.rotate(self.original_weapon_surf, animation_offset)
+		else:
+			self.image = self.original_weapon_surf.copy()
 	
 	def get_base_rotation_angle(self):
 		"""Get base rotation angle for each weapon type and direction"""
@@ -167,25 +174,26 @@ class Weapon(pygame.sprite.Sprite):
 		return angle_map.get(self.weapon_type, {}).get(self.direction, 0)
 	
 	def get_animation_offset(self):
-		"""Get animation offset based on progress and weapon type"""
+		"""Get subtle animation offset - much smaller since images are pre-oriented"""
 		# Use smooth sine wave for natural movement
 		sin_progress = math.sin(self.animation_progress * math.pi)
 		
+		# Much smaller angles since we're not doing full rotation
 		if self.weapon_type == 'sword':
-			# Sword: arc swing
-			return sin_progress * 25
-		elif self.weapon_type == 'axe':
-			# Axe: heavy swing
-			return sin_progress * 35
-		elif self.weapon_type == 'lance':
-			# Lance: subtle thrust (minimal rotation, more position based)
+			# Sword: subtle swing
 			return sin_progress * 8
+		elif self.weapon_type == 'axe':
+			# Axe: small heavy movement
+			return sin_progress * 10
+		elif self.weapon_type == 'lance':
+			# Lance: minimal rotation (more thrust-based)
+			return sin_progress * 3
 		elif self.weapon_type == 'rapier':
-			# Rapier: precise movement
-			return sin_progress * 12
+			# Rapier: precise tiny movement
+			return sin_progress * 5
 		elif self.weapon_type == 'sai':
-			# Sai: defensive movement
-			return sin_progress * 18
+			# Sai: small defensive movement
+			return sin_progress * 6
 		
 		return 0
 	
