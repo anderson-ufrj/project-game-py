@@ -381,6 +381,7 @@ class MagicImpactEffect(pygame.sprite.Sprite):
     def __init__(self, pos, groups, magic_style):
         super().__init__(groups)
         
+        self.sprite_type = 'effect'  # Add sprite_type to avoid collision detection
         self.pos = pygame.math.Vector2(pos)
         self.magic_style = magic_style
         self.life_time = 20

@@ -140,16 +140,18 @@ class Level4:
     def player_attack_logic(self):
         if self.attack_sprites:
             for attack_sprite in self.attack_sprites:
-                collision_sprites = pygame.sprite.spritecollide(attack_sprite, self.attackable_sprites, False)
-                if collision_sprites:
-                    for target_sprite in collision_sprites:
-                        if target_sprite.sprite_type == 'grass':
-                            target_sprite.kill()
-                        elif attack_sprite.sprite_type == 'magic':
-                            # Handle magic projectile collision
-                            self.handle_magic_collision(attack_sprite, target_sprite)
-                        else:
-                            target_sprite.get_damage(self.player, attack_sprite.sprite_type)
+                # Only process actual weapons and magic projectiles, not effects
+                if hasattr(attack_sprite, 'sprite_type') and attack_sprite.sprite_type in ['weapon', 'magic']:
+                    collision_sprites = pygame.sprite.spritecollide(attack_sprite, self.attackable_sprites, False)
+                    if collision_sprites:
+                        for target_sprite in collision_sprites:
+                            if target_sprite.sprite_type == 'grass':
+                                target_sprite.kill()
+                            elif attack_sprite.sprite_type == 'magic':
+                                # Handle magic projectile collision
+                                self.handle_magic_collision(attack_sprite, target_sprite)
+                            else:
+                                target_sprite.get_damage(self.player, attack_sprite.sprite_type)
 
     def handle_magic_collision(self, magic_projectile, target):
         """Handle collision between magic projectile and target"""
