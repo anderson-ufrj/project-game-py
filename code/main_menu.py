@@ -284,8 +284,8 @@ class AdvancedMainMenu:
         controls = [
             "⌨️ WASD/Setas: Movimento | Shift: Correr | Espaço: Ataque 360°",
             "♪ M: Mudo | ↑↓: Volume | ⚙: Configurações | S: Estatísticas | D: Dificuldade",
-            "🗺️ TAB: Minimapa (Fase 3)",
-            "♦ Teclas 1-4: Ir direto para fase específica (para testes)"
+            "💾 L: Carregar Jogo | F5: Quick Save | F9: Quick Load | F6: Salvar",
+            "🗺️ TAB: Minimapa (Fase 3) | ♦ Teclas 1-4: Ir direto para fase"
         ]
         
         for i, control in enumerate(controls):

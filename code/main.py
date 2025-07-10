@@ -23,6 +23,8 @@ from stats_screen import StatsScreen
 from achievements_screen import AchievementsScreen
 from difficulty_manager import difficulty_manager
 from difficulty_screen import DifficultyScreen
+from save_manager import save_manager
+from save_screen import SaveScreen
 # pygame.mixer.pre_init(44100, 16, 2, 4096)
 from pygame.locals import*
 
@@ -77,6 +79,7 @@ class Game:
         self.stats_screen = StatsScreen()
         self.achievements_screen = AchievementsScreen()
         self.difficulty_screen = DifficultyScreen()
+        self.save_screen = None  # Will be initialized when needed
         
         # Use AudioManager for music control
         audio_manager.play_music('../audio/home.mp3')
@@ -135,6 +138,10 @@ class Game:
                 elif event.key == pygame.K_d:
                     # Go to difficulty screen
                     self.game_state = 40
+                    return
+                elif event.key == pygame.K_l:
+                    # Load game screen
+                    self.game_state = 50
                     return
                 else:
                     # Handle settings controls
@@ -267,6 +274,21 @@ class Game:
                         if cheat_action:
                             self.handle_cheat_action(cheat_action)
                             continue  # Don't pass this event to level
+                        
+                        # Save/Load controls during game
+                        if event.key == pygame.K_F5:
+                            # Quick save
+                            if save_manager.quick_save(self):
+                                print("💾 Quick save realizado!")
+                            continue
+                        elif event.key == pygame.K_F9:
+                            # Quick load (go to load screen)
+                            self.game_state = 50
+                            continue
+                        elif event.key == pygame.K_F6:
+                            # Save screen
+                            self.game_state = 51
+                            continue
                     
                     # Put non-consumed events back for the level to handle
                     events_for_level.append(event)
@@ -304,6 +326,8 @@ class Game:
                 elif self.level1.completed:
                     # STATS: Record level completion
                     player_stats.complete_level(1)
+                    # Auto-save progress
+                    save_manager.auto_save(self)
                     self.transition_start_time = pygame.time.get_ticks()
                     self.game_state = 4  # Set game state to transition
 
@@ -328,6 +352,8 @@ class Game:
                 elif self.level2.completed:
                     # STATS: Record level completion
                     player_stats.complete_level(2)
+                    # Auto-save progress
+                    save_manager.auto_save(self)
                     self.game_state = 5  # Go to Level 3
                     audio_manager.play_music('../audio/darkambience(from fable).mp3')
 
@@ -348,6 +374,8 @@ class Game:
                 if self.level3.completed:
                     # STATS: Record level completion
                     player_stats.complete_level(3)
+                    # Auto-save progress
+                    save_manager.auto_save(self)
                     self.game_state = 6  # Go to Level 4
                     audio_manager.play_music('../audio/home.mp3')
 
@@ -368,6 +396,8 @@ class Game:
                 if self.level4.completed:
                     # STATS: Record level completion and game completion
                     player_stats.complete_level(4)
+                    # Auto-save final progress
+                    save_manager.auto_save(self)
                     # Mostrar história de vitória
                     story = StoryScreen("victory")
                     story_finished = False
@@ -428,6 +458,76 @@ class Game:
                     sys.exit()
                 else:
                     self.difficulty_screen.draw()
+            
+            elif self.game_state == 50:  # Save/Load Screen
+                # Initialize save screen if needed
+                if self.save_screen is None:
+                    self.save_screen = SaveScreen("load")
+                
+                events = pygame.event.get()
+                result = self.save_screen.handle_events(events)
+                
+                if result == 'cancel':
+                    self.game_state = 0  # Return to homescreen
+                    self.save_screen = None
+                elif isinstance(result, tuple) and result[0] == 'load_confirm':
+                    slot = result[1]
+                    save_data = save_manager.load_game(slot)
+                    if save_data:
+                        # Apply save data to game
+                        if save_manager.apply_save_data(self, save_data):
+                            print(f"✅ Jogo carregado do slot {slot}")
+                            # Go to loaded game state
+                            self.game_state = save_data["game_state"]["current_level"]
+                        else:
+                            print("❌ Erro ao aplicar dados do save")
+                            self.game_state = 0
+                    else:
+                        print("❌ Erro ao carregar save")
+                        self.game_state = 0
+                    self.save_screen = None
+                elif result == 'quit':
+                    pygame.quit()
+                    sys.exit()
+                else:
+                    self.save_screen.update(self.clock.get_time())
+                    self.save_screen.draw()
+            
+            elif self.game_state == 51:  # Save Screen
+                # Initialize save screen if needed
+                if self.save_screen is None:
+                    self.save_screen = SaveScreen("save")
+                
+                events = pygame.event.get()
+                result = self.save_screen.handle_events(events)
+                
+                if result == 'cancel':
+                    # Return to previous game state (pause menu logic would be here)
+                    self.game_state = 0
+                    self.save_screen = None
+                elif isinstance(result, tuple) and result[0] == 'save_confirm':
+                    slot = result[1]
+                    save_name = result[2] if len(result) > 2 else None
+                    if save_manager.save_game(self, slot, save_name):
+                        print(f"✅ Jogo salvo no slot {slot}")
+                        # Return to previous game state
+                        self.game_state = 0
+                    else:
+                        print("❌ Erro ao salvar jogo")
+                        self.game_state = 0
+                    self.save_screen = None
+                elif isinstance(result, tuple) and result[0] == 'delete_confirm':
+                    slot = result[1]
+                    if save_manager.delete_save(slot):
+                        print(f"🗑️ Save slot {slot} deletado")
+                        # Refresh save screen
+                        self.save_screen = SaveScreen("save")
+                elif result == 'quit':
+                    pygame.quit()
+                    sys.exit()
+                else:
+                    self.save_screen.update(self.clock.get_time())
+                    self.save_screen.draw()
             pygame.display.update()
             self.clock.tick(FPS)
 
