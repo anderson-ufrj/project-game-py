@@ -1,12 +1,13 @@
 import pygame
 from settings import * 
 from player import Player
+from font_manager import font_manager
 class UI:
 	def __init__(self):
 		
 		# general 
 		self.display_surface = pygame.display.get_surface()
-		self.font = pygame.font.Font(UI_FONT,UI_FONT_SIZE)
+		self.font = font_manager.get('ui')
 
 		# bar setup 
 		self.health_bar_rect = pygame.Rect(10,10,HEALTH_BAR_WIDTH*3,BAR_HEIGHT)
@@ -25,7 +26,7 @@ class UI:
 			magic = pygame.image.load(magic['graphic']).convert_alpha()
 			self.magic_graphics.append(magic)
 
-		self.pixelated_font = pygame.font.Font('../graphics/font/PressStart2P.ttf', 24)
+		self.pixelated_font = font_manager.get('text')
 
 		# Status message variables
 		self.status_message = ""

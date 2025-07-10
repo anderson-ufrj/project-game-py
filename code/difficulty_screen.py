@@ -3,6 +3,7 @@ import sys
 import math
 from settings import *
 from difficulty_manager import difficulty_manager
+from font_manager import font_manager
 
 class DifficultyButton:
     """Botão de seleção de dificuldade"""
@@ -87,9 +88,9 @@ class DifficultyButton:
 class DifficultyScreen:
     def __init__(self):
         self.display_surface = pygame.display.get_surface()
-        self.font = pygame.font.Font('../graphics/font/PressStart2P.ttf', 18)
-        self.title_font = pygame.font.Font('../graphics/font/PressStart2P.ttf', 28)
-        self.small_font = pygame.font.Font('../graphics/font/PressStart2P.ttf', 12)
+        self.font = font_manager.get('button')
+        self.title_font = font_manager.get('title')
+        self.small_font = font_manager.get('small')
         
         # Background
         self.background = pygame.image.load('../graphics/ui/home page.jpg').convert()

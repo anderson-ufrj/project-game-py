@@ -1,6 +1,7 @@
 import pygame
 from settings import WIDTH, HEIGTH
 from audio_manager import audio_manager
+from font_manager import font_manager
 
 class SettingsManager:
     """Gerenciador de configurações reutilizável para todas as fases"""
@@ -19,13 +20,9 @@ class SettingsManager:
         self.gear_rect = pygame.Rect(WIDTH - 60, 20, 40, 40)
         self.settings_rect = pygame.Rect(WIDTH - 280, 70, 260, 180)
         
-        # Fonts
-        try:
-            self.info_font = pygame.font.Font('../graphics/font/PressStart2P.ttf', 12)
-            self.symbol_font = pygame.font.Font('../graphics/font/PressStart2P.ttf', 16)
-        except:
-            self.info_font = pygame.font.Font(None, 16)
-            self.symbol_font = pygame.font.Font(None, 20)
+        # Fonts - usando novo sistema
+        self.info_font = font_manager.get('small')
+        self.symbol_font = font_manager.get('text')
     
     def handle_keydown(self, event):
         """Handle keyboard events for settings"""

@@ -4,6 +4,7 @@ import os
 from datetime import datetime
 from settings import *
 from save_manager import save_manager
+from font_manager import font_manager
 
 class SaveScreen:
     def __init__(self, mode="load"):
@@ -13,9 +14,9 @@ class SaveScreen:
         """
         self.display_surface = pygame.display.get_surface()
         self.mode = mode
-        self.font = pygame.font.Font('../graphics/font/PressStart2P.ttf', 16)
-        self.title_font = pygame.font.Font('../graphics/font/PressStart2P.ttf', 24)
-        self.small_font = pygame.font.Font('../graphics/font/PressStart2P.ttf', 12)
+        self.font = font_manager.get('menu')
+        self.title_font = font_manager.get('title')
+        self.small_font = font_manager.get('small')
         
         # Background
         self.background = pygame.image.load('../graphics/ui/home page.jpg').convert()

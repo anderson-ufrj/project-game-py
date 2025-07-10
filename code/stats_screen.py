@@ -3,13 +3,14 @@ import sys
 from settings import *
 from player_stats import player_stats
 from datetime import timedelta
+from font_manager import font_manager
 
 class StatsScreen:
     def __init__(self):
         self.display_surface = pygame.display.get_surface()
-        self.font = pygame.font.Font('../graphics/font/PressStart2P.ttf', 16)
-        self.title_font = pygame.font.Font('../graphics/font/PressStart2P.ttf', 24)
-        self.small_font = pygame.font.Font('../graphics/font/PressStart2P.ttf', 12)
+        self.font = font_manager.get('stats')
+        self.title_font = font_manager.get('title')
+        self.small_font = font_manager.get('small')
         
         # Background
         self.background = pygame.image.load('../graphics/ui/home page.jpg').convert()

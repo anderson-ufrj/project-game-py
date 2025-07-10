@@ -2,6 +2,7 @@ import pygame
 import math
 import random
 from settings import *
+from font_manager import font_manager
 
 class MenuParticle:
     """Partícula mágica para o menu principal"""
@@ -117,19 +118,11 @@ class AdvancedMainMenu:
         except:
             print("Erro ao carregar imagens do menu")
         
-        # Carregar fontes mais arredondadas
-        try:
-            # Usar fonte padrão do sistema mais arredondada
-            self.custom_title_font = pygame.font.Font(None, 48)  # Fonte maior para título
-            self.custom_subtitle_font = pygame.font.Font(None, 24)  # Fonte média para subtítulo
-            self.custom_button_font = pygame.font.Font(None, 20)  # Fonte para botões
-            self.custom_info_font = pygame.font.Font(None, 16)  # Fonte para informações
-        except:
-            # Fallback para fontes originais se houver erro
-            self.custom_title_font = self.title_font
-            self.custom_subtitle_font = self.subtitle_font
-            self.custom_button_font = self.button_font
-            self.custom_info_font = self.info_font
+        # Usar o novo sistema de fontes
+        self.custom_title_font = font_manager.get('title')
+        self.custom_subtitle_font = font_manager.get('subtitle')
+        self.custom_button_font = font_manager.get('button')
+        self.custom_info_font = font_manager.get('text')
         
         # Sistema de partículas
         self.particles = []

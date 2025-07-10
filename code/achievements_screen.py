@@ -3,13 +3,14 @@ import sys
 import math
 from settings import *
 from player_stats import player_stats
+from font_manager import font_manager
 
 class AchievementsScreen:
     def __init__(self):
         self.display_surface = pygame.display.get_surface()
-        self.font = pygame.font.Font('../graphics/font/PressStart2P.ttf', 14)
-        self.title_font = pygame.font.Font('../graphics/font/PressStart2P.ttf', 24)
-        self.small_font = pygame.font.Font('../graphics/font/PressStart2P.ttf', 10)
+        self.font = font_manager.get('achievement')
+        self.title_font = font_manager.get('title')
+        self.small_font = font_manager.get('tiny')
         
         # Background
         self.background = pygame.image.load('../graphics/ui/home page.jpg').convert()

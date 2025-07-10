@@ -25,6 +25,7 @@ from difficulty_manager import difficulty_manager
 from difficulty_screen import DifficultyScreen
 from save_manager import save_manager
 from save_screen import SaveScreen
+from font_manager import font_manager
 # pygame.mixer.pre_init(44100, 16, 2, 4096)
 from pygame.locals import*
 
@@ -57,10 +58,10 @@ class Game:
         # STATS: Start with name input if no name is set, otherwise homescreen
         self.game_state = -1 if not player_stats.stats.get("player_name") else 0
         
-        # Font for homescreen text
-        self.title_font = pygame.font.Font('../graphics/font/PressStart2P.ttf', 36)
-        self.subtitle_font = pygame.font.Font('../graphics/font/PressStart2P.ttf', 18)
-        self.info_font = pygame.font.Font('../graphics/font/PressStart2P.ttf', 12)
+        # Font for homescreen text - usando novo sistema de fontes
+        self.title_font = font_manager.get('title')
+        self.subtitle_font = font_manager.get('subtitle')
+        self.info_font = font_manager.get('text')
 
         # Settings manager
         self.settings = SettingsManager(initial_volume=0.5)
