@@ -20,6 +20,7 @@ from cheat_system import cheat_system
 from player_stats import player_stats
 from name_input_screen import NameInputScreenV2
 from stats_screen import StatsScreen
+from achievements_screen import AchievementsScreen
 from difficulty_manager import difficulty_manager
 from difficulty_screen import DifficultyScreen
 # pygame.mixer.pre_init(44100, 16, 2, 4096)
@@ -74,6 +75,7 @@ class Game:
         # STATS: Name input screen and stats screen
         self.name_input_screen = NameInputScreenV2()
         self.stats_screen = StatsScreen()
+        self.achievements_screen = AchievementsScreen()
         self.difficulty_screen = DifficultyScreen()
         
         # Use AudioManager for music control
@@ -393,11 +395,26 @@ class Game:
                     self.game_state = 0  # Return to homescreen
                     # Refresh stats screen for next time
                     self.stats_screen = StatsScreen()
+                elif result == 'achievements':
+                    self.game_state = 31  # Go to achievements screen
                 elif result == 'quit':
                     pygame.quit()
                     sys.exit()
                 else:
                     self.stats_screen.draw()
+            
+            elif self.game_state == 31:  # Achievements Screen
+                events = pygame.event.get()
+                result = self.achievements_screen.handle_events(events)
+                if result == 'stats':
+                    self.game_state = 30  # Return to stats screen
+                    # Refresh achievements screen for next time
+                    self.achievements_screen = AchievementsScreen()
+                elif result == 'quit':
+                    pygame.quit()
+                    sys.exit()
+                else:
+                    self.achievements_screen.draw()
             
             elif self.game_state == 40:  # Difficulty Screen
                 events = pygame.event.get()

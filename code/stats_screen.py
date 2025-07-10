@@ -133,30 +133,29 @@ class StatsScreen:
         
         current_y = y + 40
         
-        # Check achievements
-        stats = player_stats.stats
-        achievements = []
+        # Get all achievements
+        achievements = player_stats.check_achievements()
         
-        # Basic achievements
-        if len(stats["levels_completed"]) >= 1:
-            achievements.append("🏁 Primeiro Passo")
-        if len(stats["levels_completed"]) >= 4:
-            achievements.append("🏆 Campeão")
-        if stats["combat_stats"]["deaths"] == 0 and len(stats["levels_completed"]) >= 4:
-            achievements.append("💀 Imortal")
-        if sum(stats["collection_stats"].values()) >= 50:
-            achievements.append("💎 Colecionador")
-        if stats["combat_stats"]["enemies_killed"] >= 100:
-            achievements.append("⚔️ Guerreiro")
-        if stats["total_playtime"] >= 3600:  # 1 hora
-            achievements.append("⏰ Dedicado")
+        # Show achievement count
+        count_text = f"({len(achievements)}/32 desbloqueadas)"
+        count_surface = self.small_font.render(count_text, True, self.label_color)
+        count_rect = count_surface.get_rect(x=x + 180, y=y + 5)
+        self.display_surface.blit(count_surface, count_rect)
         
-        # Draw achievements
-        for achievement in achievements[:8]:  # Limit to 8 achievements
+        # Draw achievements (limit to 10 for space)
+        displayed_achievements = achievements[:10]
+        for achievement in displayed_achievements:
             achievement_surface = self.small_font.render(achievement, True, self.value_color)
             achievement_rect = achievement_surface.get_rect(x=x, y=current_y)
             self.display_surface.blit(achievement_surface, achievement_rect)
-            current_y += 22
+            current_y += 20
+        
+        # Show "and more..." if there are more achievements
+        if len(achievements) > 10:
+            more_text = f"... e mais {len(achievements) - 10} conquistas"
+            more_surface = self.small_font.render(more_text, True, self.label_color)
+            more_rect = more_surface.get_rect(x=x, y=current_y)
+            self.display_surface.blit(more_surface, more_rect)
         
         if not achievements:
             no_achievements_surface = self.small_font.render("Nenhuma conquista ainda", True, self.label_color)
@@ -176,6 +175,9 @@ class StatsScreen:
                 elif event.key == pygame.K_r:
                     # Refresh stats
                     self.stats_data = self.get_detailed_stats()
+                elif event.key == pygame.K_a:
+                    # Go to achievements screen
+                    return 'achievements'
             
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:  # Left click
@@ -212,9 +214,8 @@ class StatsScreen:
         
         # Instructions
         instructions = [
-            "ESC/ENTER - Voltar ao menu",
-            "R - Atualizar estatísticas",
-            "CLIQUE - Voltar ao menu"
+            "ESC/ENTER - Voltar ao menu | A - Ver todas as conquistas",
+            "R - Atualizar estatísticas | CLIQUE - Voltar ao menu"
         ]
         
         instruction_y = HEIGTH - 80
