@@ -16,6 +16,10 @@ from main_menu import AdvancedMainMenu
 from story_screen import StoryScreen
 # CHEAT: Import cheat system for testing (remove for final version)
 from cheat_system import cheat_system
+# STATS: Import player statistics system
+from player_stats import player_stats
+from name_input_screen import NameInputScreenV2
+from stats_screen import StatsScreen
 # pygame.mixer.pre_init(44100, 16, 2, 4096)
 from pygame.locals import*
 
@@ -45,7 +49,8 @@ class Game:
         self.loading = LoadingScreen()
         self.gameover_image_rect = self.gameover_image.get_rect()
         self.homescreen_rect = self.homescreen_image.get_rect()
-        self.game_state = 0
+        # STATS: Start with name input if no name is set, otherwise homescreen
+        self.game_state = -1 if not player_stats.stats.get("player_name") else 0
         
         # Font for homescreen text
         self.title_font = pygame.font.Font('../graphics/font/PressStart2P.ttf', 36)
@@ -64,8 +69,15 @@ class Game:
         }
         self.advanced_menu = AdvancedMainMenu(self.screen, fonts)
         
+        # STATS: Name input screen and stats screen
+        self.name_input_screen = NameInputScreenV2()
+        self.stats_screen = StatsScreen()
+        
         # Use AudioManager for music control
         audio_manager.play_music('../audio/home.mp3')
+        
+        # STATS: Initialize player stats session
+        player_stats.start_session()
 
 
     def homescreen(self):
@@ -110,6 +122,10 @@ class Game:
                     # Ir direto para Level 4
                     audio_manager.play_music('../audio/home.mp3')
                     self.game_state = 6
+                    return
+                elif event.key == pygame.K_s:
+                    # STATS: Go to statistics screen
+                    self.game_state = 30
                     return
                 else:
                     # Handle settings controls
@@ -220,7 +236,15 @@ class Game:
 
         while True:
             # Handle events based on game state
-            if self.game_state == 0:  # Homescreen - events handled in homescreen() method
+            if self.game_state == -1:  # Name input screen
+                events = pygame.event.get()
+                result = self.name_input_screen.handle_events(events)
+                if result == 'main_menu':
+                    self.game_state = 0  # Go to homescreen
+                elif result == 'quit':
+                    pygame.quit()
+                    sys.exit()
+            elif self.game_state == 0:  # Homescreen - events handled in homescreen() method
                 pass  # Events are handled inside homescreen()
             else:  # In levels - handle QUIT and CHEAT events, let levels handle the rest
                 events_for_level = []
@@ -244,7 +268,11 @@ class Game:
 
             self.screen.fill((0, 0, 0))  # Fill with black
 
-            if self.game_state == 0:
+            if self.game_state == -1:
+                # STATS: Draw name input screen
+                self.name_input_screen.update(self.clock.get_time())
+                self.name_input_screen.draw()
+            elif self.game_state == 0:
                 self.homescreen()
 
             elif self.game_state == 3:  # Level 1 (skipped intro animations)
@@ -265,6 +293,8 @@ class Game:
                     audio_manager.stop_music()
                     self.game_state = 20  # Game over, return to homescreen
                 elif self.level1.completed:
+                    # STATS: Record level completion
+                    player_stats.complete_level(1)
                     self.transition_start_time = pygame.time.get_ticks()
                     self.game_state = 4  # Set game state to transition
 
@@ -287,6 +317,8 @@ class Game:
                     self.game_state = 20
                     audio_manager.stop_music()
                 elif self.level2.completed:
+                    # STATS: Record level completion
+                    player_stats.complete_level(2)
                     self.game_state = 5  # Go to Level 3
                     audio_manager.play_music('../audio/darkambience(from fable).mp3')
 
@@ -305,6 +337,8 @@ class Game:
                 
                 self.level3.run()
                 if self.level3.completed:
+                    # STATS: Record level completion
+                    player_stats.complete_level(3)
                     self.game_state = 6  # Go to Level 4
                     audio_manager.play_music('../audio/home.mp3')
 
@@ -323,6 +357,8 @@ class Game:
                 
                 self.level4.run()
                 if self.level4.completed:
+                    # STATS: Record level completion and game completion
+                    player_stats.complete_level(4)
                     # Mostrar história de vitória
                     story = StoryScreen("victory")
                     story_finished = False
@@ -334,12 +370,27 @@ class Game:
                                 sys.exit()
                     self.game_state = 0  # Voltar ao menu principal
                     audio_manager.stop_music()
+                    # STATS: End session and save stats
+                    player_stats.end_session()
                 if self.level4.gameover:
                     self.game_state = 20
                     
             elif self.game_state == 20:  # Game Over
                 self.gameover()
                 # Don't reset automatically - let gameover() handle it
+            
+            elif self.game_state == 30:  # Statistics Screen
+                events = pygame.event.get()
+                result = self.stats_screen.handle_events(events)
+                if result == 'main_menu':
+                    self.game_state = 0  # Return to homescreen
+                    # Refresh stats screen for next time
+                    self.stats_screen = StatsScreen()
+                elif result == 'quit':
+                    pygame.quit()
+                    sys.exit()
+                else:
+                    self.stats_screen.draw()
             pygame.display.update()
             self.clock.tick(FPS)
 

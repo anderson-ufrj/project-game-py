@@ -283,7 +283,7 @@ class AdvancedMainMenu:
         controls_y = HEIGTH - 140
         controls = [
             "⌨️ WASD/Setas: Movimento | Shift: Correr | Espaço: Ataque 360°",
-            "♪ M: Mudo | ↑↓: Volume | ⚙: Configurações",
+            "♪ M: Mudo | ↑↓: Volume | ⚙: Configurações | S: Estatísticas",
             "🗺️ TAB: Minimapa (Fase 3)",
             "♦ Teclas 1-4: Ir direto para fase específica (para testes)"
         ]

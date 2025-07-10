@@ -3,6 +3,8 @@ from settings import *
 from entity import Entity
 from support import *
 from particles import DeathParticle, EnemyDeathAnimation
+# STATS: Import player statistics system
+from player_stats import player_stats
 
 
 class Enemy(Entity):
@@ -196,7 +198,10 @@ class Enemy(Entity):
         if self.vulnerable:
             self.direction = self.get_player_distance_direction(player)[1]
             if attack_type == 'weapon':
-                self.health -= player.get_full_weapon_damage()
+                damage = player.get_full_weapon_damage()
+                self.health -= damage
+                # STATS: Record damage dealt
+                player_stats.record_damage_dealt(damage)
             else:
                 pass
             # magic damage
@@ -236,6 +241,9 @@ class Enemy(Entity):
 
     def check_death(self):
         if self.health <= 0:
+            # STATS: Record enemy kill
+            player_stats.record_enemy_kill(self.monster_name)
+            
             # Create death animation if visible_sprites is available
             if self.visible_sprites:
                 # Create explosion effect

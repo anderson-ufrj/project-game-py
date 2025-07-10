@@ -1,0 +1,67 @@
+{
+  "player_name": "Anderson",
+  "created_at": "2025-07-10 09:57:58",
+  "last_played": "2025-07-10 09:57:58",
+  "total_playtime": 0,
+  "game_sessions": 1,
+  "current_level": 4,
+  "levels_completed": [],
+  "combat_stats": {
+    "enemies_killed": 0,
+    "enemies_by_type": {
+      "golu": 0,
+      "black": 0,
+      "bigboi": 0
+    },
+    "damage_dealt": 0,
+    "damage_taken": 0,
+    "deaths": 0,
+    "attacks_made": 0,
+    "magic_cast": 0,
+    "magic_by_type": {
+      "flame": 0,
+      "heal": 0
+    }
+  },
+  "performance": {
+    "best_times": {
+      "level1": null,
+      "level2": null,
+      "level3": null,
+      "level4": null
+    },
+    "attempts_per_level": {
+      "level1": 1,
+      "level2": 1,
+      "level3": 1,
+      "level4": 1
+    },
+    "steps_taken": 0,
+    "distance_traveled": 0
+  },
+  "collection_stats": {
+    "health_orbs": 0,
+    "attack_orbs": 0,
+    "speed_orbs": 0,
+    "keys_found": 0,
+    "eldritch_gems": 0
+  },
+  "equipment_stats": {
+    "weapon_usage": {
+      "sword": 0,
+      "axe": 0,
+      "lance": 0,
+      "rapier": 0,
+      "sai": 0
+    },
+    "weapon_time": {
+      "sword": 0,
+      "axe": 0,
+      "lance": 0,
+      "rapier": 0,
+      "sai": 0
+    },
+    "favorite_weapon": "sword",
+    "favorite_magic": "flame"
+  }
+}

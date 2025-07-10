@@ -13,6 +13,8 @@ from particles import CollectParticle, GemCollectAnimation, DeathParticle, Enemy
 from settings_manager import SettingsManager
 # CHEAT: Import cheat system for testing (remove for final version)
 from cheat_system import cheat_system
+# STATS: Import player statistics system
+from player_stats import player_stats
 
 class Level2:
     def __init__(self):
@@ -22,6 +24,9 @@ class Level2:
 
         # get the display surface
         self.display_surface = pygame.display.get_surface()
+        
+        # STATS: Initialize level statistics
+        player_stats.start_level(2)
 
         # sprite group setup
         self.visible_sprites = YSortCameraGroup()
@@ -227,6 +232,8 @@ class Level2:
             self.completed = True
         if self.player.health <= 0:
             print('game over')
+            # STATS: Record player death
+            player_stats.record_death()
             self.gameover = True
         health_collisions = pygame.sprite.spritecollide(self.player, self.health_orbs, True)
         if health_collisions:

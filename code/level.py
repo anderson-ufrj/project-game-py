@@ -13,6 +13,8 @@ from particles import CollectParticle, GemCollectAnimation, DeathParticle, Enemy
 from settings_manager import SettingsManager
 # CHEAT: Import cheat system for testing (remove for final version)
 from cheat_system import cheat_system
+# STATS: Import player statistics system
+from player_stats import player_stats
 
 
 
@@ -24,6 +26,9 @@ class Level1:
 
         # get the display surface
         self.display_surface = pygame.display.get_surface()
+        
+        # STATS: Initialize level statistics
+        player_stats.start_level(1)
 
         # sprite group setup
         self.visible_sprites = YSortCameraGroup()
@@ -134,11 +139,16 @@ class Level1:
         
         # Add invisible 360-degree damage area
         self.damage_area = Weapon360Damage(self.player, [self.attack_sprites])
+        
+        # STATS: Record attack made
+        player_stats.record_attack(self.player.weapon)
 
     def create_magic(self, style, strength, cost):
         if self.player.energy >= cost:
             self.player.energy -= cost
             magic_sprite = Magic(self.player, [self.visible_sprites, self.magic_sprites, self.attack_sprites], style, strength, cost)
+            # STATS: Record magic cast
+            player_stats.record_magic_cast(style)
             print(f"Magia {style} usada! Energia restante: {self.player.energy}")
     def destroy_attack(self):
         if self.current_attack:
@@ -181,6 +191,8 @@ class Level1:
             
         if self.player.vulnerable:
             self.player.health -= amount
+            # STATS: Record damage taken
+            player_stats.record_damage_taken(amount)
             self.player.vulnerable = False
             self.player.hurt_time = pygame.time.get_ticks()
         # spawn particles
@@ -230,6 +242,8 @@ class Level1:
             self.completed = True
         if self.player.health <= 0:
             print('game over')
+            # STATS: Record player death
+            player_stats.record_death()
             self.gameover = True
         health_collisions = pygame.sprite.spritecollide(self.player, self.health_orbs, True)
         if health_collisions:
@@ -243,6 +257,8 @@ class Level1:
                 FloatingText(orb.rect.center, [self.floating_text_sprites], "+VIDA", color=(255, 100, 100), size=16)
                 
                 self.player.inventory["healthOrbs"] += 1
+                # STATS: Record health orb collection
+                player_stats.record_orb_collection("health_orbs")
                 self.collectable_music_channel.play(self.collectable_music)
                 if self.player.health<450:
                     self.player.health+=50
@@ -261,6 +277,8 @@ class Level1:
                 FloatingText(orb.rect.center, [self.floating_text_sprites], "+VELOCIDADE", color=(100, 255, 100), size=16)
                 
                 self.player.inventory["speedOrbs"] += 1
+                # STATS: Record speed orb collection
+                player_stats.record_orb_collection("speed_orbs")
                 self.collectable_music_channel.play(self.collectable_music)
                 self.player.speed += 0.4
                 self.player.animation_speed+=0.04
@@ -278,6 +296,8 @@ class Level1:
                 FloatingText(orb.rect.center, [self.floating_text_sprites], "+ATAQUE", color=(255, 200, 100), size=16)
                 
                 self.player.inventory["attackOrbs"] += 1
+                # STATS: Record attack orb collection
+                player_stats.record_orb_collection("attack_orbs")
                 self.collectable_music_channel.play(self.collectable_music)
                 self.player.attack += 10
 
