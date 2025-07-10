@@ -20,6 +20,8 @@ from cheat_system import cheat_system
 from player_stats import player_stats
 from name_input_screen import NameInputScreenV2
 from stats_screen import StatsScreen
+from difficulty_manager import difficulty_manager
+from difficulty_screen import DifficultyScreen
 # pygame.mixer.pre_init(44100, 16, 2, 4096)
 from pygame.locals import*
 
@@ -72,6 +74,7 @@ class Game:
         # STATS: Name input screen and stats screen
         self.name_input_screen = NameInputScreenV2()
         self.stats_screen = StatsScreen()
+        self.difficulty_screen = DifficultyScreen()
         
         # Use AudioManager for music control
         audio_manager.play_music('../audio/home.mp3')
@@ -126,6 +129,10 @@ class Game:
                 elif event.key == pygame.K_s:
                     # STATS: Go to statistics screen
                     self.game_state = 30
+                    return
+                elif event.key == pygame.K_d:
+                    # Go to difficulty screen
+                    self.game_state = 40
                     return
                 else:
                     # Handle settings controls
@@ -391,6 +398,19 @@ class Game:
                     sys.exit()
                 else:
                     self.stats_screen.draw()
+            
+            elif self.game_state == 40:  # Difficulty Screen
+                events = pygame.event.get()
+                result = self.difficulty_screen.handle_events(events)
+                if result == 'main_menu' or result == 'confirm':
+                    self.game_state = 0  # Return to homescreen
+                    # Refresh difficulty screen for next time
+                    self.difficulty_screen = DifficultyScreen()
+                elif result == 'quit':
+                    pygame.quit()
+                    sys.exit()
+                else:
+                    self.difficulty_screen.draw()
             pygame.display.update()
             self.clock.tick(FPS)
 

@@ -5,6 +5,7 @@ from support import *
 from particles import DeathParticle, EnemyDeathAnimation
 # STATS: Import player statistics system
 from player_stats import player_stats
+from difficulty_manager import difficulty_manager
 
 
 class Enemy(Entity):
@@ -34,14 +35,25 @@ class Enemy(Entity):
         self.hitbox = self.rect.inflate(-100, -52)
         self.obstacle_sprites = obstacle_sprites
 
-        # stats
+        # stats (apply difficulty modifiers)
         self.monster_name = monster_name
         monster_info = monster_data[self.monster_name]
-        self.health = monster_info['health']
-        self.max_health = monster_info['health']  # Store max health for health bar calculation
+        
+        # Base stats
+        base_health = monster_info['health']
+        base_damage = monster_info['damage']
+        base_speed = monster_info['speed']
+        
+        # Apply difficulty modifiers
+        modified_health, modified_damage, modified_speed = difficulty_manager.apply_to_enemy_stats(
+            base_health, base_damage, base_speed
+        )
+        
+        self.health = modified_health
+        self.max_health = modified_health  # Store max health for health bar calculation
         self.exp = monster_info['exp']
-        self.speed = monster_info['speed']
-        self.attack_damage = monster_info['damage']
+        self.speed = modified_speed
+        self.attack_damage = modified_damage
         self.resistance = monster_info['resistance']
         self.attack_radius = monster_info['attack_radius']
         self.notice_radius = monster_info['notice_radius']

@@ -2,6 +2,7 @@ import pygame
 from settings import *
 from support import import_folder
 from entity import Entity
+from difficulty_manager import difficulty_manager
 
 class Player(Entity):
 	def __init__(self,pos,groups,obstacle_sprites,create_attack,destroy_attack,create_magic):
@@ -38,8 +39,14 @@ class Player(Entity):
 		self.can_switch_magic = True
 		self.magic_switch_time = None
 
-		# stats
-		self.stats = {'health': 500,'energy':120,'attack': 10,'magic': 4,'speed': 3}
+		# stats (base values)
+		base_health = 500
+		base_attack = 10
+		
+		# Apply difficulty modifiers
+		modified_health, modified_attack = difficulty_manager.apply_to_player_stats(base_health, base_attack)
+		
+		self.stats = {'health': modified_health,'energy':120,'attack': modified_attack,'magic': 4,'speed': 3}
 		self.health = self.stats['health']
 		self.energy = self.stats['energy'] * 0.8
 		self.exp = 123
