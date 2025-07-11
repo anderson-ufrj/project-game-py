@@ -185,6 +185,28 @@ class AudioManager:
     def is_muted(self):
         """Verifica se está mudo - compatibilidade"""
         return self.music_muted and self.sfx_muted
+    
+    # Propriedades de compatibilidade com código existente
+    @property
+    def volume(self):
+        """Propriedade de compatibilidade - retorna volume da música"""
+        return self.music_volume
+    
+    @volume.setter
+    def volume(self, value):
+        """Propriedade de compatibilidade - define volume da música"""
+        self.set_music_volume(value)
+    
+    @property
+    def muted(self):
+        """Propriedade de compatibilidade - retorna se música está muda"""
+        return self.music_muted
+    
+    @muted.setter 
+    def muted(self, value):
+        """Propriedade de compatibilidade - define mute da música"""
+        if value != self.music_muted:
+            self.toggle_music_mute()
 
 # Instância global
 audio_manager = AudioManager()

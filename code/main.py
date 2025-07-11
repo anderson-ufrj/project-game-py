@@ -10,7 +10,7 @@ from pygame.locals import *
 # from intro import * # Removed - no longer using intro animations
 
 from loading import LoadingScreen
-from settings_manager import SettingsManager
+from simple_audio_controls import simple_audio_controls
 from audio_manager import audio_manager
 from main_menu import AdvancedMainMenu
 from story_screen import StoryScreen
@@ -26,6 +26,7 @@ from difficulty_screen import DifficultyScreen
 from save_manager import save_manager
 from save_screen import SaveScreen
 from font_manager import font_manager
+from graphics_manager import GraphicsManager
 # pygame.mixer.pre_init(44100, 16, 2, 4096)
 from pygame.locals import*
 
@@ -33,7 +34,16 @@ class Game:
     def __init__(self):
         pygame.mixer.pre_init(44100, 16, 2, 4096)
         pygame.init()
-        self.screen = pygame.display.set_mode((WIDTH, HEIGTH),pygame.SCALED)
+        
+        # Inicializar sistema de gráficos
+        self.graphics_manager = GraphicsManager()
+        self.graphics_manager.apply_settings()
+        self.screen = self.graphics_manager.get_screen()
+        
+        # Fallback se GraphicsManager falhar
+        if self.screen is None:
+            self.screen = pygame.display.set_mode((WIDTH, HEIGTH), pygame.SCALED)
+        
         pygame.display.set_caption('CORRIDA PELA RELÍQUIA')
         self.clock = pygame.time.Clock()
 
@@ -63,8 +73,7 @@ class Game:
         self.subtitle_font = font_manager.get('subtitle')
         self.info_font = font_manager.get('text')
 
-        # Settings manager
-        self.settings = SettingsManager(initial_volume=0.5)
+        # Audio controls - agora usando sistema moderno e simples
         
         # Advanced main menu
         fonts = {
@@ -98,9 +107,17 @@ class Game:
         for event in pygame.event.get():
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 mouse_click = True
-                # Also handle settings mouse clicks
-                self.settings.handle_mouse_click(mouse_pos)
+                # Handle new audio controls
+                simple_audio_controls.handle_event(event, WIDTH, HEIGTH)
             elif event.type == pygame.KEYDOWN:
+                # Handle Alt+Enter for fullscreen toggle
+                if (event.key == pygame.K_RETURN and 
+                    (pygame.key.get_pressed()[pygame.K_LALT] or pygame.key.get_pressed()[pygame.K_RALT])):
+                    self.graphics_manager.toggle_fullscreen()
+                    self.graphics_manager.apply_settings()
+                    self.screen = self.graphics_manager.get_screen()
+                    return
+                
                 # CHEAT: Handle cheat codes in menu (remove for final version)
                 cheat_action = cheat_system.handle_cheat_input(event)
                 if cheat_action:
@@ -145,11 +162,14 @@ class Game:
                     self.game_state = 50
                     return
                 else:
-                    # Handle settings controls
-                    self.settings.handle_keydown(event)
+                    # Handle keyboard controls for audio
+                    simple_audio_controls.handle_event(event, WIDTH, HEIGTH)
             elif event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
+            
+            # Let the advanced menu handle events
+            self.advanced_menu.handle_event(event)
             
             # Put back non-consumed events
             if event.type not in [pygame.MOUSEBUTTONDOWN, pygame.KEYDOWN, pygame.QUIT]:
@@ -179,8 +199,8 @@ class Game:
             pygame.quit()
             sys.exit()
         
-        # Still draw settings overlay for compatibility
-        self.settings.draw(self.screen)
+        # Draw new audio controls
+        simple_audio_controls.draw(self.screen)
         
         # CHEAT: Display cheat information in menu (remove for final version)
         cheat_system.display_cheat_info(self.screen)
@@ -291,6 +311,10 @@ class Game:
                             self.game_state = 51
                             continue
                     
+                    # Handle audio controls in levels
+                    if simple_audio_controls.handle_event(event, WIDTH, HEIGTH):
+                        continue  # Event consumed by audio controls
+                    
                     # Put non-consumed events back for the level to handle
                     events_for_level.append(event)
                 
@@ -321,6 +345,8 @@ class Game:
                     self.level1_story_shown = True
                 
                 self.level1.run()
+                # Draw audio controls in level
+                simple_audio_controls.draw(self.screen)
                 if self.level1.gameover:
                     audio_manager.stop_music()
                     self.game_state = 20  # Game over, return to homescreen
@@ -347,6 +373,8 @@ class Game:
                     self.level2_story_shown = True
                 
                 self.level2.run()
+                # Draw audio controls in level
+                simple_audio_controls.draw(self.screen)
                 if self.level2.gameover:
                     self.game_state = 20
                     audio_manager.stop_music()
@@ -372,6 +400,8 @@ class Game:
                     self.level3_story_shown = True
                 
                 self.level3.run()
+                # Draw audio controls in level
+                simple_audio_controls.draw(self.screen)
                 if self.level3.completed:
                     # STATS: Record level completion
                     player_stats.complete_level(3)
@@ -394,6 +424,8 @@ class Game:
                     self.level4_story_shown = True
                 
                 self.level4.run()
+                # Draw audio controls in level
+                simple_audio_controls.draw(self.screen)
                 if self.level4.completed:
                     # STATS: Record level completion and game completion
                     player_stats.complete_level(4)
@@ -530,7 +562,13 @@ class Game:
                     self.save_screen.update(self.clock.get_time())
                     self.save_screen.draw()
             pygame.display.update()
-            self.clock.tick(FPS)
+            
+            # Usar FPS dinâmico baseado nas configurações gráficas
+            fps_limit = self.graphics_manager.get_fps_limit()
+            if fps_limit > 0:
+                self.clock.tick(fps_limit)
+            else:
+                self.clock.tick()  # Sem limite de FPS
 
 if __name__ == '__main__':
     game = Game()
