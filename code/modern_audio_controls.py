@@ -7,6 +7,7 @@ import math
 from typing import Tuple, Optional
 from audio_manager import audio_manager
 from graphics_manager import GraphicsManager
+from icon_manager import icon_manager
 
 
 class ModernAudioControls:
@@ -56,7 +57,7 @@ class ModernAudioControls:
         # Fontes
         self._load_fonts()
         
-        # Cache de surfaces
+        # Cache de surfaces - agora usando IconManager
         self._create_button_surfaces()
     
     def _load_fonts(self) -> None:
@@ -140,82 +141,34 @@ class ModernAudioControls:
         )
     
     def _create_button_surfaces(self) -> None:
-        """Cria surfaces para os botões com visual moderno."""
+        """Cria surfaces para os botões com ícones profissionais."""
         button_size = 40
         
-        # Botão de áudio
-        self.audio_icon_surface = pygame.Surface((button_size, button_size), pygame.SRCALPHA)
-        self._draw_audio_icon(self.audio_icon_surface, button_size)
+        # Botão de áudio - usando IconManager
+        volume_level = audio_manager.volume
+        is_muted = audio_manager.is_muted()
+        icon_name = icon_manager.get_volume_icon_by_level(volume_level, is_muted)
         
-        # Botão de fullscreen
-        self.fullscreen_icon_surface = pygame.Surface((button_size, button_size), pygame.SRCALPHA)
-        self._draw_fullscreen_icon(self.fullscreen_icon_surface, button_size)
+        self.audio_icon_surface = icon_manager.get_icon(icon_name, button_size-8, self.colors['text'])
+        
+        # Botão de fullscreen - usando IconManager
+        fullscreen_icon = 'windowed' if self.graphics_manager.is_fullscreen() else 'fullscreen'
+        self.fullscreen_icon_surface = icon_manager.get_icon(fullscreen_icon, button_size-8, self.colors['text'])
     
-    def _draw_audio_icon(self, surface: pygame.Surface, size: int) -> None:
-        """Desenha ícone de áudio moderno."""
-        center = size // 2
+    def _update_button_icons(self) -> None:
+        """Atualiza ícones dos botões baseado no estado atual."""
+        button_size = 40
         
-        # Alto-falante base
-        pygame.draw.rect(surface, self.colors['text'], (center-8, center-6, 6, 12))
-        pygame.draw.polygon(surface, self.colors['text'], [
-            (center-2, center-6), (center+4, center-10), 
-            (center+4, center+10), (center-2, center+6)
-        ])
+        # Atualizar ícone de áudio baseado no volume/mute
+        volume_level = audio_manager.volume
+        is_muted = audio_manager.is_muted()
+        icon_name = icon_manager.get_volume_icon_by_level(volume_level, is_muted)
         
-        # Ondas sonoras
-        if not audio_manager.is_muted():
-            for i in range(3):
-                radius = 8 + i * 4
-                thickness = 2
-                start_angle = -math.pi/4
-                end_angle = math.pi/4
-                points = []
-                for angle in [start_angle, end_angle]:
-                    x = center + math.cos(angle) * radius
-                    y = center + math.sin(angle) * radius
-                    points.append((x, y))
-                if len(points) == 2:
-                    pygame.draw.line(surface, self.colors['primary'], points[0], points[1], thickness)
-        else:
-            # X para muted
-            pygame.draw.line(surface, self.colors['error'], 
-                           (center+6, center-8), (center+14, center), 3)
-            pygame.draw.line(surface, self.colors['error'], 
-                           (center+6, center), (center+14, center-8), 3)
-    
-    def _draw_fullscreen_icon(self, surface: pygame.Surface, size: int) -> None:
-        """Desenha ícone de fullscreen."""
-        center = size // 2
-        color = self.colors['text']
+        self.audio_icon_surface = icon_manager.get_icon(icon_name, button_size-8, self.colors['text'])
         
-        if self.graphics_manager.is_fullscreen():
-            # Ícone de windowed mode (setas para dentro)
-            pygame.draw.lines(surface, color, False, [
-                (center-8, center-4), (center-4, center-4), (center-4, center-8)
-            ], 2)
-            pygame.draw.lines(surface, color, False, [
-                (center+8, center+4), (center+4, center+4), (center+4, center+8)
-            ], 2)
-            pygame.draw.lines(surface, color, False, [
-                (center-8, center+4), (center-4, center+4), (center-4, center+8)
-            ], 2)
-            pygame.draw.lines(surface, color, False, [
-                (center+8, center-4), (center+4, center-4), (center+4, center-8)
-            ], 2)
-        else:
-            # Ícone de fullscreen (setas para fora)
-            pygame.draw.lines(surface, color, False, [
-                (center-4, center-8), (center-8, center-8), (center-8, center-4)
-            ], 2)
-            pygame.draw.lines(surface, color, False, [
-                (center+4, center-8), (center+8, center-8), (center+8, center-4)
-            ], 2)
-            pygame.draw.lines(surface, color, False, [
-                (center-4, center+8), (center-8, center+8), (center-8, center+4)
-            ], 2)
-            pygame.draw.lines(surface, color, False, [
-                (center+4, center+8), (center+8, center+8), (center+8, center+4)
-            ], 2)
+        # Atualizar ícone de fullscreen baseado no estado
+        fullscreen_icon = 'windowed' if self.graphics_manager.is_fullscreen() else 'fullscreen'
+        self.fullscreen_icon_surface = icon_manager.get_icon(fullscreen_icon, button_size-8, self.colors['text'])
     
     def handle_event(self, event: pygame.event.Event) -> bool:
         """
@@ -439,14 +392,15 @@ class ModernAudioControls:
         self._draw_button_background(screen, self.audio_button_rect, self.hover_button == 'audio')
         self._draw_button_background(screen, self.fullscreen_button_rect, self.hover_button == 'fullscreen')
         
-        # Ícones
-        # Recria ícone de áudio se status mudou
-        self._draw_audio_icon(self.audio_icon_surface, 40)
-        screen.blit(self.audio_icon_surface, self.audio_button_rect)
+        # Ícones profissionais - atualizar se necessário
+        self._update_button_icons()
         
-        # Recria ícone de fullscreen se status mudou
-        self._draw_fullscreen_icon(self.fullscreen_icon_surface, 40)
-        screen.blit(self.fullscreen_icon_surface, self.fullscreen_button_rect)
+        # Centralizar ícones nos botões
+        audio_icon_rect = self.audio_icon_surface.get_rect(center=self.audio_button_rect.center)
+        fullscreen_icon_rect = self.fullscreen_icon_surface.get_rect(center=self.fullscreen_button_rect.center)
+        
+        screen.blit(self.audio_icon_surface, audio_icon_rect)
+        screen.blit(self.fullscreen_icon_surface, fullscreen_icon_rect)
     
     def _draw_button_background(self, screen: pygame.Surface, rect: pygame.Rect, is_hovered: bool) -> None:
         """Desenha fundo do botão com gradiente."""
@@ -536,22 +490,11 @@ class ModernAudioControls:
         mute_color = self.colors['error'] if is_muted else self.colors['success']
         pygame.draw.rect(screen, mute_color, mute_rect, border_radius=4)
         
-        # Ícone do botão mute
-        center_x, center_y = mute_rect.center
-        if is_muted:
-            # X para muted
-            pygame.draw.line(screen, self.colors['text'], 
-                           (center_x-6, center_y-6), (center_x+6, center_y+6), 2)
-            pygame.draw.line(screen, self.colors['text'], 
-                           (center_x-6, center_y+6), (center_x+6, center_y-6), 2)
-        else:
-            # Speaker icon
-            pygame.draw.rect(screen, self.colors['text'], 
-                           (center_x-4, center_y-3, 3, 6))
-            pygame.draw.polygon(screen, self.colors['text'], [
-                (center_x-1, center_y-3), (center_x+3, center_y-5), 
-                (center_x+3, center_y+5), (center_x-1, center_y+3)
-            ])
+        # Ícone do botão mute usando IconManager
+        icon_name = 'volume_mute' if is_muted else 'volume_high'
+        mute_icon = icon_manager.get_icon(icon_name, mute_rect.width-4, self.colors['text'])
+        mute_icon_rect = mute_icon.get_rect(center=mute_rect.center)
+        screen.blit(mute_icon, mute_icon_rect)
         
         # Slider track
         pygame.draw.rect(screen, self.colors['background'], slider_rect, border_radius=10)

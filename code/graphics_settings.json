@@ -1,6 +1,6 @@
 {
     "resolution": "1280x800",
-    "fullscreen": false,
+    "fullscreen": true,
     "vsync": true,
     "quality": "high",
     "fps_limit": 60
