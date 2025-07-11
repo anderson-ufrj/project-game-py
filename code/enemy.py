@@ -6,6 +6,7 @@ from particles import DeathParticle, EnemyDeathAnimation
 # STATS: Import player statistics system
 from player_stats import player_stats
 from difficulty_manager import difficulty_manager
+from audio_manager import audio_manager
 
 
 class Enemy(Entity):
@@ -64,8 +65,7 @@ class Enemy(Entity):
         self.attack_time = None
         self.attack_cooldown = 400
         self.damage_player = damage_player
-        self.monsta = pygame.mixer.Sound('../audio/heal.wav')
-        self.monsta_channel = pygame.mixer.Channel(1)
+        # Audio now handled by AudioManager - removed monsta sound
 
         # invincibility timer
         self.vulnerable = True

@@ -3,6 +3,7 @@ from settings import *
 from support import import_folder
 from entity import Entity
 from difficulty_manager import difficulty_manager
+from audio_manager import audio_manager
 
 class Player(Entity):
 	def __init__(self,pos,groups,obstacle_sprites,create_attack,destroy_attack,create_magic):
@@ -22,7 +23,7 @@ class Player(Entity):
 		self.attack_cooldown = 200
 		self.attack_time = 25
 		self.obstacle_sprites = obstacle_sprites
-		self.walking_sound = pygame.mixer.Sound('../audio/walk.wav')
+		# Audio now handled by AudioManager - removed walking_sound
 		# weapon
 		self.create_attack = create_attack
 		self.destroy_attack = destroy_attack
