@@ -6,6 +6,15 @@ from settings import WIDTH, HEIGTH
 from ui_system import UIManager, ModernPanel, ModernButton, UITheme
 from font_manager import font_manager
 
+# Importar sistema de fontes melhorado se disponível
+try:
+    from enhanced_font_system import EnhancedFontRenderer
+    enhanced_font_renderer = EnhancedFontRenderer()
+    ENHANCED_FONTS_AVAILABLE = True
+except ImportError:
+    ENHANCED_FONTS_AVAILABLE = False
+    print("⚠️ Sistema de fontes melhorado não disponível - usando fallback")
+
 class TutorialStep:
     """Representa um passo do tutorial"""
     
@@ -366,10 +375,17 @@ class InteractiveTutorial:
         
         # Título
         title_y = self.panel_y + 40
-        enhanced_font_renderer.render_title(
-            step.title, self.panel_x + self.panel_width // 2, title_y,
-            surface, UITheme.TEXT_PRIMARY, "gradient"
-        )
+        if ENHANCED_FONTS_AVAILABLE:
+            enhanced_font_renderer.render_title(
+                step.title, self.panel_x + self.panel_width // 2, title_y,
+                surface, UITheme.TEXT_PRIMARY, "gradient"
+            )
+        else:
+            # Fallback usando font_manager
+            title_font = font_manager.get('title')
+            title_surface = title_font.render(step.title, True, UITheme.TEXT_PRIMARY)
+            title_rect = title_surface.get_rect(centerx=self.panel_x + self.panel_width // 2, y=title_y)
+            surface.blit(title_surface, title_rect)
         
         # Conteúdo
         content_y = title_y + 80
@@ -377,37 +393,55 @@ class InteractiveTutorial:
         
         for i, line in enumerate(step.content):
             if line.strip():  # Pular linhas vazias
-                enhanced_font_renderer.render_body_text(
-                    line,
-                    self.panel_x + 50,
-                    content_y + i * line_height,
-                    surface,
-                    UITheme.TEXT_SECONDARY,
-                    self.panel_width - 100
-                )
+                if ENHANCED_FONTS_AVAILABLE:
+                    enhanced_font_renderer.render_body_text(
+                        line,
+                        self.panel_x + 50,
+                        content_y + i * line_height,
+                        surface,
+                        UITheme.TEXT_SECONDARY,
+                        self.panel_width - 100
+                    )
+                else:
+                    # Fallback usando font_manager
+                    content_font = font_manager.get('text')
+                    content_surface = content_font.render(line, True, UITheme.TEXT_SECONDARY)
+                    surface.blit(content_surface, (self.panel_x + 50, content_y + i * line_height))
         
         # Controles (se existirem)
         if step.controls:
             controls_y = content_y + len(step.content) * line_height + 30
             
             # Título dos controles
-            enhanced_font_renderer.render_subtitle(
-                "🎮 CONTROLES:",
-                self.panel_x + 70,
-                controls_y,
-                surface,
-                UITheme.WARNING
-            )
+            if ENHANCED_FONTS_AVAILABLE:
+                enhanced_font_renderer.render_subtitle(
+                    "🎮 CONTROLES:",
+                    self.panel_x + 70,
+                    controls_y,
+                    surface,
+                    UITheme.WARNING
+                )
+            else:
+                # Fallback usando font_manager
+                subtitle_font = font_manager.get('subtitle')
+                subtitle_surface = subtitle_font.render("🎮 CONTROLES:", True, UITheme.WARNING)
+                surface.blit(subtitle_surface, (self.panel_x + 70, controls_y))
             
             # Lista de controles
             for i, control in enumerate(step.controls):
-                enhanced_font_renderer.render_body_text(
-                    f"  • {control}",
-                    self.panel_x + 80,
-                    controls_y + 30 + i * 20,
-                    surface,
-                    UITheme.SUCCESS
-                )
+                if ENHANCED_FONTS_AVAILABLE:
+                    enhanced_font_renderer.render_body_text(
+                        f"  • {control}",
+                        self.panel_x + 80,
+                        controls_y + 30 + i * 20,
+                        surface,
+                        UITheme.SUCCESS
+                    )
+                else:
+                    # Fallback usando font_manager
+                    control_font = font_manager.get('text')
+                    control_surface = control_font.render(f"  • {control}", True, UITheme.SUCCESS)
+                    surface.blit(control_surface, (self.panel_x + 80, controls_y + 30 + i * 20))
     
     def draw_progress_indicator(self, surface: pygame.Surface):
         """Desenha indicador de progresso"""
@@ -428,13 +462,20 @@ class InteractiveTutorial:
         
         # Texto do progresso
         progress_text = f"Passo {self.current_step + 1} de {len(self.tutorial_steps)}"
-        enhanced_font_renderer.render_instruction(
-            progress_text,
-            self.panel_x + self.panel_width // 2,
-            indicator_y - 15,
-            surface,
-            UITheme.TEXT_MUTED
-        )
+        if ENHANCED_FONTS_AVAILABLE:
+            enhanced_font_renderer.render_instruction(
+                progress_text,
+                self.panel_x + self.panel_width // 2,
+                indicator_y - 15,
+                surface,
+                UITheme.TEXT_MUTED
+            )
+        else:
+            # Fallback usando font_manager
+            progress_font = font_manager.get('small')
+            progress_surface = progress_font.render(progress_text, True, UITheme.TEXT_MUTED)
+            progress_rect = progress_surface.get_rect(centerx=self.panel_x + self.panel_width // 2, y=indicator_y - 15)
+            surface.blit(progress_surface, progress_rect)
 
 # Instância global do tutorial
 tutorial_system = TutorialSystem = InteractiveTutorial()

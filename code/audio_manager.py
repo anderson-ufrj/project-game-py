@@ -58,14 +58,20 @@ class AudioManager:
     # Métodos de controle de música
     def set_music_volume(self, volume):
         """Define o volume da música de fundo (0.0 a 1.0)"""
-        self.music_volume = max(0.0, min(1.0, volume))
+        new_volume = max(0.0, min(1.0, volume))
+        # Só imprime se o volume mudou significativamente (mais de 5%)
+        if abs(new_volume - self.music_volume) > 0.05:
+            print(f"🎵 Volume da música: {int(new_volume * 100)}%")
+        self.music_volume = new_volume
         self._apply_music_volume()
-        print(f"🎵 Volume da música: {int(self.music_volume * 100)}%")
     
     def set_sfx_volume(self, volume):
         """Define o volume dos efeitos sonoros (0.0 a 1.0)"""
-        self.sfx_volume = max(0.0, min(1.0, volume))
-        print(f"🔊 Volume dos efeitos: {int(self.sfx_volume * 100)}%")
+        new_volume = max(0.0, min(1.0, volume))
+        # Só imprime se o volume mudou significativamente (mais de 5%)
+        if abs(new_volume - self.sfx_volume) > 0.05:
+            print(f"🔊 Volume dos efeitos: {int(new_volume * 100)}%")
+        self.sfx_volume = new_volume
     
     def toggle_music_mute(self):
         """Liga/desliga apenas a música de fundo"""
