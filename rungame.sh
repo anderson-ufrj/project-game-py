@@ -62,11 +62,31 @@ echo "   ➤ TAB: Minimapa (Fase 3)"
 echo ""
 echo "🎯 Objetivo: Encontre a Gema Eldritch através de 4 níveis!"
 echo "🌟 Novidades: Ataque 360°, Sistema de Armas, Magias, Histórias épicas!"
+echo "🏗️ NOVA ARQUITETURA: Código modular e profissional!"
 echo ""
 echo "⚡ Iniciando jogo em 3 segundos..."
 sleep 3
 
-python main.py
+# Detectar qual versão usar
+if [ -f "main_with_modern_audio.py" ]; then
+    echo "🎵 Executando com controles de áudio modernos..."
+    python3 main_with_modern_audio.py
+else
+    echo "🎮 Executando jogo original (versão estável)..."
+    python3 main.py
+fi
+
+# Versões alternativas (descomentadas para testar)
+# if [ -f "main_direct.py" ]; then
+#     echo "🎮 Executando jogo original com logging aprimorado..."
+#     python3 main_direct.py
+# elif [ -f "main_hybrid.py" ]; then
+#     echo "🔗 Usando versão híbrida (Nova Arquitetura + Jogo Original)..."
+#     python3 main_hybrid.py
+# elif [ -f "main_new.py" ]; then
+#     echo "🆕 Usando nova arquitetura (apenas teste)..."
+#     python3 main_new.py
+# fi
 
 # Voltar ao diretório original
 cd ..
