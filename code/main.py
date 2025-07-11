@@ -334,7 +334,7 @@ class Game:
             elif self.game_state == 3:  # Level 1 (skipped intro animations)
                 # Mostrar história antes da fase 1
                 if not hasattr(self, 'level1_story_shown'):
-                    story = StoryScreen("phase_1")
+                    story = StoryScreen("phase_1", custom_background="../map new/map.png")
                     story_finished = False
                     while not story_finished:
                         story_finished = story.update()
@@ -362,7 +362,7 @@ class Game:
             elif self.game_state == 4:  # Level 2 (simplified)
                 # Mostrar história antes da fase 2
                 if not hasattr(self, 'level2_story_shown'):
-                    story = StoryScreen("phase_2")
+                    story = StoryScreen("phase_2", custom_background="../map new/maze1.png")
                     story_finished = False
                     while not story_finished:
                         story_finished = story.update()
@@ -389,7 +389,7 @@ class Game:
             elif self.game_state == 5:  # Level 3 (simplified)
                 # Mostrar história antes da fase 3
                 if not hasattr(self, 'level3_story_shown'):
-                    story = StoryScreen("phase_3")
+                    story = StoryScreen("phase_3", custom_background="../map new/dungeon.png")
                     story_finished = False
                     while not story_finished:
                         story_finished = story.update()
@@ -413,7 +413,7 @@ class Game:
             elif self.game_state == 6:  # Level 4 (simplified)
                 # Mostrar história antes da fase 4
                 if not hasattr(self, 'level4_story_shown'):
-                    story = StoryScreen("phase_4")
+                    story = StoryScreen("phase_4", custom_background="../map new/final.png")
                     story_finished = False
                     while not story_finished:
                         story_finished = story.update()
@@ -432,7 +432,7 @@ class Game:
                     # Auto-save final progress
                     save_manager.auto_save(self)
                     # Mostrar história de vitória
-                    story = StoryScreen("victory")
+                    story = StoryScreen("victory", custom_background="../graphics/ui/home page.jpg")
                     story_finished = False
                     while not story_finished:
                         story_finished = story.update()
