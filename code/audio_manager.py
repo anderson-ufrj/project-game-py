@@ -18,29 +18,68 @@ class AudioManager:
     
     def __init__(self):
         if not self._initialized:
-            self.volume = 0.5
-            self.muted = False
+            # Controles separados para música e efeitos
+            self.music_volume = 0.5
+            self.sfx_volume = 0.5
+            self.music_muted = False
+            self.sfx_muted = False
+            
+            # Cache de sons carregados para performance
+            self.loaded_sounds = {}
+            
+            # Canais dedicados para diferentes tipos de som
+            self.channels = {
+                'movement': 1,    # Sons de movimento (walking, running)
+                'combat': 2,      # Sons de combate (attack, hit)
+                'collection': 3,  # Sons de coleta (pickup, heal)
+                'environment': 4, # Sons de ambiente
+                'ui': 5          # Sons de interface
+            }
+            
             self.current_music = None
             self._initialized = True
-            print("🎵 AudioManager inicializado")
+            print("🎵 AudioManager inicializado com controles separados")
     
+    # Métodos de controle de música
+    def set_music_volume(self, volume):
+        """Define o volume da música de fundo (0.0 a 1.0)"""
+        self.music_volume = max(0.0, min(1.0, volume))
+        self._apply_music_volume()
+        print(f"🎵 Volume da música: {int(self.music_volume * 100)}%")
+    
+    def set_sfx_volume(self, volume):
+        """Define o volume dos efeitos sonoros (0.0 a 1.0)"""
+        self.sfx_volume = max(0.0, min(1.0, volume))
+        print(f"🔊 Volume dos efeitos: {int(self.sfx_volume * 100)}%")
+    
+    def toggle_music_mute(self):
+        """Liga/desliga apenas a música de fundo"""
+        self.music_muted = not self.music_muted
+        self._apply_music_volume()
+        status = "MUDO" if self.music_muted else f"{int(self.music_volume * 100)}%"
+        print(f"🎵 Música: {status}")
+    
+    def toggle_sfx_mute(self):
+        """Liga/desliga apenas os efeitos sonoros"""
+        self.sfx_muted = not self.sfx_muted
+        status = "MUDO" if self.sfx_muted else f"{int(self.sfx_volume * 100)}%"
+        print(f"🔊 Efeitos: {status}")
+    
+    def _apply_music_volume(self):
+        """Aplica o volume atual à música"""
+        effective_volume = 0.0 if self.music_muted else self.music_volume
+        pygame.mixer.music.set_volume(effective_volume)
+    
+    # Métodos de compatibilidade com código existente
     def set_volume(self, volume):
-        """Define o volume global (0.0 a 1.0)"""
-        self.volume = max(0.0, min(1.0, volume))
-        self._apply_volume()
-        print(f"🔊 Volume definido para: {int(self.volume * 100)}%")
+        """Define volume global - mantido para compatibilidade"""
+        self.set_music_volume(volume)
+        self.set_sfx_volume(volume)
     
     def toggle_mute(self):
-        """Liga/desliga o som"""
-        self.muted = not self.muted
-        self._apply_volume()
-        status = "MUDO" if self.muted else f"SOM ({int(self.volume * 100)}%)"
-        print(f"🔇 Estado do som: {status}")
-    
-    def _apply_volume(self):
-        """Aplica o volume atual ao pygame"""
-        effective_volume = 0.0 if self.muted else self.volume
-        pygame.mixer.music.set_volume(effective_volume)
+        """Liga/desliga todo o som - mantido para compatibilidade"""
+        self.toggle_music_mute()
+        self.toggle_sfx_mute()
     
     def load_music(self, music_file):
         """Carrega uma nova música"""
@@ -61,8 +100,8 @@ class AudioManager:
                 pass  # Música já carregada
             
             pygame.mixer.music.play(loops)
-            self._apply_volume()  # Garante que o volume está correto
-            print(f"▶️ Reproduzindo música (volume: {int(self.volume * 100)}%)")
+            self._apply_music_volume()  # Garante que o volume está correto
+            print(f"▶️ Reproduzindo música (volume: {int(self.music_volume * 100)}%)")
             return True
         except Exception as e:
             print(f"❌ Erro ao reproduzir música: {e}")
@@ -77,13 +116,75 @@ class AudioManager:
         """Verifica se a música está tocando"""
         return pygame.mixer.music.get_busy()
     
+    # Novos métodos para efeitos sonoros
+    def load_sound(self, sound_file):
+        """Carrega um efeito sonoro no cache"""
+        if sound_file not in self.loaded_sounds:
+            try:
+                self.loaded_sounds[sound_file] = pygame.mixer.Sound(sound_file)
+                print(f"🔊 Som carregado: {sound_file}")
+            except Exception as e:
+                print(f"❌ Erro ao carregar som {sound_file}: {e}")
+                return None
+        return self.loaded_sounds[sound_file]
+    
+    def play_sound(self, sound_file, category='environment', loops=0):
+        """Reproduz um efeito sonoro com controle de volume"""
+        if self.sfx_muted:
+            return None
+            
+        sound = self.load_sound(sound_file)
+        if sound:
+            try:
+                # Definir volume do som baseado no volume de efeitos
+                sound.set_volume(self.sfx_volume)
+                
+                # Usar canal dedicado se especificado
+                if category in self.channels:
+                    channel = pygame.mixer.Channel(self.channels[category])
+                    return channel.play(sound, loops=loops)
+                else:
+                    return sound.play(loops=loops)
+            except Exception as e:
+                print(f"❌ Erro ao reproduzir som {sound_file}: {e}")
+        return None
+    
+    def stop_all_sounds(self):
+        """Para todos os efeitos sonoros"""
+        pygame.mixer.stop()
+        print("⏹️ Todos os efeitos sonoros parados")
+    
+    def stop_sound_category(self, category):
+        """Para sons de uma categoria específica"""
+        if category in self.channels:
+            channel = pygame.mixer.Channel(self.channels[category])
+            channel.stop()
+            print(f"⏹️ Sons de {category} parados")
+    
+    # Métodos de informação atualizados
+    def get_music_volume_percentage(self):
+        """Retorna o volume da música em porcentagem"""
+        return int(self.music_volume * 100)
+    
+    def get_sfx_volume_percentage(self):
+        """Retorna o volume dos efeitos em porcentagem"""
+        return int(self.sfx_volume * 100)
+    
     def get_volume_percentage(self):
-        """Retorna o volume em porcentagem"""
-        return int(self.volume * 100)
+        """Retorna o volume da música em porcentagem - compatibilidade"""
+        return self.get_music_volume_percentage()
+    
+    def is_music_muted(self):
+        """Verifica se a música está muda"""
+        return self.music_muted
+    
+    def is_sfx_muted(self):
+        """Verifica se os efeitos estão mudos"""
+        return self.sfx_muted
     
     def is_muted(self):
-        """Verifica se está mudo"""
-        return self.muted
+        """Verifica se está mudo - compatibilidade"""
+        return self.music_muted and self.sfx_muted
 
 # Instância global
 audio_manager = AudioManager()
