@@ -279,7 +279,10 @@ class MenuScene(BaseScene):
         try:
             self.font = pygame.font.Font(None, 36)
         except pygame.error:
-            self.font = pygame.font.Font(None, 36)
+            try:
+                self.font = pygame.font.SysFont('Arial', 36)
+            except pygame.error:
+                self.font = pygame.font.SysFont(None, 36)
     
     def add_menu_item(self, text: str, action: str) -> None:
         """

@@ -1,0 +1,35 @@
+{
+  "graphics": {
+    "resolution": "1280x800",
+    "fullscreen": false,
+    "vsync": true,
+    "quality": "high",
+    "fps_limit": 60
+  },
+  "audio": {
+    "music_volume": 0.5,
+    "sfx_volume": 0.5,
+    "is_muted": false
+  },
+  "gameplay": {
+    "difficulty": "normal",
+    "auto_save": true,
+    "tutorial_completed": false
+  },
+  "controls": {
+    "movement_keys": [
+      "w",
+      "a",
+      "s",
+      "d"
+    ],
+    "attack_key": "space",
+    "run_key": "shift",
+    "menu_key": "escape"
+  },
+  "debug": {
+    "show_fps": false,
+    "show_hitboxes": false,
+    "enable_cheats": false
+  }
+}

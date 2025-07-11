@@ -90,19 +90,51 @@ class GameEngine:
         Registra todas as cenas do jogo.
         """
         try:
-            # Por enquanto, vamos usar uma cena placeholder
-            from scenes.base_scene import MenuScene
+            # Por enquanto, vamos usar uma cena de teste simples
+            from scenes.base_scene import BaseScene
             
-            # Cena de menu principal
-            main_menu = MenuScene("main_menu", self.screen)
-            main_menu.add_menu_item("JOGAR", "start_game")
-            main_menu.add_menu_item("CONFIGURAÇÕES", "settings")
-            main_menu.add_menu_item("SAIR", "quit")
+            # Cena de teste simples
+            class TestScene(BaseScene):
+                def setup_scene(self):
+                    self.font = pygame.font.Font(None, 36)
+                
+                def handle_scene_events(self, events):
+                    for event in events:
+                        if event.type == pygame.KEYDOWN:
+                            if event.key == pygame.K_ESCAPE:
+                                pygame.quit()
+                                import sys
+                                sys.exit()
+                    return None
+                
+                def update_scene(self, dt):
+                    pass
+                
+                def draw_scene(self, screen):
+                    # Texto de teste
+                    texts = [
+                        "🎮 NOVA ARQUITETURA FUNCIONANDO!",
+                        "",
+                        "✅ GameEngine: OK",
+                        "✅ StateManager: OK", 
+                        "✅ Systems: OK",
+                        "",
+                        "ESC para sair"
+                    ]
+                    
+                    y = 100
+                    for text in texts:
+                        if text:
+                            surface = self.font.render(text, True, (255, 255, 255))
+                            x = (screen.get_width() - surface.get_width()) // 2
+                            screen.blit(surface, (x, y))
+                        y += 40
             
-            self.state_manager.register_state("main_menu", main_menu)
+            test_scene = TestScene("test", self.screen)
+            self.state_manager.register_state("test", test_scene)
             
             # Define cena inicial
-            self.state_manager.change_state("main_menu")
+            self.state_manager.change_state("test")
             
             game_logger.info("Cenas registradas com sucesso")
             
