@@ -20,6 +20,12 @@ class IconManager:
     """Gerenciador de ícones profissionais para interface"""
     
     def __init__(self):
+        # Garantir que pygame está inicializado
+        if not pygame.get_init():
+            pygame.init()
+        if not pygame.font.get_init():
+            pygame.font.init()
+            
         self.icons_cache = {}
         self.emoji_font = None
         self.icon_font = None
