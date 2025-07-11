@@ -4,7 +4,7 @@ import random
 from settings import WIDTH, HEIGTH, TEXT_COLOR
 from game_story import PHASE_STORIES
 from professional_renderer import professional_renderer
-from enhanced_font_system import enhanced_font_renderer
+# from enhanced_font_system import enhanced_font_renderer  # Comentado - módulo não existe
 from font_manager import font_manager
 # CHEAT: Import cheat system for testing (remove for final version)
 from cheat_system import cheat_system

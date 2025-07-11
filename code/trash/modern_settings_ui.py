@@ -5,7 +5,7 @@ from typing import Tuple, Optional
 from settings import WIDTH, HEIGTH
 from audio_manager import audio_manager
 from ui_system import UIManager, ModernPanel, ModernSlider, ModernButton, UITheme
-from enhanced_font_system import enhanced_font_renderer
+# from enhanced_font_system import enhanced_font_renderer  # Comentado - módulo não existe
 
 class ModernSettingsManager:
     """Gerenciador de configurações com UI moderna"""
@@ -315,24 +315,24 @@ class ModernSettingsManager:
         
         # Volume percentage
         volume_text = f"Volume: {audio_manager.get_volume_percentage()}%"
-        enhanced_font_renderer.render_body_text(
-            volume_text, 
-            self.panel_x + 30, 
-            self.panel_y + 50, 
-            surface,
-            UITheme.TEXT_PRIMARY
-        )
+        # enhanced_font_renderer.render_body_text(  # Comentado - módulo não existe
+        #     volume_text, 
+        #     self.panel_x + 30, 
+        #     self.panel_y + 50, 
+        #     surface,
+        #     UITheme.TEXT_PRIMARY
+        # )
         
         # Status do áudio
         status_text = "🔇 MUDO" if audio_manager.is_muted() else "🔊 ÁUDIO ATIVO"
         status_color = UITheme.DANGER if audio_manager.is_muted() else UITheme.SUCCESS
-        enhanced_font_renderer.render_body_text(
-            status_text,
-            self.panel_x + 200,
-            self.panel_y + 50,
-            surface,
-            status_color
-        )
+        # enhanced_font_renderer.render_body_text(  # Comentado - módulo não existe
+        #     status_text,
+        #     self.panel_x + 200,
+        #     self.panel_y + 50,
+        #     surface,
+        #     status_color
+        # )
     
     def draw(self, surface: pygame.Surface):
         """Desenha todo o sistema de configurações"""
@@ -356,13 +356,14 @@ class ModernSettingsManager:
             ]
             
             for i, instruction in enumerate(instructions):
-                enhanced_font_renderer.render_instruction(
-                    instruction,
-                    self.panel_x + self.panel_width // 2,
-                    self.panel_y + self.panel_height - 40 + i * 15,
-                    surface,
-                    UITheme.TEXT_MUTED
-                )
+                # enhanced_font_renderer.render_instruction(  # Comentado - módulo não existe
+                #     instruction,
+                #     self.panel_x + self.panel_width // 2,
+                #     self.panel_y + self.panel_height - 40 + i * 15,
+                #     surface,
+                #     UITheme.TEXT_MUTED
+                # )
+                pass  # Placeholder para manter estrutura
 
 # Instância global do gerenciador moderno
 modern_settings_manager = ModernSettingsManager()

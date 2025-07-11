@@ -6,7 +6,7 @@ from font_manager import font_manager
 from graphics_screen import GraphicsScreen
 from tutorial_system import tutorial_system
 # Removido: from modern_settings_ui import modern_settings_manager
-from enhanced_font_system import enhanced_font_renderer
+# from enhanced_font_system import enhanced_font_renderer  # Comentado - não existe
 
 class MenuParticle:
     """Partícula mágica para o menu principal"""
@@ -291,13 +291,10 @@ class AdvancedMainMenu:
         ]
         
         for i, info in enumerate(info_texts):
-            enhanced_font_renderer.render_instruction(
-                info,
-                WIDTH // 2,
-                info_y + i * 20,
-                self.screen,
-                (180, 200, 220)
-            )
+            # Usar font_manager ao invés de enhanced_font_renderer
+            info_surface = self.custom_info_font.render(info, True, (180, 200, 220))
+            info_rect = info_surface.get_rect(center=(WIDTH // 2, info_y + i * 20))
+            self.screen.blit(info_surface, info_rect)
         
         return action
     

@@ -336,7 +336,5 @@ class EnhancedUI:
         self.status_message = message
         self.status_message_start_time = pygame.time.get_ticks()
 
-# Rename class to maintain compatibility
-UI = EnhancedUI
-
-# Remove global instance that causes initialization issues
+# Instância global para compatibilidade
+enhanced_ui = EnhancedUI()

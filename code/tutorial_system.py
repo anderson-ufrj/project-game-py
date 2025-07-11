@@ -4,7 +4,7 @@ import time
 from typing import List, Dict, Tuple, Optional
 from settings import WIDTH, HEIGTH
 from ui_system import UIManager, ModernPanel, ModernButton, UITheme
-from enhanced_font_system import enhanced_font_renderer, AnimatedText
+from font_manager import font_manager
 
 class TutorialStep:
     """Representa um passo do tutorial"""
