@@ -27,6 +27,21 @@ class AudioManager:
             # Cache de sons carregados para performance
             self.loaded_sounds = {}
             
+            # Mapeamento de sons para facilitar o uso
+            self.sound_paths = {
+                'heal': '../audio/heal.wav',
+                'walk': '../audio/walk.wav', 
+                'stomp': '../audio/stomp.wav',
+                'ambience': '../audio/Light Ambience 1.mp3',
+                'sword': '../audio/sword.wav',
+                'hit': '../audio/hit.wav',
+                'monster_scream': '../audio/monsterScream.wav',
+                'bigboi_death': '../audio/bigboi death.wav',
+                'slash': '../audio/attack/slash.wav',
+                'claw': '../audio/attack/claw.wav',
+                'fireball': '../audio/attack/fireball.wav'
+            }
+            
             # Canais dedicados para diferentes tipos de som
             self.channels = {
                 'movement': 1,    # Sons de movimento (walking, running)
@@ -132,6 +147,10 @@ class AudioManager:
         """Reproduz um efeito sonoro com controle de volume"""
         if self.sfx_muted:
             return None
+        
+        # Permitir uso por nome ou caminho completo
+        if sound_file in self.sound_paths:
+            sound_file = self.sound_paths[sound_file]
             
         sound = self.load_sound(sound_file)
         if sound:
@@ -148,6 +167,10 @@ class AudioManager:
             except Exception as e:
                 print(f"❌ Erro ao reproduzir som {sound_file}: {e}")
         return None
+    
+    def play_sound_by_name(self, sound_name, category='environment', loops=0):
+        """Reproduz um som por nome (método conveniente)"""
+        return self.play_sound(sound_name, category, loops)
     
     def stop_all_sounds(self):
         """Para todos os efeitos sonoros"""

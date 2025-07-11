@@ -15,6 +15,9 @@ from settings_manager import SettingsManager
 from cheat_system import cheat_system
 # STATS: Import player statistics system
 from player_stats import player_stats
+from font_manager import font_manager
+from professional_renderer import professional_renderer
+from audio_manager import audio_manager
 
 class Level3:
     def __init__(self):
@@ -61,17 +64,11 @@ class Level3:
         # settings manager
         self.settings = SettingsManager()
         
-        # Minimap
+        # Minimap with modern font system
         self.show_minimap = False
-        try:
-            self.minimap_font = pygame.font.Font('../graphics/font/PressStart2P.ttf', 8)
-        except:
-            self.minimap_font = pygame.font.Font(None, 12)
+        # Use font manager for consistent minimap text
         
-        # level music
-        # collectable music
-        self.collectable_music = pygame.mixer.Sound('../audio/heal.wav')
-        self.collectable_music_channel = pygame.mixer.Channel(1)
+        # Audio now handled by AudioManager - sounds removed
         self.completed = False
 
     def reset(self):
@@ -200,75 +197,90 @@ class Level3:
         # spawn particles
 
     def draw_minimap(self, surface):
-        """Draw a helpful minimap showing keys and exit locations"""
-        # Minimap background
+        """Draw a helpful minimap showing keys and exit locations with modern rendering"""
+        # Minimap background with modern panel
         map_width, map_height = 200, 150
         map_x, map_y = 20, 20
         
-        # Semi-transparent background
-        minimap_surface = pygame.Surface((map_width, map_height))
-        minimap_surface.set_alpha(220)
-        minimap_surface.fill((30, 30, 30))
-        surface.blit(minimap_surface, (map_x, map_y))
+        # Create modern minimap panel
+        minimap_panel = professional_renderer.create_modern_panel(
+            map_width, map_height, 
+            title="MAPA - FORTALEZA SOMBRIA",
+            background_alpha=220
+        )
+        surface.blit(minimap_panel, (map_x, map_y))
         
-        # Border
-        pygame.draw.rect(surface, (150, 150, 150), (map_x, map_y, map_width, map_height), 2)
-        
-        # Title
-        title = self.minimap_font.render("MAPA - FORTALEZA SOMBRIA", True, (255, 255, 100))
-        surface.blit(title, (map_x + 5, map_y + 5))
-        
-        # Level 3 map info (approximate layout)
-        info_y = map_y + 25
+        # Level 3 map info with modern rendering
+        info_y = map_y + 50  # Account for title space
         
         # Player position indicator
-        player_info = self.minimap_font.render("🔴 Você está aqui", True, (255, 100, 100))
-        surface.blit(player_info, (map_x + 5, info_y))
+        player_surface, player_rect = professional_renderer.render_text_professional(
+            "🔴 Você está aqui", 'small', (255, 100, 100), 
+            shadow=True, anti_alias=True
+        )
+        surface.blit(player_surface, (map_x + 5, info_y))
         info_y += 15
         
         # Keys info
         keys_collected = self.player.inventory.get('keys', 0)
-        keys_info = self.minimap_font.render(f"🔑 Chaves: {keys_collected}/4", True, (255, 255, 100))
-        surface.blit(keys_info, (map_x + 5, info_y))
+        keys_surface, keys_rect = professional_renderer.render_text_professional(
+            f"🔑 Chaves: {keys_collected}/4", 'small', (255, 255, 100),
+            shadow=True, anti_alias=True
+        )
+        surface.blit(keys_surface, (map_x + 5, info_y))
         info_y += 15
         
-        # Key locations hint
+        # Key locations hint with modern rendering
         if keys_collected < 4:
-            hint1 = self.minimap_font.render("Locais das chaves:", True, (200, 200, 200))
-            surface.blit(hint1, (map_x + 5, info_y))
+            hint1_surface, _ = professional_renderer.render_text_professional(
+                "Locais das chaves:", 'small', (200, 200, 200),
+                shadow=True, anti_alias=True
+            )
+            surface.blit(hint1_surface, (map_x + 5, info_y))
             info_y += 12
             
-            hint2 = self.minimap_font.render("• Norte: Sala dos Cristais", True, (150, 255, 150))
-            surface.blit(hint2, (map_x + 10, info_y))
-            info_y += 12
-            
-            hint3 = self.minimap_font.render("• Sul: Calabouço Sombrio", True, (150, 255, 150))
-            surface.blit(hint3, (map_x + 10, info_y))
-            info_y += 12
-            
-            hint4 = self.minimap_font.render("• Leste: Torre do Bigboi", True, (150, 255, 150))
-            surface.blit(hint4, (map_x + 10, info_y))
-            info_y += 12
-            
-            hint5 = self.minimap_font.render("• Oeste: Câmara Secreta", True, (150, 255, 150))
-            surface.blit(hint5, (map_x + 10, info_y))
-            info_y += 15
+            for hint_text in [
+                "• Norte: Sala dos Cristais",
+                "• Sul: Calabouço Sombrio", 
+                "• Leste: Torre do Bigboi",
+                "• Oeste: Câmara Secreta"
+            ]:
+                hint_surface, _ = professional_renderer.render_text_professional(
+                    hint_text, 'small', (150, 255, 150),
+                    shadow=True, anti_alias=True
+                )
+                surface.blit(hint_surface, (map_x + 10, info_y))
+                info_y += 12
+            info_y += 3  # Extra spacing
         
-        # Exit info
+        # Exit info with modern rendering
         if keys_collected >= 4:
-            exit_info = self.minimap_font.render("🚪 Saída desbloqueada!", True, (100, 255, 100))
-            surface.blit(exit_info, (map_x + 5, info_y))
+            exit_surface, _ = professional_renderer.render_text_professional(
+                "🚪 Saída desbloqueada!", 'small', (100, 255, 100),
+                shadow=True, glow=True, anti_alias=True
+            )
+            surface.blit(exit_surface, (map_x + 5, info_y))
             info_y += 12
-            exit_hint = self.minimap_font.render("Vá para o centro!", True, (100, 255, 100))
-            surface.blit(exit_hint, (map_x + 5, info_y))
+            
+            hint_surface, _ = professional_renderer.render_text_professional(
+                "Vá para o centro!", 'small', (100, 255, 100),
+                shadow=True, anti_alias=True
+            )
+            surface.blit(hint_surface, (map_x + 5, info_y))
         else:
-            exit_info = self.minimap_font.render("🚪 Colete 4 chaves para sair", True, (255, 150, 150))
-            surface.blit(exit_info, (map_x + 5, info_y))
+            exit_surface, _ = professional_renderer.render_text_professional(
+                "🚪 Colete 4 chaves para sair", 'small', (255, 150, 150),
+                shadow=True, anti_alias=True
+            )
+            surface.blit(exit_surface, (map_x + 5, info_y))
         
-        # Controls
+        # Controls with modern rendering
         controls_y = map_y + map_height - 25
-        control_text = self.minimap_font.render("TAB: Fechar mapa", True, (180, 180, 180))
-        surface.blit(control_text, (map_x + 5, controls_y))
+        control_surface, _ = professional_renderer.render_text_professional(
+            "TAB: Fechar mapa", 'small', (180, 180, 180),
+            shadow=True, anti_alias=True
+        )
+        surface.blit(control_surface, (map_x + 5, controls_y))
 
     def run(self):
         # Handle settings events (only process settings-related events)
@@ -339,7 +351,7 @@ class Level3:
                 FloatingText(orb.rect.center, [self.floating_text_sprites], "+VIDA", color=(255, 100, 100), size=16)
                 
                 self.player.inventory["healthOrbs"] += 1
-                self.collectable_music_channel.play(self.collectable_music)
+                audio_manager.play_sound('heal', 'collection')
                 if self.player.health < 450:
                     self.player.health += 50
                 else:
@@ -357,7 +369,7 @@ class Level3:
                 FloatingText(orb.rect.center, [self.floating_text_sprites], "+VELOCIDADE", color=(100, 255, 100), size=16)
                 
                 self.player.inventory["speedOrbs"] += 1
-                self.collectable_music_channel.play(self.collectable_music)
+                audio_manager.play_sound('heal', 'collection')
                 self.player.speed += 0.4
                 self.player.animation_speed += 0.04
 
@@ -373,7 +385,7 @@ class Level3:
                 FloatingText(gem.rect.center, [self.floating_text_sprites], "PEDRA MÍSTICA!", color=(220, 180, 255), size=24)
                 
                 self.player.inventory['zappaguriStone'] = 1
-                self.collectable_music_channel.play(self.collectable_music)
+                audio_manager.play_sound('heal', 'collection')
 
         attack_collisions = pygame.sprite.spritecollide(self.player, self.attack_orbs, True)
         if attack_collisions:
@@ -387,7 +399,7 @@ class Level3:
                 FloatingText(orb.rect.center, [self.floating_text_sprites], "+ATAQUE", color=(255, 200, 100), size=16)
                 
                 self.player.inventory["attackOrbs"] += 1
-                self.collectable_music_channel.play(self.collectable_music)
+                audio_manager.play_sound('heal', 'collection')
                 self.player.attack += 10
 
 
@@ -403,7 +415,7 @@ class Level3:
                 FloatingText(key.rect.center, [self.floating_text_sprites], "+CHAVE", color=(255, 215, 0), size=18)
                 
                 self.player.inventory["keys"] += 1
-                self.collectable_music_channel.play(self.collectable_music)
+                audio_manager.play_sound('heal', 'collection')
         if self.player.inventory['keys']<4:
             if pygame.sprite.spritecollide(self.player,self.door, False):
                 self.ui.set_status_message('Você precisa de 4 chaves para abrir esta porta!')

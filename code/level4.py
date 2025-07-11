@@ -15,6 +15,7 @@ from settings_manager import SettingsManager
 from cheat_system import cheat_system
 # STATS: Import player statistics system
 from player_stats import player_stats
+from audio_manager import audio_manager
 
 class Level4:
     def __init__(self):
@@ -60,12 +61,7 @@ class Level4:
         
         # settings manager
         self.settings = SettingsManager()
-        # level music
-        # collectable music
-        self.collectable_music = pygame.mixer.Sound('../audio/heal.wav')
-        self.collectable_music_channel = pygame.mixer.Channel(1)
-        self.stomp_music = pygame.mixer.Sound('../audio/stomp.wav')
-        self.stomp_music_channel = pygame.mixer.Channel(3)
+        # Audio now handled by AudioManager - sounds removed
 
     def create_map(self):
 
@@ -258,7 +254,7 @@ class Level4:
                 FloatingText(orb.rect.center, [self.floating_text_sprites], "+VIDA", color=(255, 100, 100), size=16)
                 
                 self.player.inventory["healthOrbs"] += 1
-                self.collectable_music_channel.play(self.collectable_music)
+                audio_manager.play_sound('heal', 'collection')
                 if self.player.health < 450:
                     self.player.health += 50
                 else:
@@ -276,7 +272,7 @@ class Level4:
                 FloatingText(orb.rect.center, [self.floating_text_sprites], "+VELOCIDADE", color=(100, 255, 100), size=16)
                 
                 self.player.inventory["speedOrbs"] += 1
-                self.collectable_music_channel.play(self.collectable_music)
+                audio_manager.play_sound('heal', 'collection')
                 self.player.speed += 0.4
                 self.player.animation_speed += 0.04
 
@@ -292,7 +288,7 @@ class Level4:
                 FloatingText(orb.rect.center, [self.floating_text_sprites], "+ATAQUE", color=(255, 200, 100), size=16)
                 
                 self.player.inventory["attackOrbs"] += 1
-                self.collectable_music_channel.play(self.collectable_music)
+                audio_manager.play_sound('heal', 'collection')
                 self.player.attack += 10
         if self.player.rect.colliderect(self.boss.hitbox):
             self.player.health = -10

@@ -15,6 +15,7 @@ from settings_manager import SettingsManager
 from cheat_system import cheat_system
 # STATS: Import player statistics system
 from player_stats import player_stats
+from audio_manager import audio_manager
 
 
 
@@ -62,10 +63,7 @@ class Level1:
         self.settings = SettingsManager()
         # CHEAT: Add cheat action for level switching (remove for final version)
         self.cheat_action = None
-        # level music
-        # collectable music
-        self.collectable_music = pygame.mixer.Sound('../audio/heal.wav')
-        self.collectable_music_channel = pygame.mixer.Channel(1)
+        # Audio now handled by AudioManager - sounds removed
 
     def reset(self):
         # Reset level-specific variables and clear sprites
@@ -259,7 +257,7 @@ class Level1:
                 self.player.inventory["healthOrbs"] += 1
                 # STATS: Record health orb collection
                 player_stats.record_orb_collection("health_orbs")
-                self.collectable_music_channel.play(self.collectable_music)
+                audio_manager.play_sound('heal', 'collection')
                 if self.player.health<450:
                     self.player.health+=50
                 else:
@@ -279,7 +277,7 @@ class Level1:
                 self.player.inventory["speedOrbs"] += 1
                 # STATS: Record speed orb collection
                 player_stats.record_orb_collection("speed_orbs")
-                self.collectable_music_channel.play(self.collectable_music)
+                audio_manager.play_sound('heal', 'collection')
                 self.player.speed += 0.4
                 self.player.animation_speed+=0.04
 
@@ -298,7 +296,7 @@ class Level1:
                 self.player.inventory["attackOrbs"] += 1
                 # STATS: Record attack orb collection
                 player_stats.record_orb_collection("attack_orbs")
-                self.collectable_music_channel.play(self.collectable_music)
+                audio_manager.play_sound('heal', 'collection')
                 self.player.attack += 10
 
 class YSortCameraGroup(pygame.sprite.Group):
