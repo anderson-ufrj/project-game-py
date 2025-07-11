@@ -1,6 +1,8 @@
 import pygame
 import math
 import random
+from font_manager import font_manager
+from professional_renderer import professional_renderer
 
 class CollectParticle(pygame.sprite.Sprite):
     """Particle animation when collecting gems"""
@@ -177,16 +179,11 @@ class FloatingText(pygame.sprite.Sprite):
         self.life_time = 120  # frames de vida
         self.current_life = 0
         
-        # Criar fonte
-        try:
-            self.font = pygame.font.Font('../graphics/font/PressStart2P.ttf', size)
-        except:
-            self.font = pygame.font.Font(None, size)
-        
-        # Criar texto
+        # Modern text rendering setup
         self.text = text
         self.color = color
         self.alpha = 255
+        self.font_size = 'small' if size <= 16 else 'text'  # Map size to font categories
         
         # Efeitos (definir antes de create_text_surface)
         self.scale = 1.0
@@ -194,13 +191,20 @@ class FloatingText(pygame.sprite.Sprite):
         self.bounce_amplitude = 3
         self.bounce_frequency = 0.1
         
-        # Criar surface inicial
+        # Criar surface inicial com renderização moderna
         self.create_text_surface()
         
     def create_text_surface(self):
-        """Criar a surface do texto com alpha"""
-        # Criar texto base
-        text_surf = self.font.render(self.text, True, self.color)
+        """Criar a surface do texto com renderização moderna"""
+        # Usar renderização profissional
+        text_surf, text_rect = professional_renderer.render_text_professional(
+            self.text, 
+            self.font_size, 
+            self.color,
+            shadow=True,
+            glow=True,
+            anti_alias=True
+        )
         
         # Aplicar escala se necessário
         if self.scale != 1.0:
@@ -208,11 +212,9 @@ class FloatingText(pygame.sprite.Sprite):
             new_height = int(text_surf.get_height() * self.scale)
             text_surf = pygame.transform.scale(text_surf, (new_width, new_height))
         
-        # Criar surface com alpha
-        self.image = pygame.Surface(text_surf.get_size(), pygame.SRCALPHA)
-        self.image.set_alpha(int(self.alpha))
-        self.image.blit(text_surf, (0, 0))
-        
+        # Aplicar transparência
+        text_surf.set_alpha(int(self.alpha))
+        self.image = text_surf
         self.rect = self.image.get_rect(center=self.pos)
     
     def update(self):

@@ -3,6 +3,10 @@ import math
 import random
 from settings import *
 from font_manager import font_manager
+from graphics_screen import GraphicsScreen
+from tutorial_system import tutorial_system
+# Removido: from modern_settings_ui import modern_settings_manager
+from enhanced_font_system import enhanced_font_renderer
 
 class MenuParticle:
     """Partícula mágica para o menu principal"""
@@ -149,6 +153,11 @@ class AdvancedMainMenu:
         self.credits_buttons = self.create_credits_buttons()
         self.stats_buttons = self.create_stats_buttons()
         
+        # Sistema de configurações gráficas
+        self.graphics_screen = GraphicsScreen()
+        
+        # Sistema moderno removido para evitar sobreposições
+        
     def make_circular_image(self, image):
         """Converte uma imagem para formato circular"""
         size = image.get_size()
@@ -172,6 +181,8 @@ class AdvancedMainMenu:
         
         button_data = [
             ("► INICIAR JOGO", "start_game"),
+            ("🎓 TUTORIAL", "show_tutorial"),
+            ("🖥️ GRÁFICOS", "show_graphics"),
             ("📊 ESTATÍSTICAS", "show_stats"),
             ("👥 CRÉDITOS", "show_credits"),
             ("❌ SAIR", "quit_game")
@@ -272,22 +283,21 @@ class AdvancedMainMenu:
                 action = button_action
             button.draw(self.screen)
         
-        # Instruções de controle - movidas para baixo para não sobrepor botões
-        controls_y = HEIGTH - 140
-        controls = [
-            "⌨️ WASD/Setas: Movimento | Shift: Correr | Espaço: Ataque 360°",
-            "♪ M: Mudo | ↑↓: Volume | ⚙: Configurações | S: Estatísticas | D: Dificuldade",
-            "💾 L: Carregar Jogo | F5: Quick Save | F9: Quick Load | F6: Salvar",
-            "🗺️ TAB: Minimapa (Fase 3) | ♦ Teclas 1-4: Ir direto para fase"
+        # Informações básicas e limpas
+        info_y = HEIGTH - 80
+        info_texts = [
+            "🎮 Use o TUTORIAL para aprender a jogar",
+            "⚙️ Clique no ícone da engrenagem para configurações de áudio"
         ]
         
-        for i, control in enumerate(controls):
-            text = self.custom_info_font.render(control, True, (200, 200, 200))
-            rect = text.get_rect(center=(WIDTH//2, controls_y + i * 18))
-            # Sombra
-            shadow = self.custom_info_font.render(control, True, (0, 0, 0))
-            self.screen.blit(shadow, (rect.x + 1, rect.y + 1))
-            self.screen.blit(text, rect)
+        for i, info in enumerate(info_texts):
+            enhanced_font_renderer.render_instruction(
+                info,
+                WIDTH // 2,
+                info_y + i * 20,
+                self.screen,
+                (180, 200, 220)
+            )
         
         return action
     
@@ -431,6 +441,29 @@ class AdvancedMainMenu:
         
         return action
     
+    def handle_event(self, event):
+        """Lidar com eventos do menu"""
+        # Tutorial tem prioridade máxima
+        if tutorial_system.handle_event(event):
+            return None
+            
+        # Lidar com eventos da tela de gráficos
+        if self.graphics_screen.is_open():
+            if event.type == pygame.KEYDOWN:
+                self.graphics_screen.handle_keydown(event)
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                self.graphics_screen.handle_mouse_click(event.pos)
+            return None
+        
+        # Sistema moderno de configurações removido
+            
+        # Tecla G para abrir configurações gráficas
+        if event.type == pygame.KEYDOWN and event.key == pygame.K_g:
+            self.graphics_screen.open_screen()
+            return None
+            
+        return None
+    
     def update_and_draw(self, mouse_pos, mouse_click):
         """Atualizar e desenhar o menu principal"""
         # Desenhar background
@@ -444,18 +477,32 @@ class AdvancedMainMenu:
         for particle in self.particles:
             particle.draw(self.screen)
         
-        # Desenhar seção atual
+        # Desenhar seção atual apenas se não estiver na tela de gráficos
         action = None
-        if self.current_section == "main":
-            action = self.draw_main_menu(mouse_pos, mouse_click)
-        elif self.current_section == "credits":
-            action = self.draw_credits_screen(mouse_pos, mouse_click)
-        elif self.current_section == "stats":
-            action = self.draw_stats_screen(mouse_pos, mouse_click)
+        if not self.graphics_screen.is_open():
+            if self.current_section == "main":
+                action = self.draw_main_menu(mouse_pos, mouse_click)
+            elif self.current_section == "credits":
+                action = self.draw_credits_screen(mouse_pos, mouse_click)
+            elif self.current_section == "stats":
+                action = self.draw_stats_screen(mouse_pos, mouse_click)
+        
+        # Sistema moderno de configurações removido
+        
+        # Desenhar tela de configurações gráficas (sempre por cima)
+        self.graphics_screen.draw(self.screen)
+        
+        # Atualizar e desenhar tutorial
+        tutorial_system.update()
+        tutorial_system.draw(self.screen)
         
         # Processar ações
         if action == "start_game":
             return "start_game"
+        elif action == "show_tutorial":
+            tutorial_system.open_tutorial()
+        elif action == "show_graphics":
+            self.graphics_screen.open_screen()
         elif action == "show_credits":
             self.current_section = "credits"
         elif action == "show_stats":

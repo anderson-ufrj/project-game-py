@@ -4,6 +4,7 @@ import math
 from settings import *
 from difficulty_manager import difficulty_manager
 from font_manager import font_manager
+from professional_renderer import professional_renderer
 
 class DifficultyButton:
     """Botão de seleção de dificuldade"""
@@ -72,16 +73,21 @@ class DifficultyButton:
         title_rect = title_surface.get_rect(center=(self.rect.centerx, self.rect.y + 25))
         surface.blit(title_surface, title_rect)
         
-        # Descrição
-        desc_font = pygame.font.Font('../graphics/font/PressStart2P.ttf', 10)
-        desc_surface = desc_font.render(self.difficulty_data["description"], True, (200, 200, 200))
-        desc_rect = desc_surface.get_rect(center=(self.rect.centerx, self.rect.y + 50))
+        # Descrição com renderização moderna
+        desc_surface, desc_rect = professional_renderer.render_text_professional(
+            self.difficulty_data["description"], 'small', (200, 200, 200),
+            shadow=True, anti_alias=True
+        )
+        desc_rect.center = (self.rect.centerx, self.rect.y + 50)
         surface.blit(desc_surface, desc_rect)
         
-        # Indicador de seleção
+        # Indicador de seleção com renderização moderna
         if self.selected:
             indicator_text = "SELECIONADO"
-            indicator_surface = desc_font.render(indicator_text, True, (100, 255, 100))
+            indicator_surface, indicator_rect = professional_renderer.render_text_professional(
+                indicator_text, 'small', (100, 255, 100),
+                shadow=True, glow=True, anti_alias=True
+            )
             indicator_rect = indicator_surface.get_rect(center=(self.rect.centerx, self.rect.bottom - 20))
             surface.blit(indicator_surface, indicator_rect)
 

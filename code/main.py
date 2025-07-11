@@ -182,7 +182,7 @@ class Game:
         if menu_action == "start_game":
             # Show intro story first
             if not hasattr(self, 'intro_story_shown'):
-                story = StoryScreen("intro")
+                story = StoryScreen("intro", custom_background="../graphics/ui/home page.jpg")
                 story_finished = False
                 while not story_finished:
                     story_finished = story.update()

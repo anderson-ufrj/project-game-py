@@ -2,6 +2,8 @@ import pygame
 import math
 from support import import_folder
 from settings import WIDTH, HEIGTH, TEXT_COLOR, UI_BG_COLOR, UI_BORDER_COLOR
+from font_manager import font_manager
+from professional_renderer import professional_renderer
 
 
 class LoadingScreen():
@@ -27,13 +29,7 @@ class LoadingScreen():
         self.particle_time = 0
         self.particles = []
         
-        # Font for loading text
-        try:
-            self.font = pygame.font.Font('../graphics/font/PressStart2P.ttf', 24)
-            self.small_font = pygame.font.Font('../graphics/font/PressStart2P.ttf', 14)
-        except:
-            self.font = pygame.font.Font(None, 32)
-            self.small_font = pygame.font.Font(None, 18)
+        # Modern font system - no more hardcoded fonts needed
         
         # Create mystical particles (brighter for visibility)
         for _ in range(30):
@@ -117,20 +113,21 @@ class LoadingScreen():
         
         current_text = loading_texts[int(self.time * 0.5) % len(loading_texts)]
         
-        # Text shadow
-        text_shadow = self.font.render(current_text, True, (0, 0, 0))
-        shadow_rect = text_shadow.get_rect(center=(center_x + 2, center_y + 102))
-        self.displaysurface.blit(text_shadow, shadow_rect)
-        
-        # Main text with pulsing effect
-        text_surface = self.font.render(current_text, True, TEXT_COLOR)
-        text_rect = text_surface.get_rect(center=(center_x, center_y + 100))
+        # Main text with modern rendering
+        text_surface, text_rect = professional_renderer.render_text_professional(
+            current_text, 'subtitle', TEXT_COLOR,
+            shadow=True, glow=True, anti_alias=True
+        )
+        text_rect.center = (center_x, center_y + 100)
         self.displaysurface.blit(text_surface, text_rect)
         
-        # Progress dots
+        # Progress dots with modern rendering
         dots = "." * (int(self.time * 2) % 4)
-        dots_surface = self.small_font.render(dots, True, TEXT_COLOR)
-        dots_rect = dots_surface.get_rect(center=(center_x + text_rect.width // 2 + 20, center_y + 100))
+        dots_surface, dots_rect = professional_renderer.render_text_professional(
+            dots, 'text', TEXT_COLOR,
+            shadow=True, anti_alias=True
+        )
+        dots_rect.center = (center_x + text_rect.width // 2 + 20, center_y + 100)
         self.displaysurface.blit(dots_surface, dots_rect)
 
     def update(self):

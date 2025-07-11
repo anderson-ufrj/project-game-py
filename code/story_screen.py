@@ -3,44 +3,43 @@ import math
 import random
 from settings import WIDTH, HEIGTH, TEXT_COLOR
 from game_story import PHASE_STORIES
+from professional_renderer import professional_renderer
+from enhanced_font_system import enhanced_font_renderer
+from font_manager import font_manager
 # CHEAT: Import cheat system for testing (remove for final version)
 from cheat_system import cheat_system
 
 class StoryScreen:
-    def __init__(self, story_key="intro"):
+    def __init__(self, story_key="intro", custom_background=None):
         self.display_surface = pygame.display.get_surface()
         self.story_data = PHASE_STORIES.get(story_key, PHASE_STORIES["intro"])
         
-        # Font setup - usar fontes arredondadas como nos créditos
-        try:
-            # Tentar carregar fonte especial primeiro
-            self.title_font = pygame.font.Font('../graphics/font/PressStart2P.ttf', 28)
-            self.subtitle_font = pygame.font.Font('../graphics/font/PressStart2P.ttf', 16)
-            self.text_font = pygame.font.Font('../graphics/font/PressStart2P.ttf', 14)
-        except:
-            # Usar fontes arredondadas do sistema (como nos créditos)
-            self.title_font = pygame.font.Font(None, 40)      # Maior e mais bonita
-            self.subtitle_font = pygame.font.Font(None, 24)   # Fonte arredondada
-            self.text_font = pygame.font.Font(None, 18)       # Fonte legível e arredondada
+        # Usar sistema moderno de fontes - sem mais hardcoded!
+        # Todas as fontes agora vem do font_manager
         
         # Animation variables
         self.scroll_y = HEIGTH
-        self.scroll_speed = 0.15  # Velocidade MUITO mais lenta - quase parando!
+        self.scroll_speed = 1.2  # Velocidade otimizada para melhor experiência
         self.finished = False
         self.time = 0
         self.skip_requested = False
         
-        # Carregar imagem de fundo
+        # Carregar imagem de fundo (personalizada ou padrão)
+        self.background_image = None
+        background_path = custom_background or '../map new/map.png'
+        
         try:
-            self.background_image = pygame.image.load('../map new/map.png').convert()
+            self.background_image = pygame.image.load(background_path).convert()
             # Escalar para tela inteira com efeito escurecido
             self.background_image = pygame.transform.scale(self.background_image, (WIDTH, HEIGTH))
-            # Criar uma sobreposição escura
+            # Criar uma sobreposição escura para legibilidade
             dark_overlay = pygame.Surface((WIDTH, HEIGTH))
-            dark_overlay.set_alpha(180)  # Semi-transparente
+            dark_overlay.set_alpha(200)  # Mais escuro para melhor contraste
             dark_overlay.fill((0, 0, 20))  # Azul escuro
             self.background_image.blit(dark_overlay, (0, 0))
-        except:
+            print(f"🖼️ Background da história carregado: {background_path}")
+        except Exception as e:
+            print(f"⚠️ Erro ao carregar background {background_path}: {e}")
             self.background_image = None
         
         # Create starfield background
@@ -54,39 +53,64 @@ class StoryScreen:
             })
     
     def create_story_surface(self):
-        """Create the scrolling text surface"""
-        # Calculate total height needed - mais espaçamento para leitura
-        line_height = 35          # Mais espaçamento entre linhas
-        title_height = 80         # Mais espaço para título
-        subtitle_height = 50      # Mais espaço para subtítulo
-        gap_height = 50           # Mais gap entre seções
+        """Create the scrolling text surface with modern rendering"""
+        # Calculate total height needed with better spacing
+        line_height = 40          # Espaçamento otimizado entre linhas
+        title_height = 120        # Mais espaço para título com efeitos
+        subtitle_height = 80      # Mais espaço para subtítulo
+        gap_height = 60           # Gap entre seções
         
         total_lines = len(self.story_data["text"])
         total_height = title_height + subtitle_height + gap_height + (total_lines * line_height) + 200
         
-        # Create surface
+        # Create surface with modern background
         story_surface = pygame.Surface((WIDTH - 100, total_height), pygame.SRCALPHA)
         
-        y_pos = 0
+        # Add subtle background panel
+        panel_surface = professional_renderer.create_modern_panel(
+            WIDTH - 100, total_height, background_alpha=120
+        )
+        story_surface.blit(panel_surface, (0, 0))
         
-        # Title (centered)
-        title_text = self.title_font.render(self.story_data["title"], True, (255, 255, 100))
-        title_rect = title_text.get_rect(centerx=story_surface.get_width() // 2, y=y_pos)
-        story_surface.blit(title_text, title_rect)
+        y_pos = 30  # Padding from top
+        
+        # Title with modern effects
+        title_surface, title_rect = professional_renderer.render_text_professional(
+            self.story_data["title"], 
+            'title', 
+            (255, 215, 0),  # Dourado elegante
+            shadow=True, 
+            glow=True, 
+            anti_alias=True
+        )
+        title_x = (story_surface.get_width() - title_rect.width) // 2
+        story_surface.blit(title_surface, (title_x, y_pos))
         y_pos += title_height
         
-        # Subtitle (centered)
-        subtitle_text = self.subtitle_font.render(self.story_data["subtitle"], True, (100, 200, 255))
-        subtitle_rect = subtitle_text.get_rect(centerx=story_surface.get_width() // 2, y=y_pos)
-        story_surface.blit(subtitle_text, subtitle_rect)
+        # Subtitle with professional rendering
+        subtitle_surface, subtitle_rect = professional_renderer.render_text_professional(
+            self.story_data["subtitle"], 
+            'subtitle', 
+            (100, 200, 255),  # Azul elegante
+            shadow=True, 
+            anti_alias=True
+        )
+        subtitle_x = (story_surface.get_width() - subtitle_rect.width) // 2
+        story_surface.blit(subtitle_surface, (subtitle_x, y_pos))
         y_pos += subtitle_height + gap_height
         
-        # Story text (centered)
+        # Story text with enhanced rendering
         for line in self.story_data["text"]:
             if line.strip():  # Non-empty line
-                text_surface = self.text_font.render(line, True, TEXT_COLOR)
-                text_rect = text_surface.get_rect(centerx=story_surface.get_width() // 2, y=y_pos)
-                story_surface.blit(text_surface, text_rect)
+                text_surface, text_rect = professional_renderer.render_text_professional(
+                    line, 
+                    'text', 
+                    (230, 230, 250),  # Branco suave
+                    shadow=True, 
+                    anti_alias=True
+                )
+                text_x = (story_surface.get_width() - text_rect.width) // 2
+                story_surface.blit(text_surface, (text_x, y_pos))
             y_pos += line_height
         
         return story_surface
@@ -173,18 +197,18 @@ class StoryScreen:
         pygame.draw.rect(self.display_surface, (120, 120, 140), skip_bg_rect, 2)
         pygame.draw.rect(self.display_surface, (180, 180, 200), skip_bg_rect, 1)
         
-        # Enhanced text with shadow
-        skip_font = pygame.font.Font(None, 22)  # Fonte maior para instrução
-        
-        # Text shadow for better readability
-        shadow_text = skip_font.render("Pressione ESPACO para pular a historia", True, (0, 0, 0))
-        shadow_rect = shadow_text.get_rect(center=(WIDTH // 2 + 2, HEIGTH - 33))
-        self.display_surface.blit(shadow_text, shadow_rect)
-        
-        # Main text
-        skip_text = skip_font.render("Pressione ESPACO para pular a historia", True, (255, 255, 100))
-        skip_rect = skip_text.get_rect(center=(WIDTH // 2, HEIGTH - 35))
-        self.display_surface.blit(skip_text, skip_rect)
+        # Modern skip instruction with professional rendering
+        skip_surface, skip_rect = professional_renderer.render_text_professional(
+            "Pressione ESPACO para pular a historia", 
+            'text',  # Use text size from font manager
+            (255, 255, 100),  # Amarelo elegante
+            shadow=True, 
+            glow=True,
+            anti_alias=True
+        )
+        skip_x = (WIDTH - skip_rect.width) // 2
+        skip_y = HEIGTH - 35
+        self.display_surface.blit(skip_surface, (skip_x, skip_y))
         
         # CHEAT: Display cheat information in story screen (remove for final version)
         cheat_system.display_cheat_info(self.display_surface)

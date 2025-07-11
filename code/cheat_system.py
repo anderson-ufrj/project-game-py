@@ -10,6 +10,8 @@
 # ===================================================================================
 
 import pygame
+from font_manager import font_manager
+from professional_renderer import professional_renderer
 
 class CheatSystem:
     """Sistema de cheat codes para facilitar testes"""
@@ -91,33 +93,40 @@ class CheatSystem:
             player.energy = player.stats['energy']  # Always full energy
     
     def display_cheat_info(self, screen):
-        """Display cheat information on screen"""
+        """Display cheat information on screen with modern rendering"""
         if not self.cheats_enabled:
             return
             
-        font = pygame.font.Font(None, 24)
         y_offset = 10
         
-        # Display active cheats
+        # Display active cheats with modern rendering
         if self.god_mode:
-            text = font.render("CHEAT: God Mode ATIVO", True, (255, 255, 0))
-            screen.blit(text, (10, y_offset))
+            text_surf, text_rect = professional_renderer.render_text_professional(
+                "CHEAT: God Mode ATIVO", 'text', (255, 255, 0),
+                background=(0, 0, 0), shadow=True, anti_alias=True
+            )
+            screen.blit(text_surf, (10, y_offset))
             y_offset += 25
             
         if self.max_energy_cheat:
-            text = font.render("CHEAT: Energia Infinita ATIVA", True, (0, 255, 255))
-            screen.blit(text, (10, y_offset))
+            text_surf, text_rect = professional_renderer.render_text_professional(
+                "CHEAT: Energia Infinita ATIVA", 'text', (0, 255, 255),
+                background=(0, 0, 0), shadow=True, anti_alias=True
+            )
+            screen.blit(text_surf, (10, y_offset))
             y_offset += 25
             
-        # Display cheat help (small text)
-        help_font = pygame.font.Font(None, 16)
+        # Display cheat help with modern rendering
         cheat_help = [
             "✅ CHEATS ATIVOS: 1-4 (Fases), H (Home), F1 (God), F2 (Energia)"
         ]
         
         for i, help_text in enumerate(cheat_help):
-            text = help_font.render(help_text, True, (0, 255, 0))  # Green color
-            screen.blit(text, (10, screen.get_height() - 30 + i * 15))
+            text_surf, text_rect = professional_renderer.render_text_professional(
+                help_text, 'small', (0, 255, 0),
+                background=(0, 0, 0), shadow=True, anti_alias=True
+            )
+            screen.blit(text_surf, (10, screen.get_height() - 30 + i * 15))
 
 # Global cheat system instance
 cheat_system = CheatSystem()
