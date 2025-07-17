@@ -283,18 +283,7 @@ class AdvancedMainMenu:
                 action = button_action
             button.draw(self.screen)
         
-        # Informações básicas e limpas
-        info_y = HEIGTH - 80
-        info_texts = [
-            "🎮 Use o TUTORIAL para aprender a jogar",
-            "⚙️ Clique no ícone da engrenagem para configurações de áudio"
-        ]
-        
-        for i, info in enumerate(info_texts):
-            # Usar font_manager ao invés de enhanced_font_renderer
-            info_surface = self.custom_info_font.render(info, True, (180, 200, 220))
-            info_rect = info_surface.get_rect(center=(WIDTH // 2, info_y + i * 20))
-            self.screen.blit(info_surface, info_rect)
+        # Interface limpa sem instruções desnecessárias
         
         return action
     
