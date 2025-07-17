@@ -1,0 +1,117 @@
+{
+  "metadata": {
+    "save_time": "2025-07-17 19:45:12",
+    "game_version": "1.0.0",
+    "player_name": "Jogador",
+    "save_slot": 0,
+    "save_name": "Auto Save - 19:45:12"
+  },
+  "game_state": {
+    "current_level": 3,
+    "current_difficulty": "normal"
+  },
+  "player_progress": {
+    "levels_completed": [
+      1,
+      4
+    ],
+    "current_level_progress": {
+      "game_state": 3,
+      "timestamp": 1752792312.9415288,
+      "player_data": {
+        "health": 370,
+        "energy": 37.5500000000017,
+        "inventory": {
+          "healthOrbs": 4,
+          "attackOrbs": 2,
+          "speedOrbs": 6,
+          "keys": 0,
+          "zappaguriStone": 0
+        },
+        "weapon": "sword",
+        "magic": "flame"
+      }
+    }
+  },
+  "player_stats": {
+    "player_name": "Anderson",
+    "created_at": "2025-07-10 10:29:44",
+    "last_played": "2025-07-17 19:45:12",
+    "total_playtime": 1139,
+    "game_sessions": 6,
+    "current_level": 4,
+    "levels_completed": [
+      1,
+      4
+    ],
+    "combat_stats": {
+      "enemies_killed": 26,
+      "enemies_by_type": {
+        "golu": 25,
+        "black": 1,
+        "bigboi": 0
+      },
+      "damage_dealt": 5025,
+      "damage_taken": 180,
+      "deaths": 0,
+      "attacks_made": 114,
+      "magic_cast": 3,
+      "magic_by_type": {
+        "flame": 3,
+        "heal": 0
+      }
+    },
+    "performance": {
+      "best_times": {
+        "level1": 99.77491021156311,
+        "level2": null,
+        "level3": null,
+        "level4": 87.70360326766968
+      },
+      "attempts_per_level": {
+        "level1": 6,
+        "level2": 6,
+        "level3": 6,
+        "level4": 6
+      },
+      "steps_taken": 0,
+      "distance_traveled": 0
+    },
+    "collection_stats": {
+      "health_orbs": 9,
+      "attack_orbs": 5,
+      "speed_orbs": 18,
+      "keys_found": 0,
+      "eldritch_gems": 0
+    },
+    "equipment_stats": {
+      "weapon_usage": {
+        "sword": 113,
+        "axe": 0,
+        "lance": 1,
+        "rapier": 0,
+        "sai": 0
+      },
+      "weapon_time": {
+        "sword": 0,
+        "axe": 0,
+        "lance": 0,
+        "rapier": 0,
+        "sai": 0
+      },
+      "favorite_weapon": "sword",
+      "favorite_magic": "flame"
+    }
+  },
+  "inventory": {
+    "healthOrbs": 4,
+    "attackOrbs": 2,
+    "speedOrbs": 6,
+    "keys": 0,
+    "zappaguriStone": 0
+  },
+  "settings": {
+    "audio_volume": 0.6,
+    "difficulty": "normal"
+  }
+}
