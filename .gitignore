@@ -93,3 +93,11 @@ fix_home_image.py
 
 # Arquivos de desenvolvimento
 CLAUDE.md
+
+# Arquivos de instruções e documentação interna
+CHEAT_REMOVAL_INSTRUCTIONS.md
+ICONS_DOCUMENTATION.md
+
+# Scripts de instalação e execução
+install_ui_libs.sh
+run_options.sh
