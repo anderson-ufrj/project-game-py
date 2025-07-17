@@ -2,8 +2,8 @@
 # Projeto: Tópicos Especiais I - IFSULDEMINAS Muzambinho
 # Aluno: Anderson Henrique da Silva
 
-# Script de execução
-rungame.sh
+# Scripts de desenvolvimento não oficiais
+# rungame.sh # Comentado - script oficial deve ser versionado
 
 # Ambiente virtual Python
 venv/
@@ -101,3 +101,18 @@ ICONS_DOCUMENTATION.md
 # Scripts de instalação e execução
 install_ui_libs.sh
 run_options.sh
+
+# Versões alternativas e arquivos de desenvolvimento não oficiais
+code/main_direct.py
+code/main_hybrid.py
+code/main_new.py
+code/main_with_modern_audio.py
+code/professional_main_menu.py
+code/aaa_main_menu.py
+code/trash/
+
+# Arquivos de backup e versões antigas
+*.bak
+*.old
+*_backup.*
+*_old.*

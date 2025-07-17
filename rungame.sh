@@ -1,7 +1,8 @@
 #!/bin/bash
 
-# Script para executar o jogo Corrida pela Relíquia
-# Criado para facilitar a execução do projeto
+# Script oficial para executar Corrida pela Relíquia
+# Projeto: Tópicos Especiais I - IFSULDEMINAS Muzambinho
+# Aluno: Anderson Henrique da Silva
 
 echo "🎮 Iniciando Corrida pela Relíquia..."
 echo "📍 Projeto: Tópicos Especiais I - IFSULDEMINAS Muzambinho"
@@ -51,42 +52,22 @@ echo ""
 echo "🎮 Controles:"
 echo "   ➤ Setas: Movimento"
 echo "   ➤ Shift: Correr"
-echo "   ➤ Espaço: Ataque (dano 360°!) - MELHORADO!"
-echo "   ➤ Q: Trocar arma (5 armas disponíveis!) - NOVO!"
-echo "   ➤ E: Trocar magia (Chama/Cura) - NOVO!"
-echo "   ➤ Ctrl: Usar magia - NOVO!"
+echo "   ➤ Espaço: Ataque (dano 360°!)"
+echo "   ➤ Q: Trocar arma (5 armas disponíveis!)"
+echo "   ➤ E: Trocar magia (Chama/Cura)"
+echo "   ➤ Ctrl: Usar magia"
 echo "   ➤ Enter: Iniciar jogo"
-echo "   ➤ ⚙️ Engrenagem (mouse): Menu de configurações"
 echo "   ➤ M: Liga/Desliga som | ↑↓: Volume"
 echo "   ➤ TAB: Minimapa (Fase 3)"
 echo ""
 echo "🎯 Objetivo: Encontre a Pedra Mística de Zappaguri através de 4 níveis!"
-echo "🌟 Novidades: Ataque 360°, Sistema de Armas, Magias, Histórias épicas!"
-echo "🏗️ NOVA ARQUITETURA: Código modular e profissional!"
 echo ""
 echo "⚡ Iniciando jogo em 3 segundos..."
 sleep 3
 
-# Detectar qual versão usar
-if [ -f "main_with_modern_audio.py" ]; then
-    echo "🎵 Executando com controles de áudio modernos..."
-    python3 main_with_modern_audio.py
-else
-    echo "🎮 Executando jogo original (versão estável)..."
-    python3 main.py
-fi
-
-# Versões alternativas (descomentadas para testar)
-# if [ -f "main_direct.py" ]; then
-#     echo "🎮 Executando jogo original com logging aprimorado..."
-#     python3 main_direct.py
-# elif [ -f "main_hybrid.py" ]; then
-#     echo "🔗 Usando versão híbrida (Nova Arquitetura + Jogo Original)..."
-#     python3 main_hybrid.py
-# elif [ -f "main_new.py" ]; then
-#     echo "🆕 Usando nova arquitetura (apenas teste)..."
-#     python3 main_new.py
-# fi
+# Executar versão oficial
+echo "🎮 Executando Corrida pela Relíquia..."
+python3 main.py
 
 # Voltar ao diretório original
 cd ..

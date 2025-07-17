@@ -12,8 +12,6 @@ from pygame.locals import *
 from loading import LoadingScreen
 from modern_audio_controls import modern_audio_controls
 from audio_manager import audio_manager
-from main_menu import AdvancedMainMenu
-from professional_main_menu import get_professional_menu
 from clean_main_menu import get_clean_menu
 from story_screen import StoryScreen
 # CHEAT: Import cheat system for testing (remove for final version)
@@ -78,7 +76,7 @@ class Game:
 
         # Audio controls - agora usando sistema moderno e simples
         
-        # Clean and elegant main menu
+        # Menu principal oficial
         fonts = {
             'title': self.title_font,
             'subtitle': self.subtitle_font,
@@ -86,9 +84,6 @@ class Game:
             'button': self.info_font
         }
         self.clean_menu = get_clean_menu(self.screen, fonts)
-        
-        # Keep advanced menu as backup
-        self.advanced_menu = AdvancedMainMenu(self.screen, fonts)
         
         # STATS: Name input screen and stats screen
         self.name_input_screen = NameInputScreenV2()
