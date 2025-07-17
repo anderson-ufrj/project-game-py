@@ -10,7 +10,7 @@ from ui import UI
 from enemy import Enemy
 from collectables import *
 from particles import CollectParticle, GemCollectAnimation, DeathParticle, EnemyDeathAnimation, FloatingText
-from settings_manager import SettingsManager
+# from settings_manager import SettingsManager  # REMOVED (using modern_audio_controls instead)
 # CHEAT: Import cheat system for testing (remove for final version)
 from cheat_system import cheat_system
 # STATS: Import player statistics system
@@ -59,8 +59,8 @@ class Level1:
         self.completed = False
         self.gameover = False
         
-        # Settings manager for in-game menu
-        self.settings = SettingsManager()
+        # Settings manager for in-game menu - REMOVED (using modern_audio_controls instead)
+        # self.settings = SettingsManager()
         # CHEAT: Add cheat action for level switching (remove for final version)
         self.cheat_action = None
         # Audio now handled by AudioManager - sounds removed
@@ -199,16 +199,19 @@ class Level1:
         # Handle settings events (only process settings-related events)
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN:
-                # Only handle settings keys, let player handle movement
-                if event.key in [pygame.K_m, pygame.K_UP, pygame.K_DOWN, pygame.K_ESCAPE]:
-                    self.settings.handle_keydown(event)
+                # Only handle settings keys, let player handle movement - REMOVED (using modern_audio_controls instead)
+                # if event.key in [pygame.K_m, pygame.K_UP, pygame.K_DOWN, pygame.K_ESCAPE]:
+                #     self.settings.handle_keydown(event)
+                pass
             elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-                # Handle settings mouse clicks
-                consumed = self.settings.handle_mouse_click(pygame.mouse.get_pos())
+                # Handle settings mouse clicks - REMOVED (using modern_audio_controls instead)
+                # consumed = self.settings.handle_mouse_click(pygame.mouse.get_pos())
                 # If click wasn't consumed by settings, let game handle it
+                pass
         
-        # Only update game if settings menu is closed (pause when open)
-        if not self.settings.is_menu_open():
+        # Only update game if settings menu is closed (pause when open) - REMOVED (using modern_audio_controls instead)
+        # if not self.settings.is_menu_open():
+        if True:  # Always run game update
             # CHEAT: Apply cheat effects (remove for final version)
             cheat_system.apply_god_mode(self.player)
             cheat_system.apply_max_energy(self.player)
@@ -234,8 +237,8 @@ class Level1:
         # CHEAT: Display cheat information (remove for final version)
         cheat_system.display_cheat_info(pygame.display.get_surface())
         
-        # Draw settings button and menu
-        self.settings.draw(pygame.display.get_surface())
+        # Draw settings button and menu - REMOVED (using modern_audio_controls instead)
+        # self.settings.draw(pygame.display.get_surface())
         if pygame.sprite.spritecollide(self.player, self.next_sprites, False):
             self.completed = True
         if self.player.health <= 0:

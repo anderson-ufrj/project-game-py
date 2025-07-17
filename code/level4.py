@@ -10,7 +10,7 @@ from ui import UI
 from enemy import Enemy
 from collectables import*
 from particles import CollectParticle, GemCollectAnimation, DeathParticle, EnemyDeathAnimation, FloatingText
-from settings_manager import SettingsManager
+# from settings_manager import SettingsManager  # REMOVED (using modern_audio_controls instead)
 # CHEAT: Import cheat system for testing (remove for final version)
 from cheat_system import cheat_system
 # STATS: Import player statistics system
@@ -59,8 +59,8 @@ class Level4:
         self.completed = False
         self.gameover = False
         
-        # settings manager
-        self.settings = SettingsManager()
+        # settings manager - REMOVED (using modern_audio_controls instead)
+        # self.settings = SettingsManager()
         # Audio now handled by AudioManager - sounds removed
 
     def create_map(self):
@@ -198,14 +198,17 @@ class Level4:
             if event.type == pygame.KEYDOWN:
                 # Only handle settings keys, let player handle movement
                 if event.key in [pygame.K_m, pygame.K_UP, pygame.K_DOWN, pygame.K_ESCAPE]:
-                    self.settings.handle_keydown(event)
+                    # self.settings.handle_keydown(event)  # REMOVED
+                    pass
             elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 # Handle settings mouse clicks
-                consumed = self.settings.handle_mouse_click(pygame.mouse.get_pos())
+                # consumed = self.settings.handle_mouse_click(pygame.mouse.get_pos())  # REMOVED
                 # If click wasn't consumed by settings, let game handle it
+                pass
         
         # Only update game if settings menu is closed (pause when open)
-        if not self.settings.is_menu_open():
+        # if not self.settings.is_menu_open():  # REMOVED
+        if True:  # Always run game update
             # CHEAT: Apply cheat effects (remove for final version)
             cheat_system.apply_god_mode(self.player)
             cheat_system.apply_max_energy(self.player)
@@ -232,7 +235,7 @@ class Level4:
         cheat_system.display_cheat_info(pygame.display.get_surface())
         
         # Draw settings button and menu
-        self.settings.draw(pygame.display.get_surface())
+        # self.settings.draw(pygame.display.get_surface())  # REMOVED
         
         # Keep the rest of the original run() method logic after this point
         if pygame.sprite.spritecollide(self.player, self.next_sprites, False):
