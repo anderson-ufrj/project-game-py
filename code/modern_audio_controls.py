@@ -377,7 +377,8 @@ class ModernAudioControls:
                 circle_alpha = int(alpha * (1 - radius / (glow_size//2)))
                 if circle_alpha > 0:
                     circle_surface = pygame.Surface((radius*2, radius*2), pygame.SRCALPHA)
-                    pygame.draw.circle(circle_surface, (*self.colors['primary'], circle_alpha), 
+                    color_with_alpha = (*self.colors['primary'], max(0, min(255, int(circle_alpha))))
+                    pygame.draw.circle(circle_surface, color_with_alpha, 
                                      (radius, radius), radius)
                     glow_surface.blit(circle_surface, (glow_size//2 - radius, glow_size//2 - radius))
             
