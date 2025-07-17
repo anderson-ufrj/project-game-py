@@ -184,7 +184,37 @@ class ModernAudioControls:
         current_time = pygame.time.get_ticks()
         
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-            # Clique no botão de áudio
+            # Primeiro verifica cliques no painel de áudio (se estiver aberto)
+            if self.audio_panel_open and self.audio_panel_rect.collidepoint(mouse_pos):
+                # Botão mute música
+                if self.music_mute_rect.collidepoint(mouse_pos):
+                    audio_manager.toggle_mute()
+                    self._update_button_icons()  # Atualiza ícones
+                    return True
+                
+                # Botão mute SFX
+                if self.sfx_mute_rect.collidepoint(mouse_pos):
+                    audio_manager.toggle_mute()
+                    self._update_button_icons()  # Atualiza ícones
+                    return True
+                
+                # Slider música
+                if self.music_slider_rect.collidepoint(mouse_pos):
+                    self.dragging_slider = 'music'
+                    self._update_slider_value(mouse_pos, 'music')
+                    self._update_button_icons()  # Atualiza ícones
+                    return True
+                
+                # Slider SFX  
+                if self.sfx_slider_rect.collidepoint(mouse_pos):
+                    self.dragging_slider = 'sfx'
+                    self._update_slider_value(mouse_pos, 'sfx')
+                    self._update_button_icons()  # Atualiza ícones
+                    return True
+                
+                return True  # Consome clique no painel
+            
+            # Clique no botão de áudio (só se não clicou no painel)
             if self.audio_button_rect.collidepoint(mouse_pos):
                 if current_time - self.last_toggle_time > 200:  # Debounce
                     self.audio_panel_open = not self.audio_panel_open
@@ -203,32 +233,6 @@ class ModernAudioControls:
                     self.update_positions()
                     self._create_button_surfaces()
                 return True
-            
-            # Cliques no painel de áudio
-            if self.audio_panel_open and self.audio_panel_rect.collidepoint(mouse_pos):
-                # Botão mute música
-                if self.music_mute_rect.collidepoint(mouse_pos):
-                    audio_manager.toggle_mute()
-                    return True
-                
-                # Botão mute SFX
-                if self.sfx_mute_rect.collidepoint(mouse_pos):
-                    audio_manager.toggle_mute()
-                    return True
-                
-                # Slider música
-                if self.music_slider_rect.collidepoint(mouse_pos):
-                    self.dragging_slider = 'music'
-                    self._update_slider_value(mouse_pos, 'music')
-                    return True
-                
-                # Slider SFX
-                if self.sfx_slider_rect.collidepoint(mouse_pos):
-                    self.dragging_slider = 'sfx'
-                    self._update_slider_value(mouse_pos, 'sfx')
-                    return True
-                
-                return True  # Consome clique no painel
         
         elif event.type == pygame.MOUSEBUTTONUP and event.button == 1:
             self.dragging_slider = None
@@ -244,35 +248,41 @@ class ModernAudioControls:
             # Arrasta slider
             if self.dragging_slider:
                 self._update_slider_value(mouse_pos, self.dragging_slider)
+                self._update_button_icons()  # Atualiza ícones durante o arrastar
                 return True
         
         elif event.type == pygame.KEYDOWN:
             # Controles por teclado
             if event.key == pygame.K_m:
                 audio_manager.toggle_mute()
+                self._update_button_icons()
                 return True
             elif event.key == pygame.K_n:
                 audio_manager.toggle_mute()
+                self._update_button_icons()
                 return True
             elif event.key == pygame.K_UP or event.key == pygame.K_PLUS:
                 current_vol = audio_manager.volume
                 audio_manager.set_volume(min(1.0, current_vol + 0.1))
+                self._update_button_icons()
                 return True
             elif event.key == pygame.K_DOWN or event.key == pygame.K_MINUS:
                 current_vol = audio_manager.volume
                 audio_manager.set_volume(max(0.0, current_vol - 0.1))
+                self._update_button_icons()
                 return True
             elif event.key == pygame.K_F11:
                 self.graphics_manager.toggle_fullscreen()
                 self.graphics_manager.apply_settings()
                 return True
         
-        # Clique fora fecha o painel
-        if event.type == pygame.MOUSEBUTTONDOWN and self.audio_panel_open:
-            if not self.audio_panel_rect.collidepoint(mouse_pos) and \
-               not self.audio_button_rect.collidepoint(mouse_pos):
-                self.audio_panel_open = False
-                return False
+        # Clique fora fecha o painel (apenas se não consumiu o evento antes)
+        if (event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and 
+            self.audio_panel_open and 
+            not self.audio_panel_rect.collidepoint(mouse_pos) and 
+            not self.audio_button_rect.collidepoint(mouse_pos)):
+            self.audio_panel_open = False
+            return False
         
         return False
     

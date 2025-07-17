@@ -14,6 +14,7 @@ from modern_audio_controls import modern_audio_controls
 from audio_manager import audio_manager
 from main_menu import AdvancedMainMenu
 from professional_main_menu import get_professional_menu
+from clean_main_menu import get_clean_menu
 from story_screen import StoryScreen
 # CHEAT: Import cheat system for testing (remove for final version)
 from cheat_system import cheat_system
@@ -77,16 +78,16 @@ class Game:
 
         # Audio controls - agora usando sistema moderno e simples
         
-        # Professional main menu
-        self.professional_menu = get_professional_menu(self.screen)
-        
-        # Keep advanced menu as backup
+        # Clean and elegant main menu
         fonts = {
             'title': self.title_font,
             'subtitle': self.subtitle_font,
             'info': self.info_font,
             'button': self.info_font
         }
+        self.clean_menu = get_clean_menu(self.screen, fonts)
+        
+        # Keep advanced menu as backup
         self.advanced_menu = AdvancedMainMenu(self.screen, fonts)
         
         # STATS: Name input screen and stats screen
@@ -109,11 +110,21 @@ class Game:
         
         # Check for mouse clicks in the events
         mouse_click = False
-        for event in pygame.event.get():
-            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+        events = pygame.event.get()
+        
+        for event in events:
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 mouse_click = True
-                # Handle new audio controls
-                modern_audio_controls.handle_event(event)
+                # Handle new audio controls - se consumir o evento, não processa mais
+                if modern_audio_controls.handle_event(event):
+                    continue  # Evento foi consumido pelos controles de áudio
+            elif event.type in [pygame.MOUSEBUTTONUP, pygame.MOUSEMOTION]:
+                # Processar outros eventos de mouse para os controles de áudio
+                if modern_audio_controls.handle_event(event):
+                    continue  # Evento foi consumido pelos controles de áudio
             elif event.type == pygame.KEYDOWN:
                 # Handle Alt+Enter for fullscreen toggle
                 if (event.key == pygame.K_RETURN and 
@@ -172,13 +183,11 @@ class Game:
                     return
                 else:
                     # Handle keyboard controls for audio
-                    modern_audio_controls.handle_event(event)
-            elif event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
+                    if modern_audio_controls.handle_event(event):
+                        continue  # Evento consumido pelos controles de áudio
             
-            # Let the professional menu handle events
-            menu_event_action = self.professional_menu.handle_event(event)
+            # Let the clean menu handle events
+            menu_event_action = self.clean_menu.handle_event(event)
             if menu_event_action:
                 if menu_event_action == "start_game":
                     # Show intro story first
@@ -203,9 +212,15 @@ class Game:
                 elif menu_event_action == "show_tutorial":
                     tutorial_system.open_tutorial()
                     return
-            
-            # Let the advanced menu handle events (backup)
-            self.advanced_menu.handle_event(event)
+                elif menu_event_action == "show_graphics":
+                    # Graphics handled by AAA menu
+                    pass
+                elif menu_event_action == "show_stats":
+                    self.game_state = 30
+                    return
+                elif menu_event_action == "show_credits":
+                    # TODO: Implement credits screen
+                    pass
             
             # Handle tutorial events
             tutorial_system.handle_event(event)
@@ -214,8 +229,8 @@ class Game:
             if event.type not in [pygame.MOUSEBUTTONDOWN, pygame.KEYDOWN, pygame.QUIT]:
                 pygame.event.post(event)
         
-        # Use the professional menu system
-        menu_action = self.professional_menu.update_and_draw(mouse_pos, mouse_click)
+        # Use the clean menu system
+        menu_action = self.clean_menu.update_and_draw(mouse_pos, mouse_click)
         
         # Handle menu actions
         if menu_action == "start_game":
@@ -245,7 +260,8 @@ class Game:
         elif menu_action == "show_stats":
             self.game_state = 30  # Go to stats screen
         
-        # Draw new audio controls
+        # Update and draw new audio controls
+        modern_audio_controls.update(self.clock.get_time() / 1000.0)  # Convert to seconds
         modern_audio_controls.draw(self.screen)
         
         # Update and draw tutorial
