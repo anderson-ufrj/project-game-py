@@ -28,6 +28,8 @@ from save_screen import SaveScreen
 from font_manager import font_manager
 from graphics_manager import GraphicsManager
 from tutorial_system import tutorial_system
+# Sistema de limpeza automática ao sair
+import cleanup_on_exit
 # pygame.mixer.pre_init(44100, 16, 2, 4096)
 from pygame.locals import*
 
